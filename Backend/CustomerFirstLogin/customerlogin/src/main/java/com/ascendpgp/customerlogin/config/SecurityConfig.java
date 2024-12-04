@@ -35,7 +35,8 @@ public class SecurityConfig {
                     "/v3/api-docs/**",    // OpenAPI spec
                     "/api/customer/login",
                     "/api/customer/forgot-password/**",
-                    "/api/customer/verify"
+                    "/api/customer/send-verification",
+                    "/api/customer/verify*"
                 ).permitAll() // Public endpoints
                 .anyRequest().authenticated()
             )
