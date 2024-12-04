@@ -2,17 +2,17 @@ package com.ascendpgp.customerlogin.Service;
 
 import com.ascendpgp.customerlogin.exception.InvalidTokenException;
 import com.ascendpgp.customerlogin.model.CustomerEntity;
+import com.ascendpgp.customerlogin.model.LoginRequest;
+import com.ascendpgp.customerlogin.model.LoginResponse;
 import com.ascendpgp.customerlogin.repository.CustomerRepository;
 import com.ascendpgp.customerlogin.utils.PasswordValidator;
 import com.ascendpgp.customerlogin.utils.JwtService;
-import com.ascendpgp.customerlogin.model.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -28,51 +28,43 @@ public class CustomerService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    
+
     @Autowired
-    private JwtService jwtService; 
+    private JwtService jwtService;
 
     public boolean validatePassword(String rawPassword, String hashedPassword) {
         return passwordEncoder.matches(rawPassword, hashedPassword);
     }
-    
-    public LoginResponse login(String email, String rawPassword)  {
-        // Find customer by email
+
+    public LoginResponse login(String email, String rawPassword) {
         CustomerEntity customer = customerRepository.findByEmail(email);
         if (customer == null) {
             throw new RuntimeException("Invalid email or password.");
         }
 
-        // Validate password
         if (!passwordEncoder.matches(rawPassword, customer.getPassword())) {
             throw new RuntimeException("Invalid email or password.");
         }
 
-        // Validate password complexity (for reset/change password)
         if (!PasswordValidator.isValid(rawPassword)) {
             throw new RuntimeException("Password does not meet complexity requirements.");
         }
 
-        // Check account validation
         if (!customer.isAccountValidated()) {
             System.out.println("Welcome! Congratulations on successful registration. Please verify your account to unlock full features.");
         } else {
             System.out.println("Welcome back, " + customer.getFirstName() + " " + customer.getLastName() + "!");
         }
 
-        // Update firstTimeLogin to false if it's true
         if (customer.isFirstTimeLogin()) {
             customer.setFirstTimeLogin(false);
-            customerRepository.save(customer); // Save changes
+            customerRepository.save(customer);
             System.out.println("First-time login detected. Updated firstTimeLogin to false.");
-            
         }
-        
+
         System.out.println("Login successful for user: " + email);
-        // Generate and return JWT token
         String token = jwtService.generateToken(email);
-        
-     // Prepare the response
+
         LoginResponse response = new LoginResponse();
         response.setToken(token);
         response.setFirstName(customer.getFirstName());
@@ -80,11 +72,39 @@ public class CustomerService {
         response.setAccountValidated(customer.isAccountValidated());
 
         return response;
-    }          
-    
+    }
 
+    public LoginResponse handleSubsequentLogin(LoginRequest loginRequest) {
+        CustomerEntity customer = customerRepository.findByEmail(loginRequest.getUsername());
+        if (customer == null) {
+            throw new RuntimeException("Invalid username or password.");
+        }
 
-    // Send Verification Email
+        if (!passwordEncoder.matches(loginRequest.getPassword(), customer.getPassword())) {
+            throw new RuntimeException("Invalid username or password.");
+        }
+
+        if (!customer.isAccountValidated()) {
+            throw new RuntimeException("Please verify your account first");
+        }
+
+        if (customer.isFirstTimeLogin()) {
+            throw new RuntimeException("Please complete first-time login process");
+        }
+
+        String token = jwtService.generateToken(customer.getEmail());
+
+        LoginResponse response = new LoginResponse();
+        response.setToken(token);
+        response.setFirstName(customer.getFirstName());
+        response.setLastName(customer.getLastName());
+        response.setAccountValidated(customer.isAccountValidated());
+
+        System.out.println("Subsequent login successful for user: " + customer.getEmail());
+
+        return response;
+    }
+
     public void sendVerificationEmail(String email) {
         CustomerEntity customer = customerRepository.findByEmail(email);
         if (customer == null) {
@@ -94,8 +114,8 @@ public class CustomerService {
             throw new RuntimeException("Account is already validated.");
         }
 
-        // Reuse existing token if valid
-        if (customer.getVerificationTokenExpiry() != null && customer.getVerificationTokenExpiry().isAfter(LocalDateTime.now())) {
+        if (customer.getVerificationTokenExpiry() != null &&
+                customer.getVerificationTokenExpiry().isAfter(LocalDateTime.now())) {
             throw new RuntimeException("A valid verification token already exists. Check your email.");
         }
 
@@ -112,14 +132,12 @@ public class CustomerService {
         mailSender.send(message);
     }
 
-    
-    // Verify Account
     public void verifyAccount(String token) {
         CustomerEntity customer = customerRepository.findByVerificationToken(token);
         if (customer == null || customer.getVerificationTokenExpiry().isBefore(LocalDateTime.now())) {
             throw new InvalidTokenException("Invalid or expired verification token.");
         }
-        
+
         if (customer.getVerificationTokenExpiry().isBefore(LocalDateTime.now())) {
             throw new RuntimeException("Verification token has expired.");
         }
@@ -131,128 +149,97 @@ public class CustomerService {
         customer.setVerificationToken(null);
         customer.setVerificationTokenExpiry(null);
         customerRepository.save(customer);
-        
+
         System.out.println("Account verified for user: " + customer.getEmail());
     }
 
-
-
-    // Forgot Password
     public void requestPasswordReset(String email) {
-        // Find the customer by email
         CustomerEntity customer = customerRepository.findByEmail(email);
         if (customer == null) {
             throw new RuntimeException("Customer not found");
         }
 
-        // Generate reset token and expiry
         String token = UUID.randomUUID().toString();
         customer.setResetPasswordToken(token);
-        customer.setResetPasswordTokenExpiry(LocalDateTime.now().plusHours(1)); // Token valid for 1 hour
-
-        // Save the reset token to the database
+        customer.setResetPasswordTokenExpiry(LocalDateTime.now().plusHours(1));
         customerRepository.save(customer);
 
-        // Send email with the reset link
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
         message.setFrom("Teams3_PGP@walmart.com");
         message.setSubject("Forgot Your Password");
         message.setText("Click the link below to reset your password:\n\n" +
-            "http://localhost:8081/api/customer/forgot-password/reset-password?token=" + token);
+                "http://localhost:8081/api/customer/forgot-password/reset-password?token=" + token);
         mailSender.send(message);
     }
-    
 
-    // Password reset when User clicks on Forgot Password
     public void resetPasswordForForgotFlow(String token, String newPassword, String confirmPassword) {
-        // Validate token and find user
         CustomerEntity customer = customerRepository.findByResetPasswordToken(token);
-        if (customer == null || customer.getResetPasswordTokenExpiry() == null || customer.getResetPasswordTokenExpiry().isBefore(LocalDateTime.now())) {
+        if (customer == null || customer.getResetPasswordTokenExpiry() == null ||
+                customer.getResetPasswordTokenExpiry().isBefore(LocalDateTime.now())) {
             throw new InvalidTokenException("Invalid or expired reset token.");
         }
 
-        // Validate new password matches confirmation
         if (!newPassword.equals(confirmPassword)) {
             throw new RuntimeException("New password and confirm password do not match.");
         }
 
-        // Validate password complexity
         if (!PasswordValidator.isValid(newPassword)) {
             throw new RuntimeException("Password does not meet complexity requirements.");
         }
 
-        // Prevent reuse of recent passwords
         if (customer.getPasswordHistory() != null && customer.getPasswordHistory().stream()
                 .anyMatch(hashedPassword -> passwordEncoder.matches(newPassword, hashedPassword))) {
             throw new RuntimeException("New password cannot be one of the last 5 passwords.");
         }
 
-        // Update password history
         if (customer.getPasswordHistory() == null) {
             customer.setPasswordHistory(new ArrayList<>());
         }
-        customer.getPasswordHistory().add(0, customer.getPassword()); // Add current password to history
+        customer.getPasswordHistory().add(0, customer.getPassword());
         if (customer.getPasswordHistory().size() > 5) {
-            customer.getPasswordHistory().remove(5); // Keep only the last 5 passwords
+            customer.getPasswordHistory().remove(5);
         }
 
-        // Hash and save new password
         customer.setPassword(passwordEncoder.encode(newPassword));
-
-        // Clear reset token and expiry
         customer.setResetPasswordToken(null);
         customer.setResetPasswordTokenExpiry(null);
-
-        // Save updated user
         customerRepository.save(customer);
     }
 
-
-
-    // Reset Password Logic When user knows the current password
     public void changePassword(String currentPassword, String newPassword, String confirmPassword) {
-        // Assume authenticated user's username is retrieved via security context
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        CustomerEntity customer = customerRepository.findByUsername(username);
+        CustomerEntity customer = customerRepository.findByEmail(username);
         if (customer == null) {
             throw new RuntimeException("Customer not found");
         }
 
-        // Validate current password
         if (!passwordEncoder.matches(currentPassword, customer.getPassword())) {
             throw new RuntimeException("Current password is incorrect.");
         }
 
-        // Validate new password and confirmation match
         if (!newPassword.equals(confirmPassword)) {
             throw new RuntimeException("New password and confirm password do not match.");
         }
 
-        // Validate password complexity
         if (!PasswordValidator.isValid(newPassword)) {
             throw new RuntimeException("Password does not meet complexity requirements.");
         }
 
-        // Prevent reuse of recent passwords
         if (customer.getPasswordHistory() != null && customer.getPasswordHistory().stream()
                 .anyMatch(hashedPassword -> passwordEncoder.matches(newPassword, hashedPassword))) {
             throw new RuntimeException("New password cannot be one of the last 5 passwords.");
         }
 
-        // Update password history
         if (customer.getPasswordHistory() == null) {
             customer.setPasswordHistory(new ArrayList<>());
         }
-        customer.getPasswordHistory().add(0, customer.getPassword()); // Add current password to history
+        customer.getPasswordHistory().add(0, customer.getPassword());
         if (customer.getPasswordHistory().size() > 5) {
-            customer.getPasswordHistory().remove(5); // Keep only the last 5 passwords
+            customer.getPasswordHistory().remove(5);
         }
 
-        // Hash and save new password
         customer.setPassword(passwordEncoder.encode(newPassword));
         customerRepository.save(customer);
     }
-
 }
-

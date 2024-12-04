@@ -7,10 +7,14 @@ import com.ascendpgp.customerlogin.model.LoginResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.http.HttpStatus;
+import com.ascendpgp.customerlogin.model.LoginRequest;
+import com.ascendpgp.customerlogin.model.SubsequentLoginErrorResponse;
 
 @RestController
 @RequestMapping("/api/customer")
@@ -51,6 +55,35 @@ public class CustomerController {
             return ResponseEntity.status(500).body(Map.of("error", "An unexpected error occurred."));
         }
     }
+
+    @PostMapping("/login/subsequent")
+    public ResponseEntity<?> subsequentLogin(@RequestBody LoginRequest loginRequest) {
+        try {
+            // Validate that it's not a first-time login
+            CustomerEntity customer = customerRepository.findByEmail(loginRequest.getUsername());
+
+            if (customer.isFirstTimeLogin()) {
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(new SubsequentLoginErrorResponse("Please complete first-time login process", "FIRST_TIME_LOGIN_REQUIRED"));
+            }
+
+            if (!customer.isAccountValidated()) {
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(new SubsequentLoginErrorResponse("Please verify your account first", "ACCOUNT_NOT_VERIFIED"));
+            }
+
+            // Handle subsequent login
+            LoginResponse response = customerService.handleSubsequentLogin(loginRequest);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new SubsequentLoginErrorResponse(e.getMessage(), "AUTH_ERROR"));
+        }
+    }
+
 
 
     // Send Verification Email API
