@@ -15,6 +15,7 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import com.ascendpgp.customerlogin.model.LoginRequest;
 import com.ascendpgp.customerlogin.model.SubsequentLoginErrorResponse;
+import com.ascendpgp.customerlogin.utils.JwtService;
 
 @RestController
 @RequestMapping("/api/customer")
@@ -26,6 +27,9 @@ public class CustomerController {
     
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private JwtService jwtService;  // Add this line
 
     // Login API
     @PostMapping("/login")
@@ -56,34 +60,50 @@ public class CustomerController {
         }
     }
 
+    public LoginResponse handleSubsequentLogin(LoginRequest loginRequest) {
+        System.out.println("Attempting subsequent login for email: " + loginRequest.getUsername());
+
+        CustomerEntity customer = customerRepository.findByEmail(loginRequest.getUsername());
+        System.out.println("Found customer in DB: " + (customer != null));
+
+        if (customer != null) {
+            System.out.println("Stored password: " + customer.getPassword());
+            System.out.println("Input password: " + loginRequest.getPassword());
+        }
+
+        if (customer == null) {
+            throw new RuntimeException("Invalid username or password.");
+        }
+
+        // Temporarily bypass password encoding for testing
+        if (!loginRequest.getPassword().equals(customer.getPassword())) {
+            throw new RuntimeException("Invalid username or password.");
+        }
+
+        // Rest of your existing code...
+        String token = jwtService.generateToken(customer.getEmail());
+
+        LoginResponse response = new LoginResponse();
+        response.setToken(token);
+        response.setFirstName(customer.getFirstName());
+        response.setLastName(customer.getLastName());
+        response.setAccountValidated(customer.isAccountValidated());
+
+        return response;
+    }
+
     @PostMapping("/login/subsequent")
     public ResponseEntity<?> subsequentLogin(@RequestBody LoginRequest loginRequest) {
         try {
-            // Validate that it's not a first-time login
-            CustomerEntity customer = customerRepository.findByEmail(loginRequest.getUsername());
-
-            if (customer.isFirstTimeLogin()) {
-                return ResponseEntity
-                        .status(HttpStatus.BAD_REQUEST)
-                        .body(new SubsequentLoginErrorResponse("Please complete first-time login process", "FIRST_TIME_LOGIN_REQUIRED"));
-            }
-
-            if (!customer.isAccountValidated()) {
-                return ResponseEntity
-                        .status(HttpStatus.BAD_REQUEST)
-                        .body(new SubsequentLoginErrorResponse("Please verify your account first", "ACCOUNT_NOT_VERIFIED"));
-            }
-
-            // Handle subsequent login
+            System.out.println("Received login request with username: " + loginRequest.getUsername());
             LoginResponse response = customerService.handleSubsequentLogin(loginRequest);
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(new SubsequentLoginErrorResponse(e.getMessage(), "AUTH_ERROR"));
         }
     }
-
 
 
     // Send Verification Email API

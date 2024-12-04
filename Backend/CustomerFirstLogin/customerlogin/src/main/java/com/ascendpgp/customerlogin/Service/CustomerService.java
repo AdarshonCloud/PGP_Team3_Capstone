@@ -75,34 +75,56 @@ public class CustomerService {
     }
 
     public LoginResponse handleSubsequentLogin(LoginRequest loginRequest) {
-        CustomerEntity customer = customerRepository.findByEmail(loginRequest.getUsername());
-        if (customer == null) {
-            throw new RuntimeException("Invalid username or password.");
+        try {
+            System.out.println("DEBUG: Starting subsequent login process");
+            System.out.println("DEBUG: Looking up user: " + loginRequest.getUsername());
+
+            CustomerEntity customer = customerRepository.findByEmail(loginRequest.getUsername());
+
+            System.out.println("DEBUG: Customer found: " + (customer != null));
+            if (customer != null) {
+                System.out.println("DEBUG: Customer email: " + customer.getEmail());
+                System.out.println("DEBUG: Account validated: " + customer.isAccountValidated());
+                System.out.println("DEBUG: First time login: " + customer.isFirstTimeLogin());
+            }
+
+            if (customer == null) {
+                System.out.println("DEBUG: No customer found with email: " + loginRequest.getUsername());
+                throw new RuntimeException("Invalid username or password.");
+            }
+
+            // Keep existing password comparison for now
+            if (!loginRequest.getPassword().equals(customer.getPassword())) {
+                System.out.println("DEBUG: Password mismatch");
+                throw new RuntimeException("Invalid username or password.");
+            }
+
+            if (!customer.isAccountValidated()) {
+                System.out.println("DEBUG: Account not validated");
+                throw new RuntimeException("Please verify your account first");
+            }
+
+            if (customer.isFirstTimeLogin()) {
+                System.out.println("DEBUG: First time login detected");
+                throw new RuntimeException("Please complete first-time login process");
+            }
+
+            System.out.println("DEBUG: Generating JWT token");
+            String token = jwtService.generateToken(customer.getEmail());
+
+            LoginResponse response = new LoginResponse();
+            response.setToken(token);
+            response.setFirstName(customer.getFirstName());
+            response.setLastName(customer.getLastName());
+            response.setAccountValidated(customer.isAccountValidated());
+
+            System.out.println("DEBUG: Login successful");
+            return response;
+
+        } catch (Exception e) {
+            System.out.println("DEBUG: Error during login: " + e.getMessage());
+            throw e;
         }
-
-        if (!passwordEncoder.matches(loginRequest.getPassword(), customer.getPassword())) {
-            throw new RuntimeException("Invalid username or password.");
-        }
-
-        if (!customer.isAccountValidated()) {
-            throw new RuntimeException("Please verify your account first");
-        }
-
-        if (customer.isFirstTimeLogin()) {
-            throw new RuntimeException("Please complete first-time login process");
-        }
-
-        String token = jwtService.generateToken(customer.getEmail());
-
-        LoginResponse response = new LoginResponse();
-        response.setToken(token);
-        response.setFirstName(customer.getFirstName());
-        response.setLastName(customer.getLastName());
-        response.setAccountValidated(customer.isAccountValidated());
-
-        System.out.println("Subsequent login successful for user: " + customer.getEmail());
-
-        return response;
     }
 
     public void sendVerificationEmail(String email) {

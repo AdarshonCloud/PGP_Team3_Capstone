@@ -4,11 +4,9 @@ public class LoginRequest {
     private String username;
     private String password;
 
-    // Default constructor
-    public LoginRequest() {
-    }
+    // Constructors
+    public LoginRequest() {}  // Default constructor is required for JSON parsing
 
-    // Constructor with parameters
     public LoginRequest(String username, String password) {
         this.username = username;
         this.password = password;
@@ -29,13 +27,5 @@ public class LoginRequest {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    @Override
-    public String toString() {
-        return "LoginRequest{" +
-                "username='" + username + '\'' +
-                ", password='[PROTECTED]'" +
-                '}';
     }
 }
