@@ -138,7 +138,7 @@ public class CustomerService {
         	throw new InvalidTokenException("Verification token has expired.");
         }
 
-        // If the account is already validated, provide a meaningful message
+        // If the account is already validated
         if (customer.isAccountValidated()) {
             System.out.println("Account is already validated for user: " + customer.getEmail());
             return; // Optional: Could throw an exception if preferred
