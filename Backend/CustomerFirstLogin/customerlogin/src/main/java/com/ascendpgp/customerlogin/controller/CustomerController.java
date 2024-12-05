@@ -1,20 +1,19 @@
 package com.ascendpgp.customerlogin.controller;
 
-import com.ascendpgp.customerlogin.model.CustomerEntity;
+import com.ascendpgp.customerlogin.model.*;
 import com.ascendpgp.customerlogin.Service.CustomerService;
 import com.ascendpgp.customerlogin.repository.CustomerRepository;
-import com.ascendpgp.customerlogin.model.LoginResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
-import com.ascendpgp.customerlogin.model.LoginRequest;
-import com.ascendpgp.customerlogin.model.SubsequentLoginErrorResponse;
 import com.ascendpgp.customerlogin.utils.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -202,5 +201,15 @@ public class CustomerController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/available-endpoints")
+    public ResponseEntity<List<ApiEndpoint>> getAvailableEndpoints() {
+        List<ApiEndpoint> endpoints = new ArrayList<>();
+        endpoints.add(new ApiEndpoint("/api/account", "Update personal details and password"));
+        endpoints.add(new ApiEndpoint("/api/creditcards", "View all credit cards"));
+        endpoints.add(new ApiEndpoint("/api/creditcards/lastmonth", "View last month's transactions"));
+
+        return ResponseEntity.ok(endpoints);
     }
 }
