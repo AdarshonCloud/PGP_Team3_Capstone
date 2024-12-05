@@ -16,6 +16,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.List;
+import java.util.ArrayList;
+import com.ascendpgp.customerlogin.model.ApiEndpoint;
+import com.ascendpgp.customerlogin.model.ApiEndpoint;
 
 @Service
 public class CustomerService {
@@ -79,7 +83,13 @@ public class CustomerService {
             System.out.println("DEBUG: Starting subsequent login process");
             System.out.println("DEBUG: Looking up user: " + loginRequest.getUsername());
 
+            // Try finding by email first
             CustomerEntity customer = customerRepository.findByEmail(loginRequest.getUsername());
+
+            // If not found by email, try finding by username
+            if (customer == null) {
+                customer = customerRepository.findByUsername(loginRequest.getUsername());
+            }
 
             System.out.println("DEBUG: Customer found: " + (customer != null));
             if (customer != null) {
@@ -89,11 +99,11 @@ public class CustomerService {
             }
 
             if (customer == null) {
-                System.out.println("DEBUG: No customer found with email: " + loginRequest.getUsername());
+                System.out.println("DEBUG: No customer found with username/email: " + loginRequest.getUsername());
                 throw new RuntimeException("Invalid username or password.");
             }
 
-            // Keep existing password comparison for now
+            // Verify password
             if (!loginRequest.getPassword().equals(customer.getPassword())) {
                 System.out.println("DEBUG: Password mismatch");
                 throw new RuntimeException("Invalid username or password.");
@@ -104,12 +114,6 @@ public class CustomerService {
                 throw new RuntimeException("Please verify your account first");
             }
 
-            if (customer.isFirstTimeLogin()) {
-                System.out.println("DEBUG: First time login detected");
-                throw new RuntimeException("Please complete first-time login process");
-            }
-
-            System.out.println("DEBUG: Generating JWT token");
             String token = jwtService.generateToken(customer.getEmail());
 
             LoginResponse response = new LoginResponse();
@@ -117,6 +121,13 @@ public class CustomerService {
             response.setFirstName(customer.getFirstName());
             response.setLastName(customer.getLastName());
             response.setAccountValidated(customer.isAccountValidated());
+
+            // Add available endpoints
+            List<ApiEndpoint> endpoints = new ArrayList<>();
+            endpoints.add(new ApiEndpoint("/api/account", "Update personal details and password"));
+            endpoints.add(new ApiEndpoint("/api/creditcards", "View all credit cards"));
+            endpoints.add(new ApiEndpoint("/api/creditcards/lastmonth", "View last month's transactions"));
+            response.setAvailableEndpoints(endpoints);
 
             System.out.println("DEBUG: Login successful");
             return response;

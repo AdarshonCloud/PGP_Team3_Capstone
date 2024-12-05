@@ -16,12 +16,18 @@ import org.springframework.http.HttpStatus;
 import com.ascendpgp.customerlogin.model.LoginRequest;
 import com.ascendpgp.customerlogin.model.SubsequentLoginErrorResponse;
 import com.ascendpgp.customerlogin.utils.JwtService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/customer")
 public class CustomerController {
-	
-	
+
     @Autowired
     private CustomerRepository customerRepository;
     
@@ -32,6 +38,12 @@ public class CustomerController {
     private JwtService jwtService;  // Add this line
 
     // Login API
+    @Operation(summary = "First time customer login")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Login successful"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> request) {
         String email = request.get("email");
@@ -59,7 +71,12 @@ public class CustomerController {
             return ResponseEntity.status(500).body(Map.of("error", "An unexpected error occurred."));
         }
     }
-
+    @Operation(summary = "Subsequent customer login")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Login successful"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
     public LoginResponse handleSubsequentLogin(LoginRequest loginRequest) {
         System.out.println("Attempting subsequent login for email: " + loginRequest.getUsername());
 

@@ -1,12 +1,18 @@
 package com.ascendpgp.customerlogin.model;
 
+import java.util.List;
+
 public class LoginResponse {
     private String token;
     private String firstName;
     private String lastName;
     private boolean accountValidated;
+    private List<ApiEndpoint> availableEndpoints;  // Add this field
 
-    // Getters and Setters
+    // Default constructor
+    public LoginResponse() {
+    }
+
     public String getToken() {
         return token;
     }
@@ -39,12 +45,12 @@ public class LoginResponse {
         this.accountValidated = accountValidated;
     }
 
-	@Override
-	public String toString() {
-		return "LoginResponse [token=" + token + ", firstName=" + firstName + ", lastName=" + lastName
-				+ ", accountValidated=" + accountValidated + "]";
-	}
-    
-    
-}
+    // Add these getter and setter for availableEndpoints
+    public List<ApiEndpoint> getAvailableEndpoints() {
+        return availableEndpoints;
+    }
 
+    public void setAvailableEndpoints(List<ApiEndpoint> availableEndpoints) {
+        this.availableEndpoints = availableEndpoints;
+    }
+}
