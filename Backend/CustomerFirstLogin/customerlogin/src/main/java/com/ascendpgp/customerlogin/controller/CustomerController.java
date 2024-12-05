@@ -1,85 +1,143 @@
 package com.ascendpgp.customerlogin.controller;
 
-import com.ascendpgp.customerlogin.model.CustomerEntity;
+import com.ascendpgp.customerlogin.model.*;
 import com.ascendpgp.customerlogin.Service.CustomerService;
-import com.ascendpgp.customerlogin.exception.InvalidTokenException;
 import com.ascendpgp.customerlogin.repository.CustomerRepository;
-import com.ascendpgp.customerlogin.model.LoginResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
+import org.springframework.web.bind.annotation.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.springframework.http.HttpStatus;
+import com.ascendpgp.customerlogin.utils.JwtService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDateTime;
-import java.util.HashMap;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.HashMap;
+import com.ascendpgp.customerlogin.model.ApiEndpoint;
 
 @RestController
 @RequestMapping("/api/customer")
 public class CustomerController {
-	
-	private static final Logger logger = LoggerFactory.getLogger(CustomerController.class);
-	 
+
     @Autowired
     private CustomerRepository customerRepository;
     
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private JwtService jwtService;  // Add this line
+
     // Login API
+    @Operation(summary = "First time customer login")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Login successful"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> request) {
         String email = request.get("email");
         String password = request.get("password");
 
-	 // Redact sensitive fields for logging
-    	Map<String, String> sanitizedRequest = new HashMap<>(request);
-    	sanitizedRequest.put("password", "********"); // Mask the password
-    	System.out.println("Received login request: " + sanitizedRequest);
-	    
-        logger.info("Received login request for email: {}", email);
-        
         try {
+            
             // Call the service to handle login
             LoginResponse loginResponse = customerService.login(email, password);
 
-            // Prepare response map
+            // Return response with the token
             Map<String, Object> response = new HashMap<>();
-            String message = "Welcome " + loginResponse.getLastName() + " | " + loginResponse.getFirstName() + "!";
-            if (!loginResponse.isAccountValidated()) {
-                message += " Your account is not yet verified. Please verify your account to unlock full features.";
-            }
-            response.put("message", message);
+            String message = "Welcome " + loginResponse.getLastName() + " | " + loginResponse.getFirstName() + "! " ;
+            response.put(message, " Please verify your account to unlock full features.");
             response.put("token", loginResponse.getToken());
-            response.put("verificationAction", "/api/customer/send-verification");
-            
-            logger.info("Login successful for email: {}", email);
+
             return ResponseEntity.ok(response); // Return JSON response with token
 
         } catch (RuntimeException e) {
-        	logger.error("Login failed for email: {}. Reason: {}", email, e.getMessage());
-            // Handle known exceptions
+            // Return appropriate error message
             return ResponseEntity.status(400).body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-        	logger.error("Unexpected error during login for email: {}", email, e);
-            // Handle unexpected exceptions
+            // Log and return a generic error message for unexpected exceptions
             e.printStackTrace();
             return ResponseEntity.status(500).body(Map.of("error", "An unexpected error occurred."));
+        }
+    }
+    @Operation(summary = "Subsequent customer login")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Login successful"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
+    public LoginResponse handleSubsequentLogin(LoginRequest loginRequest) {
+        System.out.println("Attempting subsequent login for email: " + loginRequest.getUsername());
+
+        CustomerEntity customer = customerRepository.findByEmail(loginRequest.getUsername());
+        System.out.println("Found customer in DB: " + (customer != null));
+
+        if (customer != null) {
+            System.out.println("Stored password: " + customer.getPassword());
+            System.out.println("Input password: " + loginRequest.getPassword());
+        }
+
+        if (customer == null) {
+            throw new RuntimeException("Invalid username or password.");
+        }
+
+        // Temporarily bypass password encoding for testing
+        if (!loginRequest.getPassword().equals(customer.getPassword())) {
+            throw new RuntimeException("Invalid username or password.");
+        }
+
+        // Rest of your existing code...
+        String token = jwtService.generateToken(customer.getEmail());
+
+        LoginResponse response = new LoginResponse();
+        response.setToken(token);
+        response.setFirstName(customer.getFirstName());
+        response.setLastName(customer.getLastName());
+        response.setAccountValidated(customer.isAccountValidated());
+
+        return response;
+    }
+
+    @PostMapping("/login/subsequent")
+    public ResponseEntity<?> subsequentLogin(@RequestBody LoginRequest loginRequest) {
+        try {
+            System.out.println("Received login request with username: " + loginRequest.getUsername());
+            LoginResponse response = customerService.handleSubsequentLogin(loginRequest);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new SubsequentLoginErrorResponse(e.getMessage(), "AUTH_ERROR"));
         }
     }
 
 
     // Send Verification Email API
     @PostMapping("/send-verification")
-    public ResponseEntity<?> sendVerification(@RequestBody Map<String, String> request) {
-    	String email = request.get("email");
-    	logger.info("Received send-verification request for email: {}", email);
+    public ResponseEntity<?> sendVerification(@RequestBody Map<String, String> emailData) {
         try {
-            customerService.sendVerificationEmail(email);
-            logger.info("Verification email sent successfully to: {}", email);
+            customerService.sendVerificationEmail(emailData.get("email"));
             return ResponseEntity.ok("Verification link has been sent to your email.");
         } catch (RuntimeException e) {
-        	logger.error("Failed to send verification email to: {}. Reason: {}", email, e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -87,16 +145,12 @@ public class CustomerController {
  // API to verify the account
     @GetMapping("/verify")
     public ResponseEntity<?> verifyAccount(@RequestParam("token") String token) {
-    	logger.info("Received verify-account request with token: {}", token);
         try {
             customerService.verifyAccount(token);
-            logger.info("Account successfully verified for token: {}", token);
             return ResponseEntity.ok("Account successfully verified. You can now log in.");
-        } catch (InvalidTokenException e) {
-        	logger.error("Verification failed for token: {}. Reason: {}", token, e.getMessage());
+        } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-        	logger.error("Verification failed for token: {}. Reason: {}", token, e.getMessage());
             e.printStackTrace();
             return ResponseEntity.status(500).body("An unexpected error occurred.");
         }
@@ -106,13 +160,11 @@ public class CustomerController {
     // Forgot Password API
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
-        String email = request.get("email");
-        logger.info("Forgot password request received for email: {}", email);
         try {
+            String email = request.get("email");
             customerService.requestPasswordReset(email);
             return ResponseEntity.ok("Password reset link has been sent to your email.");
         } catch (RuntimeException e) {
-        	logger.error("Failed to process forgot password for email: {}. Reason: {}", email, e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -132,17 +184,14 @@ public class CustomerController {
     // Password reset API for Forgot Password 
     @PostMapping("/forgot-password/reset-password")
     public ResponseEntity<?> resetPasswordForForgotPassword(@RequestBody Map<String, String> request) {
-        
+        try {
             String token = request.get("token");
             String newPassword = request.get("newPassword");
             String confirmPassword = request.get("confirmPassword");
-            logger.info("Password reset request received for token: {}", token);
-            
-          try {
+
             customerService.resetPasswordForForgotFlow(token, newPassword, confirmPassword);
             return ResponseEntity.ok("Password has been reset successfully.");
         } catch (RuntimeException e) {
-        	logger.error("Failed to reset password for token: {}. Reason: {}", token, e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -151,27 +200,35 @@ public class CustomerController {
     // Reset Password API when User knows the password
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody Map<String, String> request) {
-        
+        try {
             String currentPassword = request.get("currentPassword");
             String newPassword = request.get("newPassword");
             String confirmPassword = request.get("confirmPassword");
-            logger.info("Change password request received.");
-          try {
-            	
-            if (currentPassword == null || newPassword == null || confirmPassword == null) 
-            	{
-                throw new IllegalArgumentException("All fields are required.");
-            	}
 
             customerService.changePassword(currentPassword, newPassword, confirmPassword);
-            logger.info("Password was updated successfully via change-password");
-            
             return ResponseEntity.ok("Password has been changed successfully.");
-            } 
-          catch (RuntimeException e) {
-        	logger.error("Failed to change password. Reason: {}", e.getMessage());
+        } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
+    @GetMapping("/available-endpoints")
+    public ResponseEntity<Map<String, Object>> getAvailableEndpoints() {
+        // Get authenticated user's email from SecurityContext
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+
+        // Create endpoints list
+        List<ApiEndpoint> endpoints = new ArrayList<>();
+        endpoints.add(new ApiEndpoint("/api/account", "Update personal details and password"));
+        endpoints.add(new ApiEndpoint("/api/creditcards", "View all credit cards"));
+        endpoints.add(new ApiEndpoint("/api/creditcards/lastmonth", "View last month's transactions"));
+
+        // Create response with both username and endpoints
+        Map<String, Object> response = new HashMap<>();
+        response.put("userEmail", userEmail);
+        response.put("availableEndpoints", endpoints);
+
+        return ResponseEntity.ok(response);
+    }
 }
