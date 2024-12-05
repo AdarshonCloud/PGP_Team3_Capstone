@@ -1,25 +1,22 @@
 # Customer Login Service
-
 This service provides authentication endpoints for customer login functionality.
 
 ## Features
-
-- Initial customer login
-- Subsequent login for returning customers
-- JWT token-based authentication
-- Available API endpoints listing
-- Account validation status
+* Initial customer login
+* Subsequent login for returning customers
+* JWT token-based authentication
+* Available API endpoints listing
+* Account validation status
 
 ## API Endpoints
 
 ### 1. Initial Login
-
-```http
+```
 POST /api/customer/login
 Content-Type: application/json
 
 {
-    "email": "example@email.com",
+    "username": "username",
     "password": "yourpassword"
 }
 ```
@@ -35,8 +32,7 @@ Content-Type: application/json
 ```
 
 ### 2. Subsequent Login
-
-```http
+```
 POST /api/customer/login/subsequent
 Content-Type: application/json
 
@@ -70,8 +66,37 @@ Content-Type: application/json
 }
 ```
 
-## Setup Instructions
+### 3. Get Available Endpoints
+Retrieve available endpoints for the authenticated user.
 
+```
+GET /api/customer/available-endpoints
+Authorization: Bearer your_jwt_token_here
+```
+
+**Response:**
+```json
+{
+    "username": "example@email.com",
+    "availableEndpoints": [
+        {
+            "url": "/api/account",
+            "description": "Update personal details and password"
+        },
+        {
+            "url": "/api/creditcards",
+            "description": "View all credit cards"
+        },
+        {
+            "url": "/api/creditcards/lastmonth",
+            "description": "View last month's transactions"
+        }
+    ],
+    "userEmail": "youremail"
+}
+```
+
+## Setup Instructions
 1. Ensure MongoDB is running
 2. Configure application.properties:
 ```properties
@@ -92,20 +117,18 @@ http://localhost:8081/swagger-ui.html
 ```
 
 ## Authentication
-
 The service uses JWT tokens for authentication. After successful login:
 1. Store the returned JWT token
 2. Include it in subsequent requests:
-```http
+```
 Authorization: Bearer your_jwt_token
 ```
 
 ## Error Handling
-
 Common error responses:
-- 400: Invalid credentials or validation errors
-- 401: Unauthorized access
-- 403: Account not verified
+* 400: Invalid credentials or validation errors
+* 401: Unauthorized access or invalid token
+* 403: Account not verified
 
 Example error response:
 ```json
@@ -116,18 +139,25 @@ Example error response:
 }
 ```
 
-## Testing
+## Testing with cURL
+Here are example cURL commands for testing the endpoints:
 
-Use Postman or curl for testing:
-
+1. Initial Login:
 ```bash
-# Initial Login
 curl -X POST http://localhost:8081/api/customer/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"example@email.com","password":"yourpassword"}'
+  -d '{"email":"example@email.com", "password":"yourpassword"}'
+```
 
-# Subsequent Login
+2. Subsequent Login:
+```bash
 curl -X POST http://localhost:8081/api/customer/login/subsequent \
   -H "Content-Type: application/json" \
-  -d '{"username":"username","password":"yourpassword"}'
+  -d '{"username":"example@email.com", "password":"yourpassword"}'
+```
+
+3. Get Available Endpoints:
+```bash
+curl -X GET http://localhost:8081/api/customer/available-endpoints \
+  -H "Authorization: Bearer your_jwt_token_here"
 ```
