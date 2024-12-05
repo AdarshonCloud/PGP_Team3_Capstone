@@ -36,7 +36,12 @@ public class SecurityConfig {
                     "/api/customer/login",
                     "/api/customer/forgot-password/**",
                     "/api/customer/send-verification",
-                    "/api/customer/verify*"
+                    "/api/customer/verify*",
+                    "/api/customer/creditcard",
+                    "/api/customer/{username}/{creditCardNumber}",
+                    "/api/customer/{username}",
+                    "/api/customer/{username}/{creditCardId}/toggle",
+                    "/api/customer/{creditCardNumber}"
                 ).permitAll() // Public endpoints
                 .anyRequest().authenticated()
             )
