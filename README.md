@@ -91,7 +91,8 @@ Authorization: Bearer your_jwt_token_here
             "url": "/api/creditcards/lastmonth",
             "description": "View last month's transactions"
         }
-    ]
+    ],
+    "userEmail": "youremail"
 }
 ```
 
