@@ -31,7 +31,12 @@ public class CustomerController {
     public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> request) {
         String email = request.get("email");
         String password = request.get("password");
-        
+
+	 // Redact sensitive fields for logging
+    	Map<String, String> sanitizedRequest = new HashMap<>(request);
+    	sanitizedRequest.put("password", "********"); // Mask the password
+    	System.out.println("Received login request: " + sanitizedRequest);
+	    
         logger.info("Received login request for email: {}", email);
         
         try {
