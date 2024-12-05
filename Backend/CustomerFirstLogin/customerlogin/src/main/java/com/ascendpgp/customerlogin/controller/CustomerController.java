@@ -22,6 +22,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import com.ascendpgp.customerlogin.model.ApiEndpoint;
 
 @RestController
 @RequestMapping("/api/customer")
@@ -204,12 +213,22 @@ public class CustomerController {
     }
 
     @GetMapping("/available-endpoints")
-    public ResponseEntity<List<ApiEndpoint>> getAvailableEndpoints() {
+    public ResponseEntity<Map<String, Object>> getAvailableEndpoints() {
+        // Get authenticated user's email from SecurityContext
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+
+        // Create endpoints list
         List<ApiEndpoint> endpoints = new ArrayList<>();
         endpoints.add(new ApiEndpoint("/api/account", "Update personal details and password"));
         endpoints.add(new ApiEndpoint("/api/creditcards", "View all credit cards"));
         endpoints.add(new ApiEndpoint("/api/creditcards/lastmonth", "View last month's transactions"));
 
-        return ResponseEntity.ok(endpoints);
+        // Create response with both username and endpoints
+        Map<String, Object> response = new HashMap<>();
+        response.put("userEmail", userEmail);
+        response.put("availableEndpoints", endpoints);
+
+        return ResponseEntity.ok(response);
     }
 }
