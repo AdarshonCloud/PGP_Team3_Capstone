@@ -22,4 +22,26 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleInvalidTokenException(InvalidTokenException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
+    
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<String> handleInvalidPasswordException(InvalidPasswordException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler(PasswordMismatchException.class)
+    public ResponseEntity<String> handlePasswordMismatchException(PasswordMismatchException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(WeakPasswordException.class)
+    public ResponseEntity<String> handleWeakPasswordException(WeakPasswordException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler(AccountNotValidatedException.class)
+    public ResponseEntity<String> handleAccountNotValidatedException(AccountNotValidatedException ex) {
+        System.err.println("Account validation error: " + ex.getMessage());
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
 }
