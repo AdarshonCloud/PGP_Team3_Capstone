@@ -14,6 +14,12 @@ public interface CustomerRepository extends MongoRepository<CustomerEntity, Stri
     @Query("{ 'email' : { $regex: ?0, $options: 'i' } }")
     CustomerEntity findByEmail(String email);
 
+    default CustomerEntity safeFindByEmail(String email) {
+        CustomerEntity customer = findByEmail(email);
+        System.out.println("Queried Email: " + email);
+        System.out.println("Found Customer: " + customer);
+        return customer;
+    }
     // Find a customer by resetPasswordToken
     CustomerEntity findByResetPasswordToken(String resetPasswordToken);
 

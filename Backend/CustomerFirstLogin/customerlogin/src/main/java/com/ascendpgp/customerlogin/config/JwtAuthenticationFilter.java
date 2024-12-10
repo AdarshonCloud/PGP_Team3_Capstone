@@ -23,6 +23,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.jwtService = jwtService;
     }
 
+    /**
+     * Skip filtering for endpoints that don't require authentication.
+     */
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        // Skip filtering for public endpoints
+        return path.equals("/api/customer/login") ||
+                path.equals("/api/customer/login/subsequent") ||
+                path.startsWith("/api/customer/forgot-password") ||
+                path.equals("/api/customer/verify") ||
+                path.startsWith("/swagger-ui") ||
+                path.startsWith("/v3/api-docs");
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -40,17 +55,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // Validate the token
             String email = jwtService.validateToken(token);
 
-            // Set up authentication
-            User principal = new User(email, "", new ArrayList<>());
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(principal, null, new ArrayList<>());
+            if (email != null) {
+                // Create UserDetails for authentication
+                User principal = new User(email, "", new ArrayList<>());
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                // Set up authentication in the SecurityContext
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(principal, null, new ArrayList<>());
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+
         } catch (Exception e) {
             // Log the invalid token
             System.out.println("Invalid JWT token: " + e.getMessage());
         }
-
         // Continue the filter chain
         filterChain.doFilter(request, response);
     }

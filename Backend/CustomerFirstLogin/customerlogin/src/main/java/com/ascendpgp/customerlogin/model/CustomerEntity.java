@@ -22,9 +22,26 @@ public class CustomerEntity {
     private LocalDateTime resetPasswordTokenExpiry;
     private List<String> passwordHistory;
     private boolean firstTimeLogin = true;
+    private LocalDateTime passwordExpiryDate;
+    private LocalDateTime passwordLastUpdated;
 
     // Getters and Setters
-    
+
+    public LocalDateTime getPasswordLastUpdated() {
+        return passwordLastUpdated;
+    }
+
+    public void setPasswordLastUpdated(LocalDateTime passwordLastUpdated) {
+        this.passwordLastUpdated = passwordLastUpdated;
+    }
+
+    public LocalDateTime getPasswordExpiryDate() {
+        return passwordExpiryDate;
+    }
+
+    public void setPasswordExpiryDate(LocalDateTime passwordExpiryDate) {
+        this.passwordExpiryDate = passwordExpiryDate;
+    }
     public LocalDateTime getVerificationTokenExpiry() {
         return verificationTokenExpiry;
     }

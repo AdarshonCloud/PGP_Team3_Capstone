@@ -5,7 +5,9 @@ import com.ascendpgp.customerlogin.exception.InvalidPasswordException;
 import com.ascendpgp.customerlogin.exception.InvalidTokenException;
 import com.ascendpgp.customerlogin.exception.PasswordMismatchException;
 import com.ascendpgp.customerlogin.exception.WeakPasswordException;
+import com.ascendpgp.customerlogin.model.ApiEndpoint;
 import com.ascendpgp.customerlogin.model.CustomerEntity;
+import com.ascendpgp.customerlogin.model.LoginRequest;
 import com.ascendpgp.customerlogin.repository.CustomerRepository;
 import com.ascendpgp.customerlogin.utils.PasswordValidator;
 import com.ascendpgp.customerlogin.utils.JwtService;
@@ -21,14 +23,14 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
 public class CustomerService {
 
-	private static final Logger logger = LoggerFactory.getLogger(CustomerService.class);
-	
-	
+    private static final Logger logger = LoggerFactory.getLogger(CustomerService.class);
+
     @Autowired
     private CustomerRepository customerRepository;
 
@@ -37,55 +39,65 @@ public class CustomerService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    
+
     @Autowired
-    private JwtService jwtService; 
+    private JwtService jwtService;
 
     public boolean validatePassword(String rawPassword, String hashedPassword) {
         return passwordEncoder.matches(rawPassword, hashedPassword);
     }
-    
-    public LoginResponse login(String email, String rawPassword) {
-    	logger.info("Login attempt for email: {}", email);
+
+    public LoginResponse login(LoginRequest loginRequest, boolean isFirstTimeLogin) {
+        logger.info("Login attempt for email: {}", loginRequest.getEmail());
+
         // Find customer by email
-        CustomerEntity customer = customerRepository.findByEmail(email);
+        CustomerEntity customer = customerRepository.findByEmail(loginRequest.getEmail());
         if (customer == null) {
-        	logger.warn("Customer not found for email: {}", email);
+            logger.warn("Customer not found for email: {}", loginRequest.getEmail());
             throw new CustomerServiceException("Invalid email or password.");
         }
 
         // Validate password
-        if (!passwordEncoder.matches(rawPassword, customer.getPassword())) {
-        	logger.warn("Invalid password attempt for email: {}", email);
+        if (!passwordEncoder.matches(loginRequest.getPassword(), customer.getPassword())) {
+            logger.warn("Invalid password attempt for email: {}", loginRequest.getEmail());
             throw new CustomerServiceException("Invalid email or password.");
         }
-        
-        
-        // Determine account validation status
-        boolean isAccountValidated = customer.isAccountValidated();
-        
-        if (!isAccountValidated) {
-            logger.info("Account not validated for email: {}", email);
+
+        // Check account validation
+        if (!customer.isAccountValidated()) {
+            logger.info("Account not validated for email: {}", loginRequest.getEmail());
         }
 
-        // Update firstTimeLogin to false after the first successful login
-        if (customer.isFirstTimeLogin()) {
+        // Check password expiry
+        boolean isPasswordExpired = customer.getPasswordExpiryDate() != null &&
+                customer.getPasswordExpiryDate().isBefore(LocalDateTime.now());
+
+        // Update firstTimeLogin to false if this is a first-time login
+        if (isFirstTimeLogin && customer.isFirstTimeLogin()) {
             customer.setFirstTimeLogin(false);
             customerRepository.save(customer); // Save changes
-            logger.info("First-time login detected for email: {}. Updated firstTimeLogin to false.", email);
+            logger.info("First-time login detected for email: {}. Updated firstTimeLogin to false.", loginRequest.getEmail());
         }
-        
 
         // Generate JWT token
-        String token = jwtService.generateToken(email);
-        logger.info("JWT token generated for email: {}", email);
+        String token = jwtService.generateToken(customer.getEmail());
+        logger.info("JWT token generated for email: {}", loginRequest.getEmail());
 
-        // Prepare and return login response
+        // Prepare and return response
         LoginResponse response = new LoginResponse();
         response.setToken(token);
         response.setFirstName(customer.getFirstName());
         response.setLastName(customer.getLastName());
-        response.setAccountValidated(isAccountValidated);
+        response.setAccountValidated(customer.isAccountValidated());
+        response.setPasswordExpired(isPasswordExpired);
+
+        if (!isFirstTimeLogin) {
+            // Add available endpoints for subsequent logins
+            List<ApiEndpoint> endpoints = new ArrayList<>();
+            endpoints.add(new ApiEndpoint("/api/account", "Update personal details and password"));
+            endpoints.add(new ApiEndpoint("/api/creditcards", "View all credit cards"));
+            response.setAvailableEndpoints(endpoints);
+        }
 
         return response;
     }
@@ -93,10 +105,10 @@ public class CustomerService {
 
     // Send Verification Email
     public void sendVerificationEmail(String email) {
-    	logger.info("Sending verification email to: {}", email);
+        logger.info("Sending verification email to: {}", email);
         CustomerEntity customer = customerRepository.findByEmail(email);
         if (customer == null) {
-        	logger.warn("Customer not found for email: {}", email);
+            logger.warn("Customer not found for email: {}", email);
             throw new RuntimeException("Customer not found.");
         }
         if (customer.isAccountValidated()) {
@@ -122,23 +134,23 @@ public class CustomerService {
         logger.info("Verification email sent successfully to: {}", email);
     }
 
-    
+
     public void verifyAccount(String token) {
-    	logger.info("Attempting to verify account with token: {}", token);
+        logger.info("Attempting to verify account with token: {}", token);
         // Fetch the customer by the verification token
         CustomerEntity customer = customerRepository.findByVerificationToken(token);
         if (customer == null) {
-        	logger.warn("Invalid verification token: {}", token);
+            logger.warn("Invalid verification token: {}", token);
             throw new InvalidTokenException("Invalid verification token.");
         }
 
         // Check if the token has expired
         if (customer.getVerificationTokenExpiry() == null || customer.getVerificationTokenExpiry().isBefore(LocalDateTime.now())) {
-        	logger.warn("Expired verification token: {}", token);
-        	throw new InvalidTokenException("Verification token has expired.");
+            logger.warn("Expired verification token: {}", token);
+            throw new InvalidTokenException("Verification token has expired.");
         }
 
-        // If the account is already validated
+        // If the account is already validated, provide a meaningful message
         if (customer.isAccountValidated()) {
             System.out.println("Account is already validated for user: " + customer.getEmail());
             return; // Optional: Could throw an exception if preferred
@@ -154,18 +166,15 @@ public class CustomerService {
         logger.info("Account successfully verified for email: {}", customer.getEmail());
     }
 
-
-
-
     // Forgot Password
     public void requestPasswordReset(String email) {
-    	
-    	logger.info("Processing forgot password request for email: {}", email);
+
+        logger.info("Processing forgot password request for email: {}", email);
 
         // Find the customer by email
         CustomerEntity customer = customerRepository.findByEmail(email);
         if (customer == null) {
-        	logger.warn("Customer not found for email: {}", email);
+            logger.warn("Customer not found for email: {}", email);
             throw new RuntimeException("Customer not found");
         }
 
@@ -183,38 +192,38 @@ public class CustomerService {
         message.setFrom("Teams3_PGP@walmart.com");
         message.setSubject("Forgot Your Password");
         message.setText("Click the link below to reset your password:\n\n" +
-            "http://localhost:8081/api/customer/forgot-password/reset-password?token=" + token);
+                "http://localhost:8081/api/customer/forgot-password/reset-password?token=" + token);
         mailSender.send(message);
         logger.info("Password reset link sent to email: {}", email);
     }
-    
+
 
     // Password reset when User clicks on Forgot Password
     public void resetPasswordForForgotFlow(String token, String newPassword, String confirmPassword) {
-    	 logger.info("Processing password reset for token: {}", token);
+        logger.info("Processing password reset for token: {}", token);
         // Validate token and find user
         CustomerEntity customer = customerRepository.findByResetPasswordToken(token);
         if (customer == null || customer.getResetPasswordTokenExpiry() == null || customer.getResetPasswordTokenExpiry().isBefore(LocalDateTime.now())) {
-        	logger.warn("Invalid or expired reset token: {}", token);
+            logger.warn("Invalid or expired reset token: {}", token);
             throw new InvalidTokenException("Invalid or expired reset token.");
         }
 
         // Validate new password matches confirmation
         if (!newPassword.equals(confirmPassword)) {
-        	logger.warn("Password mismatch for token: {}", token);
+            logger.warn("Password mismatch for token: {}", token);
             throw new RuntimeException("New password and confirm password do not match.");
         }
 
         // Validate password complexity
         if (!PasswordValidator.isValid(newPassword)) {
-        	logger.warn("Weak password provided during reset for token: {}", token);
+            logger.warn("Weak password provided during reset for token: {}", token);
             throw new RuntimeException("Password does not meet complexity requirements.");
         }
 
         // Prevent reuse of recent passwords
         if (customer.getPasswordHistory() != null && customer.getPasswordHistory().stream()
                 .anyMatch(hashedPassword -> passwordEncoder.matches(newPassword, hashedPassword))) {
-        	logger.warn("Password reuse attempt for token: {}", token);
+            logger.warn("Password reuse attempt for token: {}", token);
             throw new RuntimeException("New password cannot be one of the last 5 passwords.");
         }
 
@@ -237,6 +246,9 @@ public class CustomerService {
         // Save updated user
         customerRepository.save(customer);
         logger.info("Password successfully reset for token: {}", token);
+
+        // Update the password and expiry details
+        updatePassword(customer, newPassword);
     }
 
 
@@ -246,35 +258,35 @@ public class CustomerService {
         // Assume authenticated user's username is retrieved via security context
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         logger.info("Processing change password for user: {}", username);
-        
+
         CustomerEntity customer = customerRepository.findByUsername(username);
         if (customer == null) {
-        	logger.warn("Customer not found for username: {}", username);
+            logger.warn("Customer not found for username: {}", username);
             throw new RuntimeException("Customer not found");
         }
 
         // Validate current password
         if (!passwordEncoder.matches(currentPassword, customer.getPassword())) {
-        	logger.warn("Invalid current password for username: {}", username);
+            logger.warn("Invalid current password for username: {}", username);
             throw new InvalidPasswordException("Current password is incorrect.");
         }
 
         // Validate new password and confirmation match
         if (!newPassword.equals(confirmPassword)) {
-        	logger.warn("Password mismatch for username: {}", username);
+            logger.warn("Password mismatch for username: {}", username);
             throw new PasswordMismatchException("New password and confirm password do not match.");
         }
 
         // Validate password complexity
         if (!PasswordValidator.isValid(newPassword)) {
-        	logger.warn("Weak password provided by username: {}", username);
+            logger.warn("Weak password provided by username: {}", username);
             throw new WeakPasswordException("Password does not meet complexity requirements.");
         }
 
         // Prevent reuse of recent passwords
         if (customer.getPasswordHistory() != null && customer.getPasswordHistory().stream()
                 .anyMatch(hashedPassword -> passwordEncoder.matches(newPassword, hashedPassword))) {
-        	logger.warn("Password reuse attempt by username: {}", username);
+            logger.warn("Password reuse attempt by username: {}", username);
             throw new RuntimeException("New password cannot be one of the last 5 passwords.");
         }
 
@@ -291,7 +303,22 @@ public class CustomerService {
         customer.setPassword(passwordEncoder.encode(newPassword));
         customerRepository.save(customer);
         logger.info("Password successfully changed for username: {}", username);
+
+        // Update the password and expiry details
+        updatePassword(customer, newPassword);
     }
-    
+
+    //Update Password Last Updated and Expiry Date
+    public void updatePassword(CustomerEntity customer, String newPassword) {
+        // Hash and save the new password
+        customer.setPassword(passwordEncoder.encode(newPassword));
+
+        // Update password last updated and expiry date
+        customer.setPasswordLastUpdated(LocalDateTime.now());
+        customer.setPasswordExpiryDate(LocalDateTime.now().plusMonths(6));
+
+        customerRepository.save(customer);
+    }
+
 }
 
