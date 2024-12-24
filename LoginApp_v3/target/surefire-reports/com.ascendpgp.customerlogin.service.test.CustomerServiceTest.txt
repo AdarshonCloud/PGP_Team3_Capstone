@@ -1,0 +1,75 @@
+-------------------------------------------------------------------------------
+Test set: com.ascendpgp.customerlogin.service.test.CustomerServiceTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 3, Errors: 3, Skipped: 0, Time elapsed: 0.810 s <<< FAILURE! -- in com.ascendpgp.customerlogin.service.test.CustomerServiceTest
+com.ascendpgp.customerlogin.service.test.CustomerServiceTest.testSendVerificationEmail_Success -- Time elapsed: 0.268 s <<< FAILURE!
+Argument(s) are different! Wanted:
+mailSender.send(
+    <any jakarta.mail.internet.MimeMessage>
+);
+-> at org.springframework.mail.javamail.JavaMailSender.send(JavaMailSender.java:101)
+Actual invocations have different arguments:
+mailSender.send(
+    SimpleMailMessage: from=Teams3_PGP@domain.com; replyTo=null; to=test@example.com; cc=; bcc=; sentDate=null; subject=Email Verification; text=Click here to verify your account: http://localhost:8081/api/customer/verify?token=57ac668a-a2c3-4b96-9129-410a877b1847
+);
+-> at com.ascendpgp.customerlogin.service.CustomerService.sendVerificationEmail(CustomerService.java:203)
+
+	at org.springframework.mail.javamail.JavaMailSender.send(JavaMailSender.java:101)
+	at com.ascendpgp.customerlogin.service.test.CustomerServiceTest.testSendVerificationEmail_Success(CustomerServiceTest.java:143)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.ascendpgp.customerlogin.service.test.CustomerServiceTest.testChangePassword_Success -- Time elapsed: 0.015 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "org.springframework.security.core.Authentication.getName()" because the return value of "org.springframework.security.core.context.SecurityContext.getAuthentication()" is null
+	at com.ascendpgp.customerlogin.service.CustomerService.changePassword(CustomerService.java:310)
+	at com.ascendpgp.customerlogin.service.test.CustomerServiceTest.testChangePassword_Success(CustomerServiceTest.java:193)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.ascendpgp.customerlogin.service.test.CustomerServiceTest.testLogin_CircuitBreakerOpen -- Time elapsed: 0.112 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "io.github.resilience4j.circuitbreaker.CircuitBreakerConfig.isWritableStackTraceEnabled()" because the return value of "io.github.resilience4j.circuitbreaker.CircuitBreaker.getCircuitBreakerConfig()" is null
+	at io.github.resilience4j.circuitbreaker.CallNotPermittedException.createCallNotPermittedException(CallNotPermittedException.java:42)
+	at com.ascendpgp.customerlogin.service.test.CustomerServiceTest.testLogin_CircuitBreakerOpen(CustomerServiceTest.java:112)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.ascendpgp.customerlogin.service.test.CustomerServiceTest.testChangePassword_Failure_InvalidCurrentPassword -- Time elapsed: 0.012 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception type thrown, expected: <com.ascendpgp.customerlogin.exception.InvalidPasswordException> but was: <java.lang.NullPointerException>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:67)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
+	at com.ascendpgp.customerlogin.service.test.CustomerServiceTest.testChangePassword_Failure_InvalidCurrentPassword(CustomerServiceTest.java:209)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+Caused by: java.lang.NullPointerException: Cannot invoke "org.springframework.security.core.Authentication.getName()" because the return value of "org.springframework.security.core.context.SecurityContext.getAuthentication()" is null
+	at com.ascendpgp.customerlogin.service.CustomerService.changePassword(CustomerService.java:310)
+	at com.ascendpgp.customerlogin.service.test.CustomerServiceTest.lambda$testChangePassword_Failure_InvalidCurrentPassword$3(CustomerServiceTest.java:210)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
+	... 6 more
+
+com.ascendpgp.customerlogin.service.test.CustomerServiceTest.testResetPasswordForForgotFlow_Success -- Time elapsed: 0.007 s <<< ERROR!
+com.ascendpgp.customerlogin.exception.WeakPasswordException: Password does not meet complexity requirements.
+	at com.ascendpgp.customerlogin.service.CustomerService.resetPasswordForForgotFlow(CustomerService.java:282)
+	at com.ascendpgp.customerlogin.service.test.CustomerServiceTest.testResetPasswordForForgotFlow_Success(CustomerServiceTest.java:158)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.ascendpgp.customerlogin.service.test.CustomerServiceTest.testLogin_Success_FirstTimeLogin -- Time elapsed: 0.010 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <dummy-token> but was: <null>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+	at com.ascendpgp.customerlogin.service.test.CustomerServiceTest.testLogin_Success_FirstTimeLogin(CustomerServiceTest.java:76)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
