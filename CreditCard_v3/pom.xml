@@ -1,0 +1,214 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.6</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.ascendpgp.creditcard</groupId>
+    <artifactId>creditcard</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>Credit Card Service</name>
+    <description>Credit Card Microservice</description>
+    
+    <properties>
+        <java.version>17</java.version>
+        <spring-cloud.version>2023.0.4</spring-cloud.version>
+    </properties>
+
+    <dependencies>
+        <!-- Spring Boot Web -->
+        
+        <dependency>
+    		<groupId>org.springframework.boot</groupId>
+    			<artifactId>spring-boot-starter</artifactId>
+
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-logging</artifactId>
+    		<exclusions>
+        		<exclusion>
+            		<groupId>org.slf4j</groupId>
+            		<artifactId>jul-to-slf4j</artifactId>
+        		</exclusion>
+    		</exclusions>
+		</dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        
+       <!-- Hystrix for Fallbacks -->
+        <dependency>
+   			 <groupId>org.springframework.cloud</groupId>
+    		<artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+    		<version>2.2.10.RELEASE</version> <!-- Ensure compatibility with Spring Boot -->
+		</dependency>
+
+		<dependency>
+    		<groupId>io.github.resilience4j</groupId>
+    		<artifactId>resilience4j-spring-boot2</artifactId>
+    		<version>1.7.1</version> <!-- Ensure compatibility with Spring Boot -->
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		
+        
+		<!-- Spring Data MongoDB -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+        
+        <!-- Spring Security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- Spring Cloud Eureka -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+
+        <!-- JWT -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.11.5</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.11.5</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Spring Boot Mail (if sending emails is required) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <!-- Swagger -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+
+        <!-- Hystrix for Fallbacks -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+            <version>2.2.10.RELEASE</version>
+        </dependency>
+
+        <!-- Testing Dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+         </dependency>
+         
+       <!-- CLoud Storage for Logging -->
+            
+           <dependency>
+    			<groupId>com.microsoft.azure</groupId>
+    			<artifactId>azure-storage</artifactId>
+    			<version>8.6.6</version>
+		   </dependency>
+
+			<dependency>
+    			<groupId>com.azure</groupId>
+    			<artifactId>azure-storage-blob</artifactId>
+    			<version>12.10.0</version> <!-- Use the latest version -->
+			</dependency>
+       	
+       	<!-- ELK Storage for Logging -->
+       	<dependency>
+    		<groupId>net.logstash.logback</groupId>
+    		<artifactId>logstash-logback-encoder</artifactId>
+    		<version>7.0</version> <!-- Use the latest version available -->
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.codehaus.janino</groupId>
+    		<artifactId>janino</artifactId>
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-configuration-processor</artifactId>
+    		<optional>true</optional>
+		</dependency>
+
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

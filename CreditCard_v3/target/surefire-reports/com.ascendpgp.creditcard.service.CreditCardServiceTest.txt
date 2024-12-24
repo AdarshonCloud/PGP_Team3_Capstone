@@ -1,0 +1,74 @@
+-------------------------------------------------------------------------------
+Test set: com.ascendpgp.creditcard.service.CreditCardServiceTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 1, Errors: 6, Skipped: 0, Time elapsed: 2.934 s <<< FAILURE! -- in com.ascendpgp.creditcard.service.CreditCardServiceTest
+com.ascendpgp.creditcard.service.CreditCardServiceTest.addCreditCard_ValidInputs_ShouldAddCreditCard -- Time elapsed: 2.609 s <<< ERROR!
+java.lang.RuntimeException: Failed to encrypt sensitive data.
+	at com.ascendpgp.creditcard.service.CreditCardService.addCreditCard(CreditCardService.java:74)
+	at com.ascendpgp.creditcard.service.CreditCardServiceTest.addCreditCard_ValidInputs_ShouldAddCreditCard(CreditCardServiceTest.java:62)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.ascendpgp.creditcard.service.CreditCardServiceTest.addCreditCard_Fallback_ShouldTriggerFallback -- Time elapsed: 0.030 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "java.lang.Integer.intValue()" because "expiryMonth" is null
+	at com.ascendpgp.creditcard.service.CreditCardService.validateExpiryDate(CreditCardService.java:275)
+	at com.ascendpgp.creditcard.service.CreditCardService.addCreditCard(CreditCardService.java:61)
+	at com.ascendpgp.creditcard.service.CreditCardServiceTest.addCreditCard_Fallback_ShouldTriggerFallback(CreditCardServiceTest.java:77)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.ascendpgp.creditcard.service.CreditCardServiceTest.getActiveCreditCards_Fallback_ShouldTriggerFallback -- Time elapsed: 0.028 s <<< FAILURE!
+Wanted but not invoked:
+fallbackService.getActiveCreditCardsFallback(
+    "testuser",
+    <any java.lang.Throwable>
+);
+-> at com.ascendpgp.creditcard.service.FallbackService.getActiveCreditCardsFallback(FallbackService.java:52)
+Actually, there were zero interactions with this mock.
+
+	at com.ascendpgp.creditcard.service.FallbackService.getActiveCreditCardsFallback(FallbackService.java:52)
+	at com.ascendpgp.creditcard.service.CreditCardServiceTest.getActiveCreditCards_Fallback_ShouldTriggerFallback(CreditCardServiceTest.java:111)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.ascendpgp.creditcard.service.CreditCardServiceTest.softDeleteCreditCard_Fallback_ShouldTriggerFallback -- Time elapsed: 0.014 s <<< ERROR!
+java.lang.RuntimeException: Failed to soft-delete credit card.
+	at com.ascendpgp.creditcard.service.CreditCardService.softDeleteCreditCard(CreditCardService.java:140)
+	at com.ascendpgp.creditcard.service.CreditCardServiceTest.softDeleteCreditCard_Fallback_ShouldTriggerFallback(CreditCardServiceTest.java:183)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+Caused by: java.lang.RuntimeException: Credit card not found.
+	at com.ascendpgp.creditcard.service.CreditCardService.softDeleteCreditCard(CreditCardService.java:125)
+	... 4 more
+
+com.ascendpgp.creditcard.service.CreditCardServiceTest.toggleCreditCardStatus_Fallback_ShouldTriggerFallback -- Time elapsed: 0.012 s <<< ERROR!
+java.lang.RuntimeException: No matching credit card found for username: testuser, creditCardNumber: 4111111111111111
+	at com.ascendpgp.creditcard.service.CreditCardService.toggleCreditCardStatus(CreditCardService.java:180)
+	at com.ascendpgp.creditcard.service.CreditCardServiceTest.toggleCreditCardStatus_Fallback_ShouldTriggerFallback(CreditCardServiceTest.java:147)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.ascendpgp.creditcard.service.CreditCardServiceTest.toggleCreditCardStatus_ValidDetails_ShouldUpdateStatus -- Time elapsed: 0.016 s <<< ERROR!
+java.lang.RuntimeException: No matching credit card found for username: testuser, creditCardNumber: 4111111111111111
+	at com.ascendpgp.creditcard.service.CreditCardService.toggleCreditCardStatus(CreditCardService.java:180)
+	at com.ascendpgp.creditcard.service.CreditCardServiceTest.toggleCreditCardStatus_ValidDetails_ShouldUpdateStatus(CreditCardServiceTest.java:125)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.ascendpgp.creditcard.service.CreditCardServiceTest.softDeleteCreditCard_ValidNumber_ShouldMarkAsDeleted -- Time elapsed: 0.015 s <<< ERROR!
+java.lang.RuntimeException: Failed to soft-delete credit card.
+	at com.ascendpgp.creditcard.service.CreditCardService.softDeleteCreditCard(CreditCardService.java:140)
+	at com.ascendpgp.creditcard.service.CreditCardServiceTest.softDeleteCreditCard_ValidNumber_ShouldMarkAsDeleted(CreditCardServiceTest.java:168)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+Caused by: java.lang.RuntimeException: Credit card not found.
+	at com.ascendpgp.creditcard.service.CreditCardService.softDeleteCreditCard(CreditCardService.java:125)
+	... 4 more
+

@@ -1,0 +1,1524 @@
+2024-12-14 00:08:06 - Starting CreditCardApplication using Java 17.0.12 with PID 83127 (/Users/a0s0nmi/IdeaProjects/Updated_Apps/CreditCardMicroservice_Updated_Final_v2/target/classes started by a0s0nmi in /Users/a0s0nmi/IdeaProjects/Updated_Apps/CreditCardMicroservice_Updated_Final_v2)
+2024-12-14 00:08:06 - Running with Spring Boot v3.3.6, Spring v6.1.15
+2024-12-14 00:08:06 - No active profile set, falling back to 1 default profile: "default"
+2024-12-14 00:08:07 - Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2024-12-14 00:08:07 - Finished Spring Data repository scanning in 190 ms. Found 1 MongoDB repository interface.
+2024-12-14 00:08:08 - BeanFactory id=7ad151e1-17f8-35c4-80c8-01dee9bc3ef9
+2024-12-14 00:08:08 - Tomcat initialized with port 8082 (http)
+2024-12-14 00:08:08 - Initializing ProtocolHandler ["http-nio-8082"]
+2024-12-14 00:08:08 - Starting service [Tomcat]
+2024-12-14 00:08:08 - Starting Servlet engine: [Apache Tomcat/10.1.33]
+2024-12-14 00:08:08 - Initializing Spring embedded WebApplicationContext
+2024-12-14 00:08:09 - Root WebApplicationContext: initialization completed in 2342 ms
+2024-12-14 00:08:09 - Adding discovered server walmart-shard-00-00.ov3ju.mongodb.net:27017 to client view of cluster
+2024-12-14 00:08:09 - MongoClient with metadata {"application": {"name": "walmart"}, "driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "5.0.1"}, "os": {"type": "Darwin", "name": "Mac OS X", "architecture": "x86_64", "version": "14.7.1"}, "platform": "Java/Oracle Corporation/17.0.12+8-LTS-jvmci-23.0-b41"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=majority, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=MongoCredential{mechanism=null, userName='admin', source='admin', password=<hidden>, mechanismProperties=<hidden>}, transportSettings=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, CollectionCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.client.model.mql.ExpressionCodecProvider@4ea1aa52, com.mongodb.Jep395RecordCodecProvider@74123110, com.mongodb.KotlinCodecProvider@5ed0b4e3]}, loggerSettings=LoggerSettings{maxDocumentLength=1000}, clusterSettings={hosts=[127.0.0.1:27017], srvHost=walmart.ov3ju.mongodb.net, srvServiceName=mongodb, mode=MULTIPLE, requiredClusterType=REPLICA_SET, requiredReplicaSetName='atlas-veqqh0-shard-0', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='15 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=true, invalidHostNameAllowed=false, context=null}, applicationName='walmart', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, dnsClient=null, inetAddressResolver=null, contextProvider=null}
+2024-12-14 00:08:09 - Adding discovered server walmart-shard-00-01.ov3ju.mongodb.net:27017 to client view of cluster
+2024-12-14 00:08:09 - Adding discovered server walmart-shard-00-02.ov3ju.mongodb.net:27017 to client view of cluster
+2024-12-14 00:08:10 - Monitor thread successfully connected to server with description ServerDescription{address=walmart-shard-00-02.ov3ju.mongodb.net:27017, type=REPLICA_SET_SECONDARY, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=25, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=565803250, setName='atlas-veqqh0-shard-0', canonicalAddress=walmart-shard-00-02.ov3ju.mongodb.net:27017, hosts=[walmart-shard-00-01.ov3ju.mongodb.net:27017, walmart-shard-00-00.ov3ju.mongodb.net:27017, walmart-shard-00-02.ov3ju.mongodb.net:27017], passives=[], arbiters=[], primary='walmart-shard-00-01.ov3ju.mongodb.net:27017', tagSet=TagSet{[Tag{name='availabilityZone', value='aps1-az2'}, Tag{name='diskState', value='READY'}, Tag{name='nodeType', value='ELECTABLE'}, Tag{name='provider', value='AWS'}, Tag{name='region', value='AP_SOUTH_1'}, Tag{name='workloadType', value='OPERATIONAL'}]}, electionId=null, setVersion=127, topologyVersion=TopologyVersion{processId=675c2833d620c120e84674ad, counter=3}, lastWriteDate=Sat Dec 14 00:08:10 IST 2024, lastUpdateTimeNanos=436148750605667}
+2024-12-14 00:08:10 - Monitor thread successfully connected to server with description ServerDescription{address=walmart-shard-00-01.ov3ju.mongodb.net:27017, type=REPLICA_SET_PRIMARY, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=25, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=568882208, setName='atlas-veqqh0-shard-0', canonicalAddress=walmart-shard-00-01.ov3ju.mongodb.net:27017, hosts=[walmart-shard-00-01.ov3ju.mongodb.net:27017, walmart-shard-00-00.ov3ju.mongodb.net:27017, walmart-shard-00-02.ov3ju.mongodb.net:27017], passives=[], arbiters=[], primary='walmart-shard-00-01.ov3ju.mongodb.net:27017', tagSet=TagSet{[Tag{name='availabilityZone', value='aps1-az3'}, Tag{name='diskState', value='READY'}, Tag{name='nodeType', value='ELECTABLE'}, Tag{name='provider', value='AWS'}, Tag{name='region', value='AP_SOUTH_1'}, Tag{name='workloadType', value='OPERATIONAL'}]}, electionId=7fffffff0000000000000084, setVersion=127, topologyVersion=TopologyVersion{processId=675c25e283d548f799553d9a, counter=6}, lastWriteDate=Sat Dec 14 00:08:10 IST 2024, lastUpdateTimeNanos=436148750648292}
+2024-12-14 00:08:10 - Monitor thread successfully connected to server with description ServerDescription{address=walmart-shard-00-00.ov3ju.mongodb.net:27017, type=REPLICA_SET_SECONDARY, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=25, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=569292042, setName='atlas-veqqh0-shard-0', canonicalAddress=walmart-shard-00-00.ov3ju.mongodb.net:27017, hosts=[walmart-shard-00-01.ov3ju.mongodb.net:27017, walmart-shard-00-00.ov3ju.mongodb.net:27017, walmart-shard-00-02.ov3ju.mongodb.net:27017], passives=[], arbiters=[], primary='walmart-shard-00-01.ov3ju.mongodb.net:27017', tagSet=TagSet{[Tag{name='availabilityZone', value='aps1-az1'}, Tag{name='diskState', value='READY'}, Tag{name='nodeType', value='ELECTABLE'}, Tag{name='provider', value='AWS'}, Tag{name='region', value='AP_SOUTH_1'}, Tag{name='workloadType', value='OPERATIONAL'}]}, electionId=null, setVersion=127, topologyVersion=TopologyVersion{processId=675c26e0d5628e473acc7771, counter=4}, lastWriteDate=Sat Dec 14 00:08:10 IST 2024, lastUpdateTimeNanos=436148756691709}
+2024-12-14 00:08:10 - Discovered replica set primary walmart-shard-00-01.ov3ju.mongodb.net:27017 with max election id 7fffffff0000000000000084 and max set version 127
+2024-12-14 00:08:10 - Constructed eureka meta-data healthcheckUrl: http://192.168.0.101:8082/actuator/health
+2024-12-14 00:08:10 - Constructed eureka meta-data statusPageUrl: http://192.168.0.101:8082/actuator/info
+2024-12-14 00:08:10 - Fetching secret key from application properties.
+2024-12-14 00:08:10 - 
+
+Using generated security password: 1bd32eb5-f468-42c3-9568-e8b9c9d042eb
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2024-12-14 00:08:10 - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2024-12-14 00:08:11 - 11 mappings in 'requestMappingHandlerMapping'
+2024-12-14 00:08:11 - Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2024-12-14 00:08:11 - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CsrfFilter, LogoutFilter, JwtAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
+2024-12-14 00:08:11 - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2024-12-14 00:08:11 - ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2024-12-14 00:08:11 - Eureka HTTP Client uses RestTemplate.
+2024-12-14 00:08:11 - Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2024-12-14 00:08:11 - Setting initial instance status as: STARTING
+2024-12-14 00:08:11 - Initializing Eureka in region us-east-1
+2024-12-14 00:08:11 - Resolving eureka endpoints via configuration
+2024-12-14 00:08:11 - The availability zone for the given region us-east-1 are [defaultZone]
+2024-12-14 00:08:11 - Config resolved to [AwsEndpoint{ serviceUrl='http://localhost:8761/eureka/', region='us-east-1', zone='defaultZone'}]
+2024-12-14 00:08:11 - Local zone=defaultZone; resolved to: [AwsEndpoint{ serviceUrl='http://localhost:8761/eureka/', region='us-east-1', zone='defaultZone'}]
+2024-12-14 00:08:11 - Disable delta property : false
+2024-12-14 00:08:11 - Single vip registry refresh property : null
+2024-12-14 00:08:11 - Force full registry fetch : false
+2024-12-14 00:08:11 - Application is null : false
+2024-12-14 00:08:11 - Registered Applications size is zero : true
+2024-12-14 00:08:11 - Application version is -1: true
+2024-12-14 00:08:11 - Getting all instance registry info from the eureka server
+2024-12-14 00:08:11 - Ending a session and starting anew
+2024-12-14 00:08:11 - HTTP GET http://localhost:8761/eureka/apps/
+2024-12-14 00:08:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:08:12 - Response 200 OK
+2024-12-14 00:08:12 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:08:12 - Pinning to endpoint null
+2024-12-14 00:08:12 - The response status is 200
+2024-12-14 00:08:12 - Got full registry with apps hashcode UP_1_
+2024-12-14 00:08:12 - The total number of all instances in the client now is 1
+2024-12-14 00:08:12 - Starting heartbeat executor: renew interval is: 30
+2024-12-14 00:08:12 - InstanceInfoReplicator onDemand update allowed rate per min is 4
+2024-12-14 00:08:12 - Discovery Client initialized at timestamp 1734115092198 with initial instances count: 1
+2024-12-14 00:08:12 - Registering application CREDITCARDMICROSERVICE with eureka with status UP
+2024-12-14 00:08:12 - Saw local status change event StatusChangeEvent [timestamp=1734115092221, current=UP, previous=STARTING]
+2024-12-14 00:08:12 - Executing on-demand update of local InstanceInfo
+2024-12-14 00:08:12 - Canceling the latest scheduled update, it will be rescheduled at the end of on demand update
+2024-12-14 00:08:12 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082: registering service...
+2024-12-14 00:08:12 - Ending a session and starting anew
+2024-12-14 00:08:12 - Starting ProtocolHandler ["http-nio-8082"]
+2024-12-14 00:08:12 - HTTP POST http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE
+2024-12-14 00:08:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:08:12 - Tomcat started on port 8082 (http) with context path '/'
+2024-12-14 00:08:12 - Updating port to 8082
+2024-12-14 00:08:12 - Writing [InstanceInfo [instanceId = 192.168.0.101:CreditCardMicroservice:8082, appName = CREDITCARDMICROSERVICE, hostName = 192.168.0.101, status = UP, ipAddr = 192.168.0.101, port = 8082, securePort = 443, dataCenterInfo = com.netflix.appinfo.MyDataCenterInfo@361a3d69] as "application/json"
+2024-12-14 00:08:12 - Started CreditCardApplication in 6.569 seconds (process running for 7.171)
+2024-12-14 00:08:12 - Response 204 NO_CONTENT
+2024-12-14 00:08:12 - Pinning to endpoint null
+2024-12-14 00:08:12 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - registration status: 204
+2024-12-14 00:08:42 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:08:42 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:08:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:08:42 - Response 200 OK
+2024-12-14 00:08:42 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:08:42 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:08:42 - Added instance 192.168.0.101:CreditCardMicroservice:8082 to the existing apps in region null
+2024-12-14 00:08:42 - The total number of instances fetched by the delta processor : 1
+2024-12-14 00:08:42 - The total number of all instances in the client now is 2
+2024-12-14 00:08:42 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:08:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:08:42 - Response 200 OK
+2024-12-14 00:08:42 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:09:12 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:09:12 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:09:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:09:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:09:12 - Response 200 OK
+2024-12-14 00:09:12 - Response 200 OK
+2024-12-14 00:09:12 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:09:12 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:09:12 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:09:12 - Added instance 192.168.0.101:CreditCardMicroservice:8082 to the existing apps in region null
+2024-12-14 00:09:12 - The total number of instances fetched by the delta processor : 1
+2024-12-14 00:09:12 - The total number of all instances in the client now is 2
+2024-12-14 00:09:12 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:09:12 - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-12-14 00:09:12 - Initializing Servlet 'dispatcherServlet'
+2024-12-14 00:09:12 - Detected StandardServletMultipartResolver
+2024-12-14 00:09:12 - Detected AcceptHeaderLocaleResolver
+2024-12-14 00:09:12 - Detected FixedThemeResolver
+2024-12-14 00:09:12 - Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@4d47d70a
+2024-12-14 00:09:12 - Detected org.springframework.web.servlet.support.SessionFlashMapManager@6692a91a
+2024-12-14 00:09:12 - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2024-12-14 00:09:12 - Completed initialization in 14 ms
+2024-12-14 00:09:12 - Securing GET /swagger-ui/index.html
+2024-12-14 00:09:12 - CSRF Token from header: null
+2024-12-14 00:09:12 - CSRF Token header not provided. Skipping CSRF validation.
+2024-12-14 00:09:12 - Secured GET /swagger-ui/index.html
+2024-12-14 00:09:12 - GET "/swagger-ui/index.html", parameters={}
+2024-12-14 00:09:12 - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2024-12-14 00:09:12 - Completed 304 NOT_MODIFIED
+2024-12-14 00:09:12 - Set SecurityContextHolder to anonymous SecurityContext
+2024-12-14 00:09:12 - Securing GET /swagger-ui/swagger-initializer.js
+2024-12-14 00:09:12 - CSRF Token from header: null
+2024-12-14 00:09:12 - CSRF Token header not provided. Skipping CSRF validation.
+2024-12-14 00:09:12 - Secured GET /swagger-ui/swagger-initializer.js
+2024-12-14 00:09:12 - GET "/swagger-ui/swagger-initializer.js", parameters={}
+2024-12-14 00:09:12 - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2024-12-14 00:09:12 - Completed 200 OK
+2024-12-14 00:09:12 - Set SecurityContextHolder to anonymous SecurityContext
+2024-12-14 00:09:12 - Securing GET /v3/api-docs/swagger-config
+2024-12-14 00:09:12 - CSRF Token from header: null
+2024-12-14 00:09:12 - CSRF Token header not provided. Skipping CSRF validation.
+2024-12-14 00:09:12 - Secured GET /v3/api-docs/swagger-config
+2024-12-14 00:09:12 - GET "/v3/api-docs/swagger-config", parameters={}
+2024-12-14 00:09:12 - Mapped to org.springdoc.webmvc.ui.SwaggerConfigResource#openapiJson(HttpServletRequest)
+2024-12-14 00:09:12 - Using 'application/json', given [*/*] and supported [application/json]
+2024-12-14 00:09:12 - Writing [{configUrl=/v3/api-docs/swagger-config, oauth2RedirectUrl=http://localhost:8082/swagger-ui/oauth2-re (truncated)...]
+2024-12-14 00:09:12 - Completed 200 OK
+2024-12-14 00:09:12 - Set SecurityContextHolder to anonymous SecurityContext
+2024-12-14 00:09:12 - Securing GET /v3/api-docs
+2024-12-14 00:09:12 - CSRF Token from header: null
+2024-12-14 00:09:12 - CSRF Token header not provided. Skipping CSRF validation.
+2024-12-14 00:09:12 - Secured GET /v3/api-docs
+2024-12-14 00:09:12 - GET "/v3/api-docs", parameters={}
+2024-12-14 00:09:12 - Mapped to org.springdoc.webmvc.api.OpenApiWebMvcResource#openapiJson(HttpServletRequest, String, Locale)
+2024-12-14 00:09:13 - Init duration for springdoc-openapi is: 526 ms
+2024-12-14 00:09:13 - Using 'application/json', given [application/json, */*] and supported [application/json]
+2024-12-14 00:09:13 - Writing [{123, 34, 111, 112, 101, 110, 97, 112, 105, 34, 58, 34, 51, 46, 48, 46, 49, 34, 44, 34, 105, 110, 10 (truncated)...]
+2024-12-14 00:09:13 - Completed 200 OK
+2024-12-14 00:09:13 - Set SecurityContextHolder to anonymous SecurityContext
+2024-12-14 00:09:30 - Securing GET /api/customer/creditcard
+2024-12-14 00:09:30 - JWT Token from header: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwiZW1haWwiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwidXNlcm5hbWUiOiJBZGFyc2giLCJpYXQiOjE3MzQxMTUxMzAsImV4cCI6MTczNDE1MTEzMH0.GGvC0lI1Vhi-zF_wF1oMtw0wzdsmf7wivccfWdIShvKdmbmENtOxIysp0-RVoCGEfwaHaO_KdypusFHRxRXVBw
+2024-12-14 00:09:30 - Validating token: eyJhbG******
+2024-12-14 00:09:30 - Calling validation endpoint: http://localhost:8081/api/customer/jwt/validate?token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwiZW1haWwiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwidXNlcm5hbWUiOiJBZGFyc2giLCJpYXQiOjE3MzQxMTUxMzAsImV4cCI6MTczNDE1MTEzMH0.GGvC0lI1Vhi-zF_wF1oMtw0wzdsmf7wivccfWdIShvKdmbmENtOxIysp0-RVoCGEfwaHaO_KdypusFHRxRXVBw
+2024-12-14 00:09:30 - HTTP GET http://localhost:8081/api/customer/jwt/validate?token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwiZW1haWwiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwidXNlcm5hbWUiOiJBZGFyc2giLCJpYXQiOjE3MzQxMTUxMzAsImV4cCI6MTczNDE1MTEzMH0.GGvC0lI1Vhi-zF_wF1oMtw0wzdsmf7wivccfWdIShvKdmbmENtOxIysp0-RVoCGEfwaHaO_KdypusFHRxRXVBw
+2024-12-14 00:09:30 - Accept=[application/json, application/*+json]
+2024-12-14 00:09:30 - Response 200 OK
+2024-12-14 00:09:30 - Reading to [java.util.Map<java.lang.String, java.lang.String>]
+2024-12-14 00:09:30 - Token validated successfully. Extracted details: {email=Adarsh.Sharma@walmart.com, username=Adarsh}
+2024-12-14 00:09:30 - JWT Token validated successfully. Extracted claims: {email=Adarsh.Sharma@walmart.com, username=Adarsh}
+2024-12-14 00:09:30 - CSRF Token from header: null
+2024-12-14 00:09:30 - CSRF Token header not provided. Skipping CSRF validation.
+2024-12-14 00:09:30 - Secured GET /api/customer/creditcard
+2024-12-14 00:09:30 - GET "/api/customer/creditcard", parameters={}
+2024-12-14 00:09:30 - Mapped to com.ascendpgp.creditcard.controller.CreditCardController#getActiveCreditCards(String)
+2024-12-14 00:09:30 - Received request to fetch active credit cards with token: Bearer******XVBw
+2024-12-14 00:09:30 - Validating token: eyJhbG******
+2024-12-14 00:09:30 - Calling validation endpoint: http://localhost:8081/api/customer/jwt/validate?token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwiZW1haWwiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwidXNlcm5hbWUiOiJBZGFyc2giLCJpYXQiOjE3MzQxMTUxMzAsImV4cCI6MTczNDE1MTEzMH0.GGvC0lI1Vhi-zF_wF1oMtw0wzdsmf7wivccfWdIShvKdmbmENtOxIysp0-RVoCGEfwaHaO_KdypusFHRxRXVBw
+2024-12-14 00:09:30 - HTTP GET http://localhost:8081/api/customer/jwt/validate?token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwiZW1haWwiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwidXNlcm5hbWUiOiJBZGFyc2giLCJpYXQiOjE3MzQxMTUxMzAsImV4cCI6MTczNDE1MTEzMH0.GGvC0lI1Vhi-zF_wF1oMtw0wzdsmf7wivccfWdIShvKdmbmENtOxIysp0-RVoCGEfwaHaO_KdypusFHRxRXVBw
+2024-12-14 00:09:30 - Accept=[application/json, application/*+json]
+2024-12-14 00:09:30 - Response 200 OK
+2024-12-14 00:09:30 - Reading to [java.util.Map<java.lang.String, java.lang.String>]
+2024-12-14 00:09:30 - Token validated successfully. Extracted details: {email=Adarsh.Sharma@walmart.com, username=Adarsh}
+2024-12-14 00:09:30 - Extracted username: Adarsh from token.
+2024-12-14 00:09:30 - Fetching active credit cards for user: Adarsh
+2024-12-14 00:09:30 - Executing findActiveCreditCards for username: Adarsh
+2024-12-14 00:09:30 - Retrieved 4 active credit cards for user: Adarsh
+2024-12-14 00:09:30 - Error decrypting card details for card ID: 2
+java.security.InvalidKeyException: Invalid AES key length: 21 bytes
+	at java.base/com.sun.crypto.provider.AESCrypt.init(AESCrypt.java:90)
+	at java.base/com.sun.crypto.provider.ElectronicCodeBook.init(ElectronicCodeBook.java:97)
+	at java.base/com.sun.crypto.provider.CipherCore.init(CipherCore.java:482)
+	at java.base/com.sun.crypto.provider.CipherCore.init(CipherCore.java:400)
+	at java.base/com.sun.crypto.provider.AESCipher.engineInit(AESCipher.java:306)
+	at java.base/javax.crypto.Cipher.implInit(Cipher.java:867)
+	at java.base/javax.crypto.Cipher.chooseProvider(Cipher.java:929)
+	at java.base/javax.crypto.Cipher.init(Cipher.java:1299)
+	at java.base/javax.crypto.Cipher.init(Cipher.java:1236)
+	at com.ascendpgp.creditcard.utils.EncryptionUtil.decrypt(EncryptionUtil.java:34)
+	at com.ascendpgp.creditcard.service.CreditCardService.decryptAndMaskCardDetails(CreditCardService.java:184)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at com.ascendpgp.creditcard.service.CreditCardService.getActiveCreditCards(CreditCardService.java:137)
+	at com.ascendpgp.creditcard.controller.CreditCardController.getActiveCreditCards(CreditCardController.java:112)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365)
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at com.ascendpgp.creditcard.config.SecurityConfig$JwtAuthenticationFilter.doFilterInternal(SecurityConfig.java:114)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.csrf.CsrfFilter.doFilterInternal(CsrfFilter.java:117)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2024-12-14 00:09:30 - Error decrypting card details for card ID: 3
+java.security.InvalidKeyException: Invalid AES key length: 21 bytes
+	at java.base/com.sun.crypto.provider.AESCrypt.init(AESCrypt.java:90)
+	at java.base/com.sun.crypto.provider.ElectronicCodeBook.init(ElectronicCodeBook.java:97)
+	at java.base/com.sun.crypto.provider.CipherCore.init(CipherCore.java:482)
+	at java.base/com.sun.crypto.provider.CipherCore.init(CipherCore.java:400)
+	at java.base/com.sun.crypto.provider.AESCipher.engineInit(AESCipher.java:306)
+	at java.base/javax.crypto.Cipher.implInit(Cipher.java:867)
+	at java.base/javax.crypto.Cipher.chooseProvider(Cipher.java:929)
+	at java.base/javax.crypto.Cipher.init(Cipher.java:1299)
+	at java.base/javax.crypto.Cipher.init(Cipher.java:1236)
+	at com.ascendpgp.creditcard.utils.EncryptionUtil.decrypt(EncryptionUtil.java:34)
+	at com.ascendpgp.creditcard.service.CreditCardService.decryptAndMaskCardDetails(CreditCardService.java:184)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at com.ascendpgp.creditcard.service.CreditCardService.getActiveCreditCards(CreditCardService.java:137)
+	at com.ascendpgp.creditcard.controller.CreditCardController.getActiveCreditCards(CreditCardController.java:112)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365)
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at com.ascendpgp.creditcard.config.SecurityConfig$JwtAuthenticationFilter.doFilterInternal(SecurityConfig.java:114)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.csrf.CsrfFilter.doFilterInternal(CsrfFilter.java:117)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2024-12-14 00:09:30 - Error decrypting card details for card ID: 8
+java.security.InvalidKeyException: Invalid AES key length: 21 bytes
+	at java.base/com.sun.crypto.provider.AESCrypt.init(AESCrypt.java:90)
+	at java.base/com.sun.crypto.provider.ElectronicCodeBook.init(ElectronicCodeBook.java:97)
+	at java.base/com.sun.crypto.provider.CipherCore.init(CipherCore.java:482)
+	at java.base/com.sun.crypto.provider.CipherCore.init(CipherCore.java:400)
+	at java.base/com.sun.crypto.provider.AESCipher.engineInit(AESCipher.java:306)
+	at java.base/javax.crypto.Cipher.implInit(Cipher.java:867)
+	at java.base/javax.crypto.Cipher.chooseProvider(Cipher.java:929)
+	at java.base/javax.crypto.Cipher.init(Cipher.java:1299)
+	at java.base/javax.crypto.Cipher.init(Cipher.java:1236)
+	at com.ascendpgp.creditcard.utils.EncryptionUtil.decrypt(EncryptionUtil.java:34)
+	at com.ascendpgp.creditcard.service.CreditCardService.decryptAndMaskCardDetails(CreditCardService.java:184)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at com.ascendpgp.creditcard.service.CreditCardService.getActiveCreditCards(CreditCardService.java:137)
+	at com.ascendpgp.creditcard.controller.CreditCardController.getActiveCreditCards(CreditCardController.java:112)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365)
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at com.ascendpgp.creditcard.config.SecurityConfig$JwtAuthenticationFilter.doFilterInternal(SecurityConfig.java:114)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.csrf.CsrfFilter.doFilterInternal(CsrfFilter.java:117)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2024-12-14 00:09:30 - Error decrypting card details for card ID: 5
+java.security.InvalidKeyException: Invalid AES key length: 21 bytes
+	at java.base/com.sun.crypto.provider.AESCrypt.init(AESCrypt.java:90)
+	at java.base/com.sun.crypto.provider.ElectronicCodeBook.init(ElectronicCodeBook.java:97)
+	at java.base/com.sun.crypto.provider.CipherCore.init(CipherCore.java:482)
+	at java.base/com.sun.crypto.provider.CipherCore.init(CipherCore.java:400)
+	at java.base/com.sun.crypto.provider.AESCipher.engineInit(AESCipher.java:306)
+	at java.base/javax.crypto.Cipher.implInit(Cipher.java:867)
+	at java.base/javax.crypto.Cipher.chooseProvider(Cipher.java:929)
+	at java.base/javax.crypto.Cipher.init(Cipher.java:1299)
+	at java.base/javax.crypto.Cipher.init(Cipher.java:1236)
+	at com.ascendpgp.creditcard.utils.EncryptionUtil.decrypt(EncryptionUtil.java:34)
+	at com.ascendpgp.creditcard.service.CreditCardService.decryptAndMaskCardDetails(CreditCardService.java:184)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at com.ascendpgp.creditcard.service.CreditCardService.getActiveCreditCards(CreditCardService.java:137)
+	at com.ascendpgp.creditcard.controller.CreditCardController.getActiveCreditCards(CreditCardController.java:112)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365)
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at com.ascendpgp.creditcard.config.SecurityConfig$JwtAuthenticationFilter.doFilterInternal(SecurityConfig.java:114)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.csrf.CsrfFilter.doFilterInternal(CsrfFilter.java:117)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2024-12-14 00:09:30 - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2024-12-14 00:09:30 - Writing [[com.ascendpgp.creditcard.model.CreditCard$CardDetails@5d71a7ec, com.ascendpgp.creditcard.model.Cred (truncated)...]
+2024-12-14 00:09:30 - Completed 200 OK
+2024-12-14 00:09:38 - Securing GET /api/customer/csrf-token
+2024-12-14 00:09:38 - JWT Token from header: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwiZW1haWwiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwidXNlcm5hbWUiOiJBZGFyc2giLCJpYXQiOjE3MzQxMTUxMzAsImV4cCI6MTczNDE1MTEzMH0.GGvC0lI1Vhi-zF_wF1oMtw0wzdsmf7wivccfWdIShvKdmbmENtOxIysp0-RVoCGEfwaHaO_KdypusFHRxRXVBw
+2024-12-14 00:09:38 - Validating token: eyJhbG******
+2024-12-14 00:09:38 - Calling validation endpoint: http://localhost:8081/api/customer/jwt/validate?token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwiZW1haWwiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwidXNlcm5hbWUiOiJBZGFyc2giLCJpYXQiOjE3MzQxMTUxMzAsImV4cCI6MTczNDE1MTEzMH0.GGvC0lI1Vhi-zF_wF1oMtw0wzdsmf7wivccfWdIShvKdmbmENtOxIysp0-RVoCGEfwaHaO_KdypusFHRxRXVBw
+2024-12-14 00:09:38 - HTTP GET http://localhost:8081/api/customer/jwt/validate?token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwiZW1haWwiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwidXNlcm5hbWUiOiJBZGFyc2giLCJpYXQiOjE3MzQxMTUxMzAsImV4cCI6MTczNDE1MTEzMH0.GGvC0lI1Vhi-zF_wF1oMtw0wzdsmf7wivccfWdIShvKdmbmENtOxIysp0-RVoCGEfwaHaO_KdypusFHRxRXVBw
+2024-12-14 00:09:38 - Accept=[application/json, application/*+json]
+2024-12-14 00:09:38 - Response 200 OK
+2024-12-14 00:09:38 - Reading to [java.util.Map<java.lang.String, java.lang.String>]
+2024-12-14 00:09:38 - Token validated successfully. Extracted details: {email=Adarsh.Sharma@walmart.com, username=Adarsh}
+2024-12-14 00:09:38 - JWT Token validated successfully. Extracted claims: {email=Adarsh.Sharma@walmart.com, username=Adarsh}
+2024-12-14 00:09:38 - CSRF Token from header: null
+2024-12-14 00:09:38 - CSRF Token header not provided. Skipping CSRF validation.
+2024-12-14 00:09:38 - Secured GET /api/customer/csrf-token
+2024-12-14 00:09:38 - GET "/api/customer/csrf-token", parameters={}
+2024-12-14 00:09:38 - Mapped to com.ascendpgp.creditcard.controller.CsrfController#getCsrfToken(HttpServletRequest)
+2024-12-14 00:09:38 - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2024-12-14 00:09:38 - Writing [{token=jF-2cD8UNNrVNC53OuBZtnLNaVBy4VatTMhsl6gn8bABm1vxuzmOQg4tBuv4BRtAXs1tgET_RGlC0mGAffwK9Z0QxdQ3q (truncated)...]
+2024-12-14 00:09:38 - Completed 200 OK
+2024-12-14 00:09:42 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:09:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:09:42 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:09:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:09:42 - Response 200 OK
+2024-12-14 00:09:42 - Response 200 OK
+2024-12-14 00:09:42 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:09:42 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:09:42 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:09:42 - Added instance 192.168.0.101:CreditCardMicroservice:8082 to the existing apps in region null
+2024-12-14 00:09:42 - The total number of instances fetched by the delta processor : 1
+2024-12-14 00:09:42 - The total number of all instances in the client now is 2
+2024-12-14 00:09:42 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:10:12 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:10:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:10:12 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:10:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:10:12 - Response 200 OK
+2024-12-14 00:10:12 - Response 200 OK
+2024-12-14 00:10:12 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:10:12 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:10:12 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:10:12 - Added instance 192.168.0.101:CreditCardMicroservice:8082 to the existing apps in region null
+2024-12-14 00:10:12 - The total number of instances fetched by the delta processor : 1
+2024-12-14 00:10:12 - The total number of all instances in the client now is 2
+2024-12-14 00:10:12 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:10:20 - Securing GET /api/customer/csrf-token
+2024-12-14 00:10:20 - JWT Token from header: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwiZW1haWwiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwidXNlcm5hbWUiOiJBZGFyc2giLCJpYXQiOjE3MzQxMTUxMzAsImV4cCI6MTczNDE1MTEzMH0.GGvC0lI1Vhi-zF_wF1oMtw0wzdsmf7wivccfWdIShvKdmbmENtOxIysp0-RVoCGEfwaHaO_KdypusFHRxRXVBw
+2024-12-14 00:10:20 - Validating token: eyJhbG******
+2024-12-14 00:10:20 - Calling validation endpoint: http://localhost:8081/api/customer/jwt/validate?token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwiZW1haWwiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwidXNlcm5hbWUiOiJBZGFyc2giLCJpYXQiOjE3MzQxMTUxMzAsImV4cCI6MTczNDE1MTEzMH0.GGvC0lI1Vhi-zF_wF1oMtw0wzdsmf7wivccfWdIShvKdmbmENtOxIysp0-RVoCGEfwaHaO_KdypusFHRxRXVBw
+2024-12-14 00:10:20 - HTTP GET http://localhost:8081/api/customer/jwt/validate?token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwiZW1haWwiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwidXNlcm5hbWUiOiJBZGFyc2giLCJpYXQiOjE3MzQxMTUxMzAsImV4cCI6MTczNDE1MTEzMH0.GGvC0lI1Vhi-zF_wF1oMtw0wzdsmf7wivccfWdIShvKdmbmENtOxIysp0-RVoCGEfwaHaO_KdypusFHRxRXVBw
+2024-12-14 00:10:20 - Accept=[application/json, application/*+json]
+2024-12-14 00:10:20 - Response 200 OK
+2024-12-14 00:10:20 - Reading to [java.util.Map<java.lang.String, java.lang.String>]
+2024-12-14 00:10:20 - Token validated successfully. Extracted details: {email=Adarsh.Sharma@walmart.com, username=Adarsh}
+2024-12-14 00:10:20 - JWT Token validated successfully. Extracted claims: {email=Adarsh.Sharma@walmart.com, username=Adarsh}
+2024-12-14 00:10:20 - CSRF Token from header: null
+2024-12-14 00:10:20 - CSRF Token header not provided. Skipping CSRF validation.
+2024-12-14 00:10:20 - Secured GET /api/customer/csrf-token
+2024-12-14 00:10:20 - GET "/api/customer/csrf-token", parameters={}
+2024-12-14 00:10:20 - Mapped to com.ascendpgp.creditcard.controller.CsrfController#getCsrfToken(HttpServletRequest)
+2024-12-14 00:10:20 - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2024-12-14 00:10:20 - Writing [{token=RFixyr3WiHsqqmeoqTRDmRS0DlYIPDNaePF5iSGDo8O5mgJldjuH8tnkvhgHz1GezBl3-iGMI28wWgJ3ScAdvEC1lPSIo (truncated)...]
+2024-12-14 00:10:20 - Completed 200 OK
+2024-12-14 00:10:42 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:10:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:10:42 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:10:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:10:42 - Response 200 OK
+2024-12-14 00:10:42 - Response 200 OK
+2024-12-14 00:10:42 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:10:42 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:10:42 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:10:42 - Added instance 192.168.0.101:CreditCardMicroservice:8082 to the existing apps in region null
+2024-12-14 00:10:42 - The total number of instances fetched by the delta processor : 1
+2024-12-14 00:10:42 - The total number of all instances in the client now is 2
+2024-12-14 00:10:42 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:11:11 - Securing PUT /api/customer/creditcard/0001000200040005/toggle
+2024-12-14 00:11:12 - Invalid CSRF token found for http://localhost:8082/api/customer/creditcard/0001000200040005/toggle
+2024-12-14 00:11:12 - Responding with 403 status code
+2024-12-14 00:11:12 - Securing PUT /error
+2024-12-14 00:11:12 - Set SecurityContextHolder to anonymous SecurityContext
+2024-12-14 00:11:12 - Pre-authenticated entry point called. Rejecting access
+2024-12-14 00:11:12 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:11:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:11:12 - Response 200 OK
+2024-12-14 00:11:12 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:11:12 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:11:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:11:12 - Response 200 OK
+2024-12-14 00:11:12 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:11:12 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:11:12 - Added instance 192.168.0.101:CreditCardMicroservice:8082 to the existing apps in region null
+2024-12-14 00:11:12 - The total number of instances fetched by the delta processor : 1
+2024-12-14 00:11:12 - The total number of all instances in the client now is 2
+2024-12-14 00:11:12 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:11:42 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:11:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:11:42 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:11:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:11:42 - Response 200 OK
+2024-12-14 00:11:42 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:11:42 - Response 200 OK
+2024-12-14 00:11:42 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:11:42 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:11:42 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:11:42 - The total number of all instances in the client now is 2
+2024-12-14 00:11:42 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:12:01 - Securing PUT /api/customer/creditcard/0001000200040005/toggle
+2024-12-14 00:12:01 - JWT Token from header: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwiZW1haWwiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwidXNlcm5hbWUiOiJBZGFyc2giLCJpYXQiOjE3MzQxMTUxMzAsImV4cCI6MTczNDE1MTEzMH0.GGvC0lI1Vhi-zF_wF1oMtw0wzdsmf7wivccfWdIShvKdmbmENtOxIysp0-RVoCGEfwaHaO_KdypusFHRxRXVBw
+2024-12-14 00:12:01 - Validating token: eyJhbG******
+2024-12-14 00:12:01 - Calling validation endpoint: http://localhost:8081/api/customer/jwt/validate?token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwiZW1haWwiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwidXNlcm5hbWUiOiJBZGFyc2giLCJpYXQiOjE3MzQxMTUxMzAsImV4cCI6MTczNDE1MTEzMH0.GGvC0lI1Vhi-zF_wF1oMtw0wzdsmf7wivccfWdIShvKdmbmENtOxIysp0-RVoCGEfwaHaO_KdypusFHRxRXVBw
+2024-12-14 00:12:01 - HTTP GET http://localhost:8081/api/customer/jwt/validate?token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwiZW1haWwiOiJBZGFyc2guU2hhcm1hQHdhbG1hcnQuY29tIiwidXNlcm5hbWUiOiJBZGFyc2giLCJpYXQiOjE3MzQxMTUxMzAsImV4cCI6MTczNDE1MTEzMH0.GGvC0lI1Vhi-zF_wF1oMtw0wzdsmf7wivccfWdIShvKdmbmENtOxIysp0-RVoCGEfwaHaO_KdypusFHRxRXVBw
+2024-12-14 00:12:01 - Accept=[application/json, application/*+json]
+2024-12-14 00:12:01 - Response 200 OK
+2024-12-14 00:12:01 - Reading to [java.util.Map<java.lang.String, java.lang.String>]
+2024-12-14 00:12:01 - Token validated successfully. Extracted details: {email=Adarsh.Sharma@walmart.com, username=Adarsh}
+2024-12-14 00:12:01 - JWT Token validated successfully. Extracted claims: {email=Adarsh.Sharma@walmart.com, username=Adarsh}
+2024-12-14 00:12:01 - CSRF Token from header: RFixyr3WiHsqqmeoqTRDmRS0DlYIPDNaePF5iSGDo8O5mgJldjuH8tnkvhgHz1GezBl3-iGMI28wWgJ3ScAdvEC1lPSIomNV
+2024-12-14 00:12:01 - CSRF Token from cookie: n_xwIQjTtRzp6wB_uSxX_vcABe5TzIpmrh1Jd_rBpE-HWhUGrZ9GGWzhg3_EjjZJ3AFjncI4KNdrqrtLnywtQpv3k3i2YnQ2
+2024-12-14 00:12:01 - CSRF Token validation failed. Header token: RFixyr3WiHsqqmeoqTRDmRS0DlYIPDNaePF5iSGDo8O5mgJldjuH8tnkvhgHz1GezBl3-iGMI28wWgJ3ScAdvEC1lPSIomNV, Cookie token: n_xwIQjTtRzp6wB_uSxX_vcABe5TzIpmrh1Jd_rBpE-HWhUGrZ9GGWzhg3_EjjZJ3AFjncI4KNdrqrtLnywtQpv3k3i2YnQ2
+2024-12-14 00:12:01 - Securing PUT /error
+2024-12-14 00:12:01 - Set SecurityContextHolder to anonymous SecurityContext
+2024-12-14 00:12:01 - Pre-authenticated entry point called. Rejecting access
+2024-12-14 00:12:12 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:12:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:12:12 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:12:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:12:12 - Response 200 OK
+2024-12-14 00:12:12 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:12:12 - Response 200 OK
+2024-12-14 00:12:12 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:12:12 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:12:12 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:12:12 - The total number of all instances in the client now is 2
+2024-12-14 00:12:12 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:12:42 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:12:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:12:42 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:12:42 - Response 200 OK
+2024-12-14 00:12:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:12:42 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:12:42 - Response 200 OK
+2024-12-14 00:12:42 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:12:42 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:12:42 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:12:42 - The total number of all instances in the client now is 2
+2024-12-14 00:12:42 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:13:11 - Resolving eureka endpoints via configuration
+2024-12-14 00:13:11 - The availability zone for the given region us-east-1 are [defaultZone]
+2024-12-14 00:13:11 - Config resolved to [AwsEndpoint{ serviceUrl='http://localhost:8761/eureka/', region='us-east-1', zone='defaultZone'}]
+2024-12-14 00:13:11 - Local zone=defaultZone; resolved to: [AwsEndpoint{ serviceUrl='http://localhost:8761/eureka/', region='us-east-1', zone='defaultZone'}]
+2024-12-14 00:13:11 - Resolved to [AwsEndpoint{ serviceUrl='http://localhost:8761/eureka/', region='us-east-1', zone='defaultZone'}]
+2024-12-14 00:13:12 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:13:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:13:12 - Response 200 OK
+2024-12-14 00:13:12 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:13:12 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:13:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:13:12 - Response 200 OK
+2024-12-14 00:13:12 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:13:12 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:13:12 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:13:12 - The total number of all instances in the client now is 2
+2024-12-14 00:13:12 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:13:42 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:13:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:13:42 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:13:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:13:42 - Response 200 OK
+2024-12-14 00:13:42 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:13:42 - Response 200 OK
+2024-12-14 00:13:42 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:13:42 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:13:42 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:13:42 - The total number of all instances in the client now is 2
+2024-12-14 00:13:42 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:14:12 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:14:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:14:12 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:14:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:14:12 - Response 200 OK
+2024-12-14 00:14:12 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:14:12 - Response 200 OK
+2024-12-14 00:14:12 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:14:12 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:14:12 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:14:12 - The total number of all instances in the client now is 2
+2024-12-14 00:14:12 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:14:42 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:14:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:14:42 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:14:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:14:42 - Response 200 OK
+2024-12-14 00:14:42 - Response 200 OK
+2024-12-14 00:14:42 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:14:42 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:14:42 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:14:42 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:14:42 - The total number of all instances in the client now is 2
+2024-12-14 00:14:42 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:15:12 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:15:12 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:15:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:15:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:15:12 - Response 200 OK
+2024-12-14 00:15:12 - Response 200 OK
+2024-12-14 00:15:12 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:15:12 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:15:12 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:15:12 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:15:12 - The total number of all instances in the client now is 2
+2024-12-14 00:15:12 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:15:42 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:15:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:15:42 - Response 200 OK
+2024-12-14 00:15:42 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:15:42 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:15:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:15:42 - Response 200 OK
+2024-12-14 00:15:42 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:15:42 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:15:42 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:15:42 - The total number of all instances in the client now is 2
+2024-12-14 00:15:42 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:16:12 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:16:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:16:12 - Response 200 OK
+2024-12-14 00:16:12 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:16:12 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:16:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:16:12 - Response 200 OK
+2024-12-14 00:16:12 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:16:12 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:16:12 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:16:12 - The total number of all instances in the client now is 2
+2024-12-14 00:16:12 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:16:42 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:16:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:16:42 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:16:42 - Response 200 OK
+2024-12-14 00:16:42 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:16:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:16:42 - Response 200 OK
+2024-12-14 00:16:42 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:16:42 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:16:42 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:16:42 - The total number of all instances in the client now is 2
+2024-12-14 00:16:42 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:17:12 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:17:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:17:12 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:17:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:17:12 - Response 200 OK
+2024-12-14 00:17:12 - Response 200 OK
+2024-12-14 00:17:12 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:17:12 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:17:12 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:17:12 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:17:12 - The total number of all instances in the client now is 2
+2024-12-14 00:17:12 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:17:42 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:17:42 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:17:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:17:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:17:42 - Response 200 OK
+2024-12-14 00:17:42 - Response 200 OK
+2024-12-14 00:17:42 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:17:42 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:17:42 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:17:42 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:17:42 - The total number of all instances in the client now is 2
+2024-12-14 00:17:42 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:18:11 - Resolving eureka endpoints via configuration
+2024-12-14 00:18:11 - The availability zone for the given region us-east-1 are [defaultZone]
+2024-12-14 00:18:11 - Config resolved to [AwsEndpoint{ serviceUrl='http://localhost:8761/eureka/', region='us-east-1', zone='defaultZone'}]
+2024-12-14 00:18:11 - Local zone=defaultZone; resolved to: [AwsEndpoint{ serviceUrl='http://localhost:8761/eureka/', region='us-east-1', zone='defaultZone'}]
+2024-12-14 00:18:11 - Resolved to [AwsEndpoint{ serviceUrl='http://localhost:8761/eureka/', region='us-east-1', zone='defaultZone'}]
+2024-12-14 00:18:12 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:18:12 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:18:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:18:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:18:12 - Response 200 OK
+2024-12-14 00:18:12 - Response 200 OK
+2024-12-14 00:18:12 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:18:12 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:18:12 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:18:12 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:18:12 - The total number of all instances in the client now is 2
+2024-12-14 00:18:12 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:18:42 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:18:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:18:42 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:18:42 - Response 200 OK
+2024-12-14 00:18:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:18:42 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:18:42 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:18:42 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:18:42 - The total number of all instances in the client now is 2
+2024-12-14 00:18:42 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:18:42 - Response 200 OK
+2024-12-14 00:18:42 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:19:12 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:19:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:19:12 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:19:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:19:12 - Response 200 OK
+2024-12-14 00:19:12 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:19:12 - Response 200 OK
+2024-12-14 00:19:12 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:19:12 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:19:12 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:19:12 - The total number of all instances in the client now is 2
+2024-12-14 00:19:12 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:19:42 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:19:42 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:19:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:19:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:19:42 - Response 200 OK
+2024-12-14 00:19:42 - Response 200 OK
+2024-12-14 00:19:42 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:19:42 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:19:42 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:19:42 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:19:42 - The total number of all instances in the client now is 2
+2024-12-14 00:19:42 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:20:12 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:20:12 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:20:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:20:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:20:12 - Response 200 OK
+2024-12-14 00:20:12 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:20:12 - Response 200 OK
+2024-12-14 00:20:12 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:20:12 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:20:12 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:20:12 - The total number of all instances in the client now is 2
+2024-12-14 00:20:12 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:20:42 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:20:42 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:20:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:20:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:20:42 - Response 200 OK
+2024-12-14 00:20:42 - Response 200 OK
+2024-12-14 00:20:42 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:20:42 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:20:42 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:20:42 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:20:42 - The total number of all instances in the client now is 2
+2024-12-14 00:20:42 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:21:12 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:21:12 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:21:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:21:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:21:12 - Response 200 OK
+2024-12-14 00:21:12 - Response 200 OK
+2024-12-14 00:21:12 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:21:12 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:21:12 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:21:12 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:21:12 - The total number of all instances in the client now is 2
+2024-12-14 00:21:12 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:21:42 - Ending a session and starting anew
+2024-12-14 00:21:42 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:21:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:21:42 - Response 200 OK
+2024-12-14 00:21:42 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:21:42 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:21:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:21:43 - Response 200 OK
+2024-12-14 00:21:43 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:21:43 - Pinning to endpoint null
+2024-12-14 00:21:43 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:21:43 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:21:43 - The total number of all instances in the client now is 2
+2024-12-14 00:21:43 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:22:12 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:22:12 - Accept=[application/json, application/*+json]
+2024-12-14 00:22:12 - Response 200 OK
+2024-12-14 00:22:12 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:22:13 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:22:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:22:13 - Response 200 OK
+2024-12-14 00:22:13 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:22:13 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:22:13 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:22:13 - The total number of all instances in the client now is 2
+2024-12-14 00:22:13 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:22:42 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:22:42 - Accept=[application/json, application/*+json]
+2024-12-14 00:22:42 - Response 200 OK
+2024-12-14 00:22:42 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:22:43 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:22:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:22:43 - Response 200 OK
+2024-12-14 00:22:43 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:22:43 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:22:43 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:22:43 - The total number of all instances in the client now is 2
+2024-12-14 00:22:43 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:23:11 - Resolving eureka endpoints via configuration
+2024-12-14 00:23:11 - The availability zone for the given region us-east-1 are [defaultZone]
+2024-12-14 00:23:11 - Config resolved to [AwsEndpoint{ serviceUrl='http://localhost:8761/eureka/', region='us-east-1', zone='defaultZone'}]
+2024-12-14 00:23:11 - Local zone=defaultZone; resolved to: [AwsEndpoint{ serviceUrl='http://localhost:8761/eureka/', region='us-east-1', zone='defaultZone'}]
+2024-12-14 00:23:11 - Resolved to [AwsEndpoint{ serviceUrl='http://localhost:8761/eureka/', region='us-east-1', zone='defaultZone'}]
+2024-12-14 00:23:13 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:23:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:23:13 - Response 200 OK
+2024-12-14 00:23:13 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:23:13 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:23:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:23:13 - Response 200 OK
+2024-12-14 00:23:13 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:23:13 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:23:13 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:23:13 - The total number of all instances in the client now is 2
+2024-12-14 00:23:13 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:23:43 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:23:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:23:43 - Response 200 OK
+2024-12-14 00:23:43 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:23:43 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:23:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:23:43 - Response 200 OK
+2024-12-14 00:23:43 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:23:43 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:23:43 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:23:43 - The total number of all instances in the client now is 2
+2024-12-14 00:23:43 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:24:13 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:24:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:24:13 - Response 200 OK
+2024-12-14 00:24:13 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:24:13 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:24:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:24:13 - Response 200 OK
+2024-12-14 00:24:13 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:24:13 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:24:13 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:24:13 - The total number of all instances in the client now is 2
+2024-12-14 00:24:13 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:24:43 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:24:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:24:43 - Response 200 OK
+2024-12-14 00:24:43 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:24:43 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:24:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:24:43 - Response 200 OK
+2024-12-14 00:24:43 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:24:43 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:24:43 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:24:43 - The total number of all instances in the client now is 2
+2024-12-14 00:24:43 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:25:13 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:25:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:25:13 - Response 200 OK
+2024-12-14 00:25:13 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:25:13 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:25:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:25:13 - Response 200 OK
+2024-12-14 00:25:13 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:25:13 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:25:13 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:25:13 - The total number of all instances in the client now is 2
+2024-12-14 00:25:13 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:25:43 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:25:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:25:43 - Response 200 OK
+2024-12-14 00:25:43 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:25:43 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:25:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:25:43 - Response 200 OK
+2024-12-14 00:25:43 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:25:43 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:25:43 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:25:43 - The total number of all instances in the client now is 2
+2024-12-14 00:25:43 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:26:13 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:26:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:26:13 - Response 200 OK
+2024-12-14 00:26:13 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:26:13 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:26:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:26:13 - Response 200 OK
+2024-12-14 00:26:13 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:26:13 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:26:13 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:26:13 - The total number of all instances in the client now is 2
+2024-12-14 00:26:13 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:26:15 - Starting CreditCardApplication using Java 17.0.12 with PID 1752 (/Users/a0s0nmi/IdeaProjects/Updated_Apps/CreditCardMicroservice_Updated_Final_v2/target/classes started by a0s0nmi in /Users/a0s0nmi/IdeaProjects/Updated_Apps/CreditCardMicroservice_Updated_Final_v2)
+2024-12-14 00:26:15 - Running with Spring Boot v3.3.6, Spring v6.1.15
+2024-12-14 00:26:15 - No active profile set, falling back to 1 default profile: "default"
+2024-12-14 00:26:16 - Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2024-12-14 00:26:16 - Finished Spring Data repository scanning in 183 ms. Found 1 MongoDB repository interface.
+2024-12-14 00:26:17 - BeanFactory id=7ad151e1-17f8-35c4-80c8-01dee9bc3ef9
+2024-12-14 00:26:17 - Tomcat initialized with port 8082 (http)
+2024-12-14 00:26:17 - Initializing ProtocolHandler ["http-nio-8082"]
+2024-12-14 00:26:17 - Starting service [Tomcat]
+2024-12-14 00:26:17 - Starting Servlet engine: [Apache Tomcat/10.1.33]
+2024-12-14 00:26:18 - Initializing Spring embedded WebApplicationContext
+2024-12-14 00:26:18 - Root WebApplicationContext: initialization completed in 2418 ms
+2024-12-14 00:26:18 - Adding discovered server walmart-shard-00-00.ov3ju.mongodb.net:27017 to client view of cluster
+2024-12-14 00:26:18 - MongoClient with metadata {"application": {"name": "walmart"}, "driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "5.0.1"}, "os": {"type": "Darwin", "name": "Mac OS X", "architecture": "x86_64", "version": "14.7.1"}, "platform": "Java/Oracle Corporation/17.0.12+8-LTS-jvmci-23.0-b41"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=majority, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=MongoCredential{mechanism=null, userName='admin', source='admin', password=<hidden>, mechanismProperties=<hidden>}, transportSettings=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, CollectionCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.client.model.mql.ExpressionCodecProvider@787d1f9c, com.mongodb.Jep395RecordCodecProvider@2becfd4c, com.mongodb.KotlinCodecProvider@7c71c889]}, loggerSettings=LoggerSettings{maxDocumentLength=1000}, clusterSettings={hosts=[127.0.0.1:27017], srvHost=walmart.ov3ju.mongodb.net, srvServiceName=mongodb, mode=MULTIPLE, requiredClusterType=REPLICA_SET, requiredReplicaSetName='atlas-veqqh0-shard-0', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='15 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=true, invalidHostNameAllowed=false, context=null}, applicationName='walmart', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, dnsClient=null, inetAddressResolver=null, contextProvider=null}
+2024-12-14 00:26:18 - Adding discovered server walmart-shard-00-01.ov3ju.mongodb.net:27017 to client view of cluster
+2024-12-14 00:26:18 - Adding discovered server walmart-shard-00-02.ov3ju.mongodb.net:27017 to client view of cluster
+2024-12-14 00:26:19 - Constructed eureka meta-data healthcheckUrl: http://192.168.0.101:8082/actuator/health
+2024-12-14 00:26:19 - Constructed eureka meta-data statusPageUrl: http://192.168.0.101:8082/actuator/info
+2024-12-14 00:26:19 - Monitor thread successfully connected to server with description ServerDescription{address=walmart-shard-00-00.ov3ju.mongodb.net:27017, type=REPLICA_SET_SECONDARY, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=25, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=611863042, setName='atlas-veqqh0-shard-0', canonicalAddress=walmart-shard-00-00.ov3ju.mongodb.net:27017, hosts=[walmart-shard-00-01.ov3ju.mongodb.net:27017, walmart-shard-00-00.ov3ju.mongodb.net:27017, walmart-shard-00-02.ov3ju.mongodb.net:27017], passives=[], arbiters=[], primary='walmart-shard-00-01.ov3ju.mongodb.net:27017', tagSet=TagSet{[Tag{name='availabilityZone', value='aps1-az1'}, Tag{name='diskState', value='READY'}, Tag{name='nodeType', value='ELECTABLE'}, Tag{name='provider', value='AWS'}, Tag{name='region', value='AP_SOUTH_1'}, Tag{name='workloadType', value='OPERATIONAL'}]}, electionId=null, setVersion=127, topologyVersion=TopologyVersion{processId=675c26e0d5628e473acc7771, counter=4}, lastWriteDate=Sat Dec 14 00:26:19 IST 2024, lastUpdateTimeNanos=437237910200209}
+2024-12-14 00:26:19 - Monitor thread successfully connected to server with description ServerDescription{address=walmart-shard-00-02.ov3ju.mongodb.net:27017, type=REPLICA_SET_SECONDARY, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=25, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=611875583, setName='atlas-veqqh0-shard-0', canonicalAddress=walmart-shard-00-02.ov3ju.mongodb.net:27017, hosts=[walmart-shard-00-01.ov3ju.mongodb.net:27017, walmart-shard-00-00.ov3ju.mongodb.net:27017, walmart-shard-00-02.ov3ju.mongodb.net:27017], passives=[], arbiters=[], primary='walmart-shard-00-01.ov3ju.mongodb.net:27017', tagSet=TagSet{[Tag{name='availabilityZone', value='aps1-az2'}, Tag{name='diskState', value='READY'}, Tag{name='nodeType', value='ELECTABLE'}, Tag{name='provider', value='AWS'}, Tag{name='region', value='AP_SOUTH_1'}, Tag{name='workloadType', value='OPERATIONAL'}]}, electionId=null, setVersion=127, topologyVersion=TopologyVersion{processId=675c2833d620c120e84674ad, counter=3}, lastWriteDate=Sat Dec 14 00:26:19 IST 2024, lastUpdateTimeNanos=437237910238125}
+2024-12-14 00:26:19 - Monitor thread successfully connected to server with description ServerDescription{address=walmart-shard-00-01.ov3ju.mongodb.net:27017, type=REPLICA_SET_PRIMARY, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=25, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=615757834, setName='atlas-veqqh0-shard-0', canonicalAddress=walmart-shard-00-01.ov3ju.mongodb.net:27017, hosts=[walmart-shard-00-01.ov3ju.mongodb.net:27017, walmart-shard-00-00.ov3ju.mongodb.net:27017, walmart-shard-00-02.ov3ju.mongodb.net:27017], passives=[], arbiters=[], primary='walmart-shard-00-01.ov3ju.mongodb.net:27017', tagSet=TagSet{[Tag{name='availabilityZone', value='aps1-az3'}, Tag{name='diskState', value='READY'}, Tag{name='nodeType', value='ELECTABLE'}, Tag{name='provider', value='AWS'}, Tag{name='region', value='AP_SOUTH_1'}, Tag{name='workloadType', value='OPERATIONAL'}]}, electionId=7fffffff0000000000000084, setVersion=127, topologyVersion=TopologyVersion{processId=675c25e283d548f799553d9a, counter=6}, lastWriteDate=Sat Dec 14 00:26:19 IST 2024, lastUpdateTimeNanos=437237914098834}
+2024-12-14 00:26:19 - Discovered replica set primary walmart-shard-00-01.ov3ju.mongodb.net:27017 with max election id 7fffffff0000000000000084 and max set version 127
+2024-12-14 00:26:19 - Fetching secret key from application properties.
+2024-12-14 00:26:19 - 
+
+Using generated security password: 5fb69ce7-2ee6-46d3-b3da-4420bf25e1ad
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2024-12-14 00:26:19 - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2024-12-14 00:26:20 - 11 mappings in 'requestMappingHandlerMapping'
+2024-12-14 00:26:20 - Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2024-12-14 00:26:20 - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CsrfFilter, LogoutFilter, JwtAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
+2024-12-14 00:26:20 - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2024-12-14 00:26:20 - ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2024-12-14 00:26:20 - Eureka HTTP Client uses RestTemplate.
+2024-12-14 00:26:20 - Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2024-12-14 00:26:20 - Setting initial instance status as: STARTING
+2024-12-14 00:26:20 - Initializing Eureka in region us-east-1
+2024-12-14 00:26:20 - Resolving eureka endpoints via configuration
+2024-12-14 00:26:20 - The availability zone for the given region us-east-1 are [defaultZone]
+2024-12-14 00:26:20 - Config resolved to [AwsEndpoint{ serviceUrl='http://localhost:8761/eureka/', region='us-east-1', zone='defaultZone'}]
+2024-12-14 00:26:20 - Local zone=defaultZone; resolved to: [AwsEndpoint{ serviceUrl='http://localhost:8761/eureka/', region='us-east-1', zone='defaultZone'}]
+2024-12-14 00:26:20 - Disable delta property : false
+2024-12-14 00:26:20 - Single vip registry refresh property : null
+2024-12-14 00:26:20 - Force full registry fetch : false
+2024-12-14 00:26:20 - Application is null : false
+2024-12-14 00:26:20 - Registered Applications size is zero : true
+2024-12-14 00:26:20 - Application version is -1: true
+2024-12-14 00:26:20 - Getting all instance registry info from the eureka server
+2024-12-14 00:26:20 - Ending a session and starting anew
+2024-12-14 00:26:21 - HTTP GET http://localhost:8761/eureka/apps/
+2024-12-14 00:26:21 - Accept=[application/json, application/*+json]
+2024-12-14 00:26:21 - Response 200 OK
+2024-12-14 00:26:21 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:26:21 - Pinning to endpoint null
+2024-12-14 00:26:21 - The response status is 200
+2024-12-14 00:26:21 - Got full registry with apps hashcode UP_2_
+2024-12-14 00:26:21 - The total number of all instances in the client now is 2
+2024-12-14 00:26:21 - Starting heartbeat executor: renew interval is: 30
+2024-12-14 00:26:21 - InstanceInfoReplicator onDemand update allowed rate per min is 4
+2024-12-14 00:26:21 - Discovery Client initialized at timestamp 1734116181216 with initial instances count: 2
+2024-12-14 00:26:21 - Registering application CREDITCARDMICROSERVICE with eureka with status UP
+2024-12-14 00:26:21 - Saw local status change event StatusChangeEvent [timestamp=1734116181234, current=UP, previous=STARTING]
+2024-12-14 00:26:21 - Executing on-demand update of local InstanceInfo
+2024-12-14 00:26:21 - Canceling the latest scheduled update, it will be rescheduled at the end of on demand update
+2024-12-14 00:26:21 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082: registering service...
+2024-12-14 00:26:21 - Ending a session and starting anew
+2024-12-14 00:26:21 - Starting ProtocolHandler ["http-nio-8082"]
+2024-12-14 00:26:21 - HTTP POST http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE
+2024-12-14 00:26:21 - Accept=[application/json, application/*+json]
+2024-12-14 00:26:21 - Unregistering application CREDITCARDMICROSERVICE with eureka with status DOWN
+2024-12-14 00:26:21 - Saw local status change event StatusChangeEvent [timestamp=1734116181286, current=DOWN, previous=UP]
+2024-12-14 00:26:21 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'
+2024-12-14 00:26:21 - Writing [InstanceInfo [instanceId = 192.168.0.101:CreditCardMicroservice:8082, appName = CREDITCARDMICROSERVICE, hostName = 192.168.0.101, status = DOWN, ipAddr = 192.168.0.101, port = 8082, securePort = 443, dataCenterInfo = com.netflix.appinfo.MyDataCenterInfo@8225310] as "application/json"
+2024-12-14 00:26:21 - Response 204 NO_CONTENT
+2024-12-14 00:26:21 - Pinning to endpoint null
+2024-12-14 00:26:21 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - registration status: 204
+2024-12-14 00:26:21 - Executing on-demand update of local InstanceInfo
+2024-12-14 00:26:21 - Canceling the latest scheduled update, it will be rescheduled at the end of on demand update
+2024-12-14 00:26:21 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082: registering service...
+2024-12-14 00:26:21 - HTTP POST http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE
+2024-12-14 00:26:21 - Accept=[application/json, application/*+json]
+2024-12-14 00:26:21 - Writing [InstanceInfo [instanceId = 192.168.0.101:CreditCardMicroservice:8082, appName = CREDITCARDMICROSERVICE, hostName = 192.168.0.101, status = DOWN, ipAddr = 192.168.0.101, port = 8082, securePort = 443, dataCenterInfo = com.netflix.appinfo.MyDataCenterInfo@8225310] as "application/json"
+2024-12-14 00:26:21 - Response 204 NO_CONTENT
+2024-12-14 00:26:21 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - registration status: 204
+2024-12-14 00:26:21 - Shutting down DiscoveryClient ...
+2024-12-14 00:26:24 - Unregistering ...
+2024-12-14 00:26:24 - HTTP DELETE http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082
+2024-12-14 00:26:24 - Accept=[application/json, application/*+json]
+2024-12-14 00:26:24 - Response 200 OK
+2024-12-14 00:26:24 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - deregister  status: 200
+2024-12-14 00:26:24 - Completed shut down of DiscoveryClient
+2024-12-14 00:26:24 - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2024-12-14 00:26:24 - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 8082 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 8082 or configure this application to listen on another port.
+
+2024-12-14 00:26:43 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734115092220
+2024-12-14 00:26:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:26:43 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:26:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:26:43 - Response 200 OK
+2024-12-14 00:26:43 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:26:43 - Got delta update with apps hashcode UP_1_
+2024-12-14 00:26:43 - Deleted instance 192.168.0.101:CreditCardMicroservice:8082 to the existing apps 
+2024-12-14 00:26:43 - The total number of instances fetched by the delta processor : 1
+2024-12-14 00:26:43 - The total number of all instances in the client now is 1
+2024-12-14 00:26:43 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_1_, is fetching remote regions? false 
+2024-12-14 00:26:43 - Response 404 NOT_FOUND
+2024-12-14 00:26:43 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 404
+2024-12-14 00:26:43 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Re-registering apps/CREDITCARDMICROSERVICE
+2024-12-14 00:26:43 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082: registering service...
+2024-12-14 00:26:43 - HTTP POST http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE
+2024-12-14 00:26:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:26:43 - Writing [InstanceInfo [instanceId = 192.168.0.101:CreditCardMicroservice:8082, appName = CREDITCARDMICROSERVICE, hostName = 192.168.0.101, status = UP, ipAddr = 192.168.0.101, port = 8082, securePort = 443, dataCenterInfo = com.netflix.appinfo.MyDataCenterInfo@361a3d69] as "application/json"
+2024-12-14 00:26:43 - Response 204 NO_CONTENT
+2024-12-14 00:26:43 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - registration status: 204
+2024-12-14 00:27:13 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:27:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:27:13 - Response 200 OK
+2024-12-14 00:27:13 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:27:13 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:27:13 - Added instance 192.168.0.101:CreditCardMicroservice:8082 to the existing apps in region null
+2024-12-14 00:27:13 - The total number of instances fetched by the delta processor : 1
+2024-12-14 00:27:13 - The total number of all instances in the client now is 2
+2024-12-14 00:27:13 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:27:13 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734116203422
+2024-12-14 00:27:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:27:13 - Response 200 OK
+2024-12-14 00:27:13 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:27:43 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:27:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:27:43 - Response 200 OK
+2024-12-14 00:27:43 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:27:43 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:27:43 - Added instance 192.168.0.101:CreditCardMicroservice:8082 to the existing apps in region null
+2024-12-14 00:27:43 - The total number of instances fetched by the delta processor : 1
+2024-12-14 00:27:43 - The total number of all instances in the client now is 2
+2024-12-14 00:27:43 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:27:43 - Ending a session and starting anew
+2024-12-14 00:27:43 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734116203422
+2024-12-14 00:27:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:27:43 - Response 200 OK
+2024-12-14 00:27:43 - Pinning to endpoint null
+2024-12-14 00:27:43 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:28:11 - Resolving eureka endpoints via configuration
+2024-12-14 00:28:11 - The availability zone for the given region us-east-1 are [defaultZone]
+2024-12-14 00:28:11 - Config resolved to [AwsEndpoint{ serviceUrl='http://localhost:8761/eureka/', region='us-east-1', zone='defaultZone'}]
+2024-12-14 00:28:11 - Local zone=defaultZone; resolved to: [AwsEndpoint{ serviceUrl='http://localhost:8761/eureka/', region='us-east-1', zone='defaultZone'}]
+2024-12-14 00:28:11 - Resolved to [AwsEndpoint{ serviceUrl='http://localhost:8761/eureka/', region='us-east-1', zone='defaultZone'}]
+2024-12-14 00:28:13 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:28:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:28:13 - Response 200 OK
+2024-12-14 00:28:13 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:28:13 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:28:13 - Added instance 192.168.0.101:CreditCardMicroservice:8082 to the existing apps in region null
+2024-12-14 00:28:13 - The total number of instances fetched by the delta processor : 1
+2024-12-14 00:28:13 - The total number of all instances in the client now is 2
+2024-12-14 00:28:13 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:28:13 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734116203422
+2024-12-14 00:28:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:28:13 - Response 200 OK
+2024-12-14 00:28:13 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:28:43 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:28:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:28:43 - Response 200 OK
+2024-12-14 00:28:43 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:28:43 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:28:43 - Added instance 192.168.0.101:CreditCardMicroservice:8082 to the existing apps in region null
+2024-12-14 00:28:43 - The total number of instances fetched by the delta processor : 1
+2024-12-14 00:28:43 - The total number of all instances in the client now is 2
+2024-12-14 00:28:43 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:28:43 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734116203422
+2024-12-14 00:28:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:28:43 - Response 200 OK
+2024-12-14 00:28:43 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:29:13 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:29:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:29:13 - Response 200 OK
+2024-12-14 00:29:13 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:29:13 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:29:13 - Added instance 192.168.0.101:CreditCardMicroservice:8082 to the existing apps in region null
+2024-12-14 00:29:13 - The total number of instances fetched by the delta processor : 1
+2024-12-14 00:29:13 - The total number of all instances in the client now is 2
+2024-12-14 00:29:13 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:29:13 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734116203422
+2024-12-14 00:29:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:29:13 - Response 200 OK
+2024-12-14 00:29:13 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:29:43 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:29:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:29:43 - Response 200 OK
+2024-12-14 00:29:43 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:29:43 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:29:43 - Added instance 192.168.0.101:CreditCardMicroservice:8082 to the existing apps in region null
+2024-12-14 00:29:43 - The total number of instances fetched by the delta processor : 1
+2024-12-14 00:29:43 - The total number of all instances in the client now is 2
+2024-12-14 00:29:43 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:29:43 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734116203422
+2024-12-14 00:29:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:29:43 - Response 200 OK
+2024-12-14 00:29:43 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:30:13 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:30:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:30:13 - Response 200 OK
+2024-12-14 00:30:13 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:30:13 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:30:13 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:30:13 - The total number of all instances in the client now is 2
+2024-12-14 00:30:13 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:30:13 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734116203422
+2024-12-14 00:30:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:30:13 - Response 200 OK
+2024-12-14 00:30:13 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:30:43 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:30:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:30:43 - Response 200 OK
+2024-12-14 00:30:43 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:30:43 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:30:43 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:30:43 - The total number of all instances in the client now is 2
+2024-12-14 00:30:43 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:30:43 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734116203422
+2024-12-14 00:30:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:30:43 - Response 200 OK
+2024-12-14 00:30:43 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:31:13 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:31:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:31:13 - Response 200 OK
+2024-12-14 00:31:13 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:31:13 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:31:13 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:31:13 - The total number of all instances in the client now is 2
+2024-12-14 00:31:13 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:31:13 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734116203422
+2024-12-14 00:31:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:31:13 - Response 200 OK
+2024-12-14 00:31:13 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:31:43 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:31:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:31:43 - Response 200 OK
+2024-12-14 00:31:43 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:31:43 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:31:43 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:31:43 - The total number of all instances in the client now is 2
+2024-12-14 00:31:43 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:31:43 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734116203422
+2024-12-14 00:31:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:31:43 - Response 200 OK
+2024-12-14 00:31:43 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:32:13 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:32:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:32:13 - Response 200 OK
+2024-12-14 00:32:13 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:32:13 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:32:13 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:32:13 - The total number of all instances in the client now is 2
+2024-12-14 00:32:13 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:32:13 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734116203422
+2024-12-14 00:32:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:32:13 - Response 200 OK
+2024-12-14 00:32:13 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:32:43 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:32:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:32:43 - Response 200 OK
+2024-12-14 00:32:43 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:32:43 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:32:43 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:32:43 - The total number of all instances in the client now is 2
+2024-12-14 00:32:43 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:32:43 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734116203422
+2024-12-14 00:32:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:32:43 - Response 200 OK
+2024-12-14 00:32:43 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:33:11 - Resolving eureka endpoints via configuration
+2024-12-14 00:33:11 - The availability zone for the given region us-east-1 are [defaultZone]
+2024-12-14 00:33:11 - Config resolved to [AwsEndpoint{ serviceUrl='http://localhost:8761/eureka/', region='us-east-1', zone='defaultZone'}]
+2024-12-14 00:33:11 - Local zone=defaultZone; resolved to: [AwsEndpoint{ serviceUrl='http://localhost:8761/eureka/', region='us-east-1', zone='defaultZone'}]
+2024-12-14 00:33:11 - Resolved to [AwsEndpoint{ serviceUrl='http://localhost:8761/eureka/', region='us-east-1', zone='defaultZone'}]
+2024-12-14 00:33:13 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:33:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:33:13 - Response 200 OK
+2024-12-14 00:33:13 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:33:13 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:33:13 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:33:13 - The total number of all instances in the client now is 2
+2024-12-14 00:33:13 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:33:13 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734116203422
+2024-12-14 00:33:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:33:13 - Response 200 OK
+2024-12-14 00:33:13 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:33:43 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:33:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:33:43 - Response 200 OK
+2024-12-14 00:33:43 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:33:43 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:33:43 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:33:43 - The total number of all instances in the client now is 2
+2024-12-14 00:33:43 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:33:43 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734116203422
+2024-12-14 00:33:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:33:43 - Response 200 OK
+2024-12-14 00:33:43 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:34:13 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:34:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:34:13 - Response 200 OK
+2024-12-14 00:34:13 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:34:13 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:34:13 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:34:13 - The total number of all instances in the client now is 2
+2024-12-14 00:34:13 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:34:13 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734116203422
+2024-12-14 00:34:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:34:13 - Response 200 OK
+2024-12-14 00:34:13 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:34:43 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:34:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:34:43 - Response 200 OK
+2024-12-14 00:34:43 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:34:43 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:34:43 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:34:43 - The total number of all instances in the client now is 2
+2024-12-14 00:34:43 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:34:43 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734116203422
+2024-12-14 00:34:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:34:43 - Response 200 OK
+2024-12-14 00:34:43 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:35:13 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:35:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:35:13 - Response 200 OK
+2024-12-14 00:35:13 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:35:13 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:35:13 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:35:13 - The total number of all instances in the client now is 2
+2024-12-14 00:35:13 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:35:13 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734116203422
+2024-12-14 00:35:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:35:13 - Response 200 OK
+2024-12-14 00:35:13 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:35:43 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:35:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:35:43 - Response 200 OK
+2024-12-14 00:35:43 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734116203422
+2024-12-14 00:35:43 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:35:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:35:43 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:35:43 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:35:43 - The total number of all instances in the client now is 2
+2024-12-14 00:35:43 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:35:43 - Response 200 OK
+2024-12-14 00:35:43 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:36:13 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:36:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:36:13 - Response 200 OK
+2024-12-14 00:36:13 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:36:13 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734116203422
+2024-12-14 00:36:13 - Accept=[application/json, application/*+json]
+2024-12-14 00:36:13 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:36:13 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:36:13 - The total number of all instances in the client now is 2
+2024-12-14 00:36:13 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:36:13 - Response 200 OK
+2024-12-14 00:36:13 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:36:43 - HTTP GET http://localhost:8761/eureka/apps/delta
+2024-12-14 00:36:43 - HTTP PUT http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082?status=UP&lastDirtyTimestamp=1734116203422
+2024-12-14 00:36:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:36:43 - Accept=[application/json, application/*+json]
+2024-12-14 00:36:43 - Response 200 OK
+2024-12-14 00:36:43 - Response 200 OK
+2024-12-14 00:36:43 - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2024-12-14 00:36:43 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - Heartbeat status: 200
+2024-12-14 00:36:43 - Got delta update with apps hashcode UP_2_
+2024-12-14 00:36:43 - The total number of instances fetched by the delta processor : 0
+2024-12-14 00:36:43 - The total number of all instances in the client now is 2
+2024-12-14 00:36:43 - Completed cache refresh task for discovery. All Apps hash code is Local region apps hashcode: UP_2_, is fetching remote regions? false 
+2024-12-14 00:36:47 - Unregistering application CREDITCARDMICROSERVICE with eureka with status DOWN
+2024-12-14 00:36:47 - Saw local status change event StatusChangeEvent [timestamp=1734116807611, current=DOWN, previous=UP]
+2024-12-14 00:36:47 - Executing on-demand update of local InstanceInfo
+2024-12-14 00:36:47 - Canceling the latest scheduled update, it will be rescheduled at the end of on demand update
+2024-12-14 00:36:47 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082: registering service...
+2024-12-14 00:36:47 - HTTP POST http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE
+2024-12-14 00:36:47 - Accept=[application/json, application/*+json]
+2024-12-14 00:36:47 - Writing [InstanceInfo [instanceId = 192.168.0.101:CreditCardMicroservice:8082, appName = CREDITCARDMICROSERVICE, hostName = 192.168.0.101, status = DOWN, ipAddr = 192.168.0.101, port = 8082, securePort = 443, dataCenterInfo = com.netflix.appinfo.MyDataCenterInfo@361a3d69] as "application/json"
+2024-12-14 00:36:47 - Response 204 NO_CONTENT
+2024-12-14 00:36:47 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - registration status: 204
+2024-12-14 00:36:47 - Shutting down DiscoveryClient ...
+2024-12-14 00:36:50 - Unregistering ...
+2024-12-14 00:36:50 - HTTP DELETE http://localhost:8761/eureka/apps/CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082
+2024-12-14 00:36:50 - Accept=[application/json, application/*+json]
+2024-12-14 00:36:50 - Response 200 OK
+2024-12-14 00:36:50 - DiscoveryClient_CREDITCARDMICROSERVICE/192.168.0.101:CreditCardMicroservice:8082 - deregister  status: 200
+2024-12-14 00:36:50 - Completed shut down of DiscoveryClient
