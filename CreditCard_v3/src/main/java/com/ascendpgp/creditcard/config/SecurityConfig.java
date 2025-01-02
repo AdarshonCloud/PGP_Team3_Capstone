@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class SecurityConfig {
@@ -22,7 +23,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    protected SecurityFilterChain securityFilterChain(HttpSecurity http, RestTemplate restTemplate) throws Exception {
         http
                 .sessionManagement(session -> session
                                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
@@ -35,14 +36,14 @@ public class SecurityConfig {
                                         "/swagger-ui.html",
                                         "/error"
                                 ).permitAll()
-                                .anyRequest().authenticated()
+                                .anyRequest().authenticated() // All other endpoints require authentication
                 )
                 .addFilterBefore(
-                        new JwtAuthenticationFilter(jwtService, null), // CSRF token repository removed
+                        new JwtAuthenticationFilter(jwtService, null, restTemplate), // CSRF token repository removed
                         UsernamePasswordAuthenticationFilter.class
                 );
 
-        logger.info("Security Filter Chain configured successfully with CSRF disabled.");
+        logger.info("Security Filter Chain configured successfully with CSRF disable and token validation.");
         return http.build();
     }
 }

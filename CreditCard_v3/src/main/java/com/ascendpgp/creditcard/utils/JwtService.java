@@ -11,11 +11,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class JwtService {
@@ -35,6 +38,34 @@ public class JwtService {
         this.loginServiceUrl = loginServiceUrl;
         this.jwtSecret = jwtSecret;
         this.encryptionSecretKey = encryptionSecretKey;
+    }
+    
+    private final Cache<String, Boolean> tokenBlacklistCache = Caffeine.newBuilder()
+            .expireAfterWrite(10, TimeUnit.MINUTES) // Cache tokens for 10 minutes
+            .maximumSize(1000) // Limit the cache size
+            .build();
+
+    /**
+     * Check if a token is blacklisted.
+     */
+    public boolean isTokenBlacklisted(String token) {
+        return tokenBlacklistCache.get(token, this::fetchTokenBlacklistStatus);
+    }
+
+    /**
+     * Fetch the blacklist status of a token from the external service.
+     */
+    private boolean fetchTokenBlacklistStatus(String token) {
+        try {
+            String validationApiUrl = "http://localhost:8081/api/customer/token/validate?token=" + token;
+            ResponseEntity<String> response = restTemplate.getForEntity(validationApiUrl, String.class);
+
+            // Token is considered blacklisted if the response status is not 200 OK
+            return !response.getStatusCode().is2xxSuccessful();
+        } catch (Exception ex) {
+            logger.error("Error fetching token blacklist status: {}", ex.getMessage());
+            return true; // Assume blacklisted if validation fails
+        }
     }
 
     /**

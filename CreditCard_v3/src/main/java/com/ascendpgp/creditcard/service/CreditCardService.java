@@ -1,25 +1,46 @@
 package com.ascendpgp.creditcard.service;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import com.ascendpgp.creditcard.exception.CardAlreadyDeletedException;
 import com.ascendpgp.creditcard.exception.CardAlreadyExistsException;
 import com.ascendpgp.creditcard.exception.CardNotFoundException;
 import com.ascendpgp.creditcard.exception.CustomAddCardException;
+import com.ascendpgp.creditcard.exception.InvalidOtpException;
 import com.ascendpgp.creditcard.model.CreditCard;
 import com.ascendpgp.creditcard.model.CreditCard.CardDetails;
 import com.ascendpgp.creditcard.model.CreditCardRequest;
 import com.ascendpgp.creditcard.repository.CreditCardRepository;
 import com.ascendpgp.creditcard.repository.CustomCreditCardRepository;
 import com.ascendpgp.creditcard.utils.EncryptionUtil;
+import com.ascendpgp.creditcard.utils.MongoExceptionUtils;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
@@ -27,6 +48,9 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 public class CreditCardService {
 
     private static final Logger logger = LoggerFactory.getLogger(CreditCardService.class);
+    
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Autowired
     private CreditCardRepository creditCardRepository;
@@ -40,11 +64,26 @@ public class CreditCardService {
 
     @Autowired
     private FallbackService fallbackService;
+    
+    @Autowired
+    private JavaMailSender mailSender;
+    
+    @Autowired
+    private MongoTemplate mongoTemplate;
+    
+    @Value("${sender.email}")
+    private String senderEmail;
+    
+    @Value("${login.service.url}")
+    private String loginAppUrl;
 
     private static final String CIRCUIT_BREAKER_NAME = "creditCardServiceCircuitBreaker";
     private static final int MAX_RETRY_ATTEMPTS = 3;
     private static final long RETRY_DELAY_MS = 500; // 500ms delay between retries
-
+    private static final long OTP_EXPIRY_TIME_MS = 5 * 60 * 1000; // 5 minutes
+    private static final ConcurrentHashMap<String, String> otpStore = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Long> otpTimestamps = new ConcurrentHashMap<>();
+    private static final SecureRandom secureRandom = new SecureRandom();
     /**
      * Add a new credit card for a user.
      *
@@ -55,7 +94,8 @@ public class CreditCardService {
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "fallbackService.addCreditCardFallback")
     public CardDetails addCreditCard(String username, CreditCardRequest request) {
         logger.info("Adding a new credit card for user: {}", username);
-
+        
+        try {
      // Step 1: Check if the card already exists
         Optional<CreditCard.CardDetails> existingCard = customCreditCardRepository.findCardDetailsByNumber(username, request.getCardNumber());
         if (existingCard.isPresent()) {
@@ -116,6 +156,12 @@ public class CreditCardService {
 
         logger.info("Verified successfully: Card was added for user: {} (Masked: {})", username, maskCardNumber(request.getCardNumber()));
         return cardDetails;
+        }
+        catch (Exception ex) {
+            // Delegates exception handling to MongoExceptionUtils
+            MongoExceptionUtils.handleMongoException(ex);
+            throw ex; // Unreachable code because the exception is re-thrown by MongoExceptionUtils
+        }
     }
     
     
@@ -164,6 +210,8 @@ public class CreditCardService {
             logger.error(e.getMessage(), e);
             throw e;
         } catch (Exception e) {
+        	// Delegates exception handling to MongoExceptionUtils
+            MongoExceptionUtils.handleMongoException(e);
             // Log and rethrow generic exceptions as RuntimeException
             logger.error("Unexpected error soft-deleting credit card for user: {}, card number: {}", username, cardNumber, e);
             throw new RuntimeException("Failed to delete the credit card.", e);
@@ -179,7 +227,7 @@ public class CreditCardService {
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "fallbackService.getActiveCreditCardsFallback")
     public List<CardDetails> getActiveCreditCards(String username) {
         logger.info("Fetching active credit cards for user: {}", username);
-
+        try {
         List<CardDetails> activeCards = customCreditCardRepository.findActiveCreditCards(username);
 
         if (activeCards.isEmpty()) {
@@ -192,6 +240,12 @@ public class CreditCardService {
         activeCards.forEach(this::decryptAndMaskCardDetails);
 
         return activeCards;
+        }
+        catch (Exception ex) {
+            // Delegates exception handling to MongoExceptionUtils
+            MongoExceptionUtils.handleMongoException(ex);
+            throw ex; // Unreachable code because the exception is re-thrown by MongoExceptionUtils
+        }
     }
 
     /**
@@ -203,7 +257,7 @@ public class CreditCardService {
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "fallbackService.toggleCreditCardFallback")
     public CreditCard.CardDetails toggleCreditCardStatus(String username, String creditCardNumber) {
         logger.info("Toggling status for username: {}, creditCardNumber: {}", username, creditCardNumber);
-
+        try {
         // Find the credit card details
         Optional<CreditCard.CardDetails> cardDetailsOpt = customCreditCardRepository.findCardDetailsByNumber(username, creditCardNumber);
         if (cardDetailsOpt.isEmpty()) {
@@ -217,7 +271,7 @@ public class CreditCardService {
         // Ensure the card is not soft-deleted
         if (cardDetails.isDeleted()) {
             logger.error("Attempt to toggle a soft-deleted card for username: {}, creditCardNumber: {}", username, creditCardNumber);
-            throw new RuntimeException("Card is soft-deleted and cannot be toggled.");
+            throw new RuntimeException("Card doesn't exist and cannot be toggled.");
         }
 
         // Determine the new status
@@ -245,9 +299,170 @@ public class CreditCardService {
 
         // Return the updated card details
         return cardDetails;
+        }
+        catch (Exception ex) {
+            // Delegates exception handling to MongoExceptionUtils
+            MongoExceptionUtils.handleMongoException(ex);
+            throw ex; // Unreachable code because the exception is re-thrown by MongoExceptionUtils
+        }
     }
     
+    /**
+     * Generate OTP and send it to the user's email.
+     */
+    public String generateOtp(String email) {
+        if (email == null || email.isEmpty()) {
+            logger.error("Invalid email provided for OTP generation.");
+            throw new IllegalArgumentException("Email cannot be null or empty.");
+        }
 
+        int otp = secureRandom.nextInt(9000) + 1000; // Generate a secure 4-digit OTP
+        String otpString = String.valueOf(otp);
+
+        otpStore.put(email, otpString);
+        otpTimestamps.put(email, System.currentTimeMillis() + OTP_EXPIRY_TIME_MS);
+
+        // Send OTP via email
+        try {
+            sendOtpToEmail(email, otpString);
+            logger.info("OTP securely generated and sent to email: {}", email);
+            return "OTP sent to your registered email.";
+        } catch (Exception e) {
+            logger.error("Failed to send OTP to email: {}. Error: {}", email, e.getMessage());
+            throw new RuntimeException("Failed to send OTP. Please try again later.");
+        }
+    }
+
+    /**
+     * Validate the provided OTP.
+     */
+    public boolean validateOtp(String email, String inputOtp) {
+        if (email == null || inputOtp == null) {
+            logger.error("Email or OTP is null. Email: {}, OTP: {}", email, inputOtp);
+            throw new IllegalArgumentException("Email and OTP cannot be null.");
+        }
+
+        Long expiryTime = otpTimestamps.get(email);
+        if (expiryTime == null || System.currentTimeMillis() > expiryTime) {
+            logger.warn("OTP expired for email: {}", email);
+            otpStore.remove(email);
+            otpTimestamps.remove(email);
+            throw new InvalidOtpException("OTP has expired.");
+        }
+
+        String storedOtp = otpStore.get(email);
+        if (storedOtp != null && storedOtp.equals(inputOtp)) {
+            logger.info("OTP validated successfully for email: {}", email);
+            otpStore.remove(email);
+            otpTimestamps.remove(email);
+            return true; // Valid OTP
+        }
+
+        logger.warn("Invalid OTP provided for email: {}", email);
+        throw new InvalidOtpException("Invalid OTP.");
+    }
+
+    /**
+     * Fetch the full credit card details after OTP validation.
+     */
+    public CardDetails getFullCreditCardDetails(String username, String cardNumber, String otp, String jwtToken) {
+        if (username == null || username.isEmpty() || cardNumber == null || cardNumber.isEmpty()) {
+            logger.error("Invalid inputs for fetching card details. Username: {}, Card Number: {}", username, cardNumber);
+            throw new IllegalArgumentException("Username and Card Number cannot be null or empty.");
+        }
+
+        logger.info("Fetching full credit card details for user: {}", username);
+
+        // Fetch email from username and jwtToken
+        String email;
+        try {
+            email = getUserEmail(username, jwtToken);
+            logger.debug("Fetched email: {} for username: {}", email, username);
+        } catch (Exception e) {
+            logger.error("Error fetching email for username: {}. Error: {}", username, e.getMessage(), e);
+            throw new RuntimeException("Failed to fetch user email.", e);
+        }
+
+        // Validate OTP
+        if (!validateOtp(email, otp)) {
+            throw new InvalidOtpException("Invalid or expired OTP.");
+        }
+
+        // Find the credit card details
+        Optional<CardDetails> cardDetailsOpt = customCreditCardRepository.findUnmaskedCardDetailsByNumber(username, cardNumber);
+        if (cardDetailsOpt.isEmpty()) {
+            logger.error("Credit card not found for username: {}, cardNumber: {}", username, cardNumber);
+            throw new CardNotFoundException("Credit card not found.");
+        }
+
+        CardDetails cardDetails = cardDetailsOpt.get();
+
+        // Decrypt the card number
+        try {
+            if (cardDetails.getCreditCardNumber() != null && encryptionUtil.isEncrypted(cardDetails.getCreditCardNumber())) {
+                String decryptedCardNumber = encryptionUtil.decrypt(cardDetails.getCreditCardNumber());
+                cardDetails.setCreditCardNumber(decryptedCardNumber); // Set the decrypted number
+            }
+        } catch (Exception e) {
+            logger.error("Error decrypting credit card number for user: {}. Error: {}", username, e.getMessage());
+            throw new RuntimeException("Failed to decrypt credit card details.");
+        }
+
+        logger.info("Successfully fetched full credit card details for user: {}", username);
+        return cardDetails;
+    }
+
+    /**
+     * Fetch user email from the login service by username.
+     */
+    public String getUserEmail(String username, String jwtToken) {
+        String url = loginAppUrl + "/api/customer/details";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + jwtToken);
+
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+
+        try {
+            ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, request, Map.class);
+
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                String email = (String) response.getBody().get("email");
+                if (email == null || email.isEmpty()) {
+                    logger.error("No email found in the response for user: {}", username);
+                    throw new RuntimeException("Email not found in the response.");
+                }
+                logger.info("Fetched email for user {}: {}", username, email);
+                return email;
+            } else {
+                logger.error("Failed to fetch user email for user: {}. HTTP Status: {}", username, response.getStatusCode());
+                throw new RuntimeException("Failed to fetch user email. Status: " + response.getStatusCode());
+            }
+        } catch (HttpClientErrorException.Forbidden ex) {
+            logger.warn("Access forbidden while calling Login app for user: {}. Check permissions or token validity.", username);
+            throw new RuntimeException("Access forbidden. Please check permissions or contact support.");
+        } catch (HttpClientErrorException ex) {
+            logger.error("HTTP error while calling Login app for user: {}. Status: {}, Body: {}", 
+                          username, ex.getStatusCode(), ex.getResponseBodyAsString());
+            throw new RuntimeException("HTTP error while fetching user email: " + ex.getMessage());
+        } catch (Exception ex) {
+            logger.error("Error calling Login app to fetch email for user: {}. Error: {}", username, ex.getMessage());
+            throw new RuntimeException("Error fetching user email: " + ex.getMessage(), ex);
+        }
+    }
+
+    /**
+     * Send OTP to email helper method.
+     */
+    private void sendOtpToEmail(String email, String otp) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setFrom(senderEmail);
+        message.setSubject("Your OTP for Credit Card Details");
+        message.setText("Your OTP is: " + otp + ". It is valid for 5 minutes.");
+        mailSender.send(message);
+        logger.debug("OTP email sent successfully to: {}", email);
+    }
+    
     private void decryptAndMaskCardDetails(CardDetails cardDetails) {
         try {
             String cardNumber = cardDetails.getCreditCardNumber();
@@ -260,6 +475,8 @@ public class CreditCardService {
             }
             cardDetails.setCvv(null); // CVV is hashed
         } catch (Exception e) {
+        	// Delegates exception handling to MongoExceptionUtils
+            MongoExceptionUtils.handleMongoException(e);
             logger.error("Error decrypting card details for card ID: {}", cardDetails.getCreditCardId(), e);
         }
     }

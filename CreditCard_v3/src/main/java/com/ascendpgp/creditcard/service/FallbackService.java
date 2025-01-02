@@ -18,13 +18,19 @@ public class FallbackService {
     /**
      * Fallback method for adding a credit card.
      *
-     * @param username Username of the user.
-     * @param request  CreditCardRequest containing credit card details.
+     * @param username  Username of the user.
+     * @param request   CreditCardRequest containing credit card details.
      * @param throwable Exception that caused the fallback.
      * @return Default CardDetails object.
      */
     public CardDetails addCreditCardFallback(String username, CreditCardRequest request, Throwable throwable) {
-        logger.error("Fallback triggered for addCreditCard. Username: {}, Reason: {}", username, throwable.getMessage());
+        logger.error("Fallback triggered for addCreditCard. Username: {}, CardNumber: {}, Reason: {}",
+                username, request.getCardNumber(), throwable.getMessage());
+        
+        if (throwable instanceof IllegalArgumentException) {
+            logger.warn("Invalid card details provided for username: {}", username);
+        }
+
         CardDetails fallbackCardDetails = new CardDetails();
         fallbackCardDetails.setStatus("fallback");
         return fallbackCardDetails;
@@ -42,11 +48,10 @@ public class FallbackService {
                 username, cardNumber, throwable.getMessage());
         
         if (throwable instanceof CardAlreadyDeletedException) {
-            logger.warn("Card is already deleted: {}", cardNumber);
+            logger.warn("Card is already deleted for card number: {}", cardNumber);
         } else {
-            logger.error("An unexpected error occurred while soft deleting card: {}", throwable.getMessage());
+            logger.error("Unexpected error during soft deletion: {}", throwable.getMessage());
         }
-
     }
 
     /**
@@ -57,7 +62,13 @@ public class FallbackService {
      * @return Empty list of CardDetails.
      */
     public List<CardDetails> getActiveCreditCardsFallback(String username, Throwable throwable) {
-        logger.error("Fallback triggered for getActiveCreditCards. Username: {}, Reason: {}", username, throwable.getMessage());
+        logger.error("Fallback triggered for getActiveCreditCards. Username: {}, Reason: {}",
+                username, throwable.getMessage());
+        
+        if (throwable instanceof IllegalStateException) {
+            logger.warn("Service temporarily unavailable for username: {}", username);
+        }
+
         return Collections.emptyList();
     }
 
@@ -68,16 +79,18 @@ public class FallbackService {
      * @param cardNumber Card number of the credit card.
      * @param throwable  Exception that caused the fallback.
      */
-    public void toggleCreditCardFallback(String username, String creditCardNumber, Throwable throwable) {
-        logger.error("Fallback triggered for toggleCreditCardStatus. Username: {}, CreditCardNumber: {}, Error: {}",
-                username, creditCardNumber, throwable.getMessage());
+    public void toggleCreditCardFallback(String username, String cardNumber, Throwable throwable) {
+        logger.error("Fallback triggered for toggleCreditCardStatus. Username: {}, CardNumber: {}, Error: {}",
+                username, cardNumber, throwable.getMessage());
 
-        // If the exception is related to a soft-deleted card, handle it separately
-        if (throwable.getMessage().contains("soft-deleted")) {
-            throw new RuntimeException("Card is marked deleted and cannot be toggled.");
+        if (throwable instanceof CardAlreadyDeletedException) {
+            logger.warn("Cannot toggle card as it is soft-deleted: {}", cardNumber);
+            throw new RuntimeException("Cannot toggle a soft-deleted card.");
+        } else if (throwable.getMessage().contains("database")) {
+            logger.error("Database error while toggling card: {}", cardNumber);
+            throw new RuntimeException("Service temporarily unavailable due to database issues.");
+        } else {
+            throw new RuntimeException("Service unavailable. Please try again later.");
         }
-
-        // For other exceptions, return a generic service unavailable message
-        throw new RuntimeException("Service unavailable. Please try again later.");
     }
 }

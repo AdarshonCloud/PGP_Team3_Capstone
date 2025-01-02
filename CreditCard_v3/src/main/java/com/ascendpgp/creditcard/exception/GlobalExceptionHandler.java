@@ -57,5 +57,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
     
+    @ExceptionHandler(InvalidCardDetailsException.class)
+    public ResponseEntity<String> handleInvalidCardDetailsException(InvalidCardDetailsException ex) {
+        logger.warn("Invalid card details: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
     
+    @ExceptionHandler(InvalidOtpException.class)
+    public ResponseEntity<String> handleInvalidOtpException(InvalidOtpException ex) {
+        logger.error("Invalid OTP Exception: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }

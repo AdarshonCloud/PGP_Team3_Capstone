@@ -46,7 +46,14 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         
-       <!-- Hystrix for Fallbacks -->
+        
+        <dependency>
+    		<groupId>com.github.ben-manes.caffeine</groupId>
+    		<artifactId>caffeine</artifactId>
+    		<version>3.1.8</version> <!-- Use the latest version -->
+		</dependency>
+
+       <!-- Resilience4j for Fallbacks -->
         <dependency>
    			 <groupId>org.springframework.cloud</groupId>
     		<artifactId>spring-cloud-starter-netflix-hystrix</artifactId>

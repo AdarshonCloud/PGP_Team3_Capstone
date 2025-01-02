@@ -1,7 +1,28 @@
 package com.ascendpgp.creditcard.controller;
 
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
+
 import com.ascendpgp.creditcard.exception.CardAlreadyDeletedException;
 import com.ascendpgp.creditcard.exception.CardNotFoundException;
+import com.ascendpgp.creditcard.exception.InvalidOtpException;
 import com.ascendpgp.creditcard.model.CreditCard;
 import com.ascendpgp.creditcard.model.CreditCard.CardDetails;
 import com.ascendpgp.creditcard.model.CreditCardRequest;
@@ -12,18 +33,8 @@ import com.ascendpgp.creditcard.utils.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/customer/creditcard")
@@ -45,7 +56,6 @@ public class CreditCardController {
             @ApiResponse(responseCode = "200", description = "Credit card added successfully."),
             @ApiResponse(responseCode = "400", description = "Invalid input or validation error."),
             @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid or missing token."),
-            @ApiResponse(responseCode = "403", description = "Forbidden - CSRF token missing or invalid."),
             @ApiResponse(responseCode = "500", description = "Internal server error.")
     })
     @PostMapping
@@ -75,7 +85,6 @@ public class CreditCardController {
             @ApiResponse(responseCode = "200", description = "Credit card deleted successfully."),
             @ApiResponse(responseCode = "404", description = "Credit card not found."),
             @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid or missing token."),
-            @ApiResponse(responseCode = "403", description = "Forbidden - CSRF token missing or invalid."),
             @ApiResponse(responseCode = "500", description = "Internal server error.")
     })
     @DeleteMapping("/{creditCardNumber}")
@@ -169,7 +178,6 @@ public class CreditCardController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved active credit cards."),
             @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid or missing token."),
-            @ApiResponse(responseCode = "403", description = "Forbidden - CSRF token missing or invalid."),
             @ApiResponse(responseCode = "500", description = "Internal server error.")
     })
     @GetMapping
@@ -187,6 +195,69 @@ public class CreditCardController {
         } catch (Exception e) {
             logger.error("Error fetching active credit cards: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"Internal Server Error\"}");
+        }
+    }
+    
+    /**
+     * Endpoint to generate OTP for full credit card details.
+     */
+    @Operation(summary = "Generate OTP and send to registerd email to unmask Credit Card Details", security = {@SecurityRequirement(name = "bearerAuth")})
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "OTP sent successfully."),
+        @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid or missing token."),
+        @ApiResponse(responseCode = "403", description = "Forbidden - Access denied to fetch user email."),
+        @ApiResponse(responseCode = "500", description = "Internal server error.")
+    })
+    @PostMapping("/generate-otp")
+    public ResponseEntity<String> generateOtp(@RequestHeader("Authorization") String token) {
+        logger.info("Received request to generate OTP.");
+
+        try {
+            String username = jwtService.extractUsername(token.substring(7));
+            String email = creditCardService.getUserEmail(username, token.substring(7)); // Fetch user's email
+            creditCardService.generateOtp(email);
+            return ResponseEntity.ok("OTP sent to your registered email.");
+        } catch (HttpClientErrorException.Forbidden e) {
+            logger.warn("Access forbidden while generating OTP: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied while fetching user email.");
+        } catch (Exception e) {
+            logger.error("Error generating OTP: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to generate OTP.");
+        }
+    }
+    
+    /**
+     * Endpoint to fetch full credit card details after OTP validation.
+     */
+    @Operation(summary = "Fetch full credit card details after OTP validation")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Full credit card details fetched successfully."),
+        @ApiResponse(responseCode = "400", description = "Invalid input or OTP validation error."),
+        @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid or missing token."),
+        @ApiResponse(responseCode = "404", description = "Credit card not found."),
+        @ApiResponse(responseCode = "500", description = "Internal server error.")
+    })
+    @GetMapping("/full-details")
+    public ResponseEntity<CardDetails> getFullCreditCardDetails(
+            @RequestHeader("Authorization") String token,
+            @RequestParam String username,
+            @RequestParam String cardNumber,
+            @RequestParam String otp) {
+        logger.info("Fetching full credit card details for user: {}", username);
+
+        try {
+            String jwtToken = token.substring(7); // Remove "Bearer " prefix
+            CardDetails cardDetails = creditCardService.getFullCreditCardDetails(username, cardNumber, otp, jwtToken);
+            return ResponseEntity.ok(cardDetails);
+        } catch (InvalidOtpException e) {
+            logger.warn("Invalid or expired OTP for user: {}", username);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        } catch (CardNotFoundException e) {
+            logger.warn("Credit card not found for user: {}", username);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            logger.error("Error fetching full credit card details for user: {}. Error: {}", username, e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 

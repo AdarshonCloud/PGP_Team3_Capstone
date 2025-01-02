@@ -1,5 +1,7 @@
 package com.ascendpgp.creditcard.repository;
 
+import com.ascendpgp.creditcard.exception.CardNotFoundException;
+import com.ascendpgp.creditcard.exception.CardUpdateException;
 import com.ascendpgp.creditcard.exception.CustomAddCardException;
 import com.ascendpgp.creditcard.model.CreditCard;
 import com.ascendpgp.creditcard.model.CreditCard.CardDetails;
@@ -111,8 +113,9 @@ public class CustomCreditCardRepositoryImpl implements CustomCreditCardRepositor
                 .findFirst();
 
             if (matchingCard.isEmpty()) {
-                logger.error("No matching credit card found for username: {}, creditCardId: {}, creditCardNumber: {}", username, creditCardId, creditCardNumber);
-                throw new RuntimeException("Credit card not found.");
+            	String errorMsg = String.format("Credit card not found for username: %s, cardId: %d, cardNumber: %s", username, creditCardId, creditCardNumber);
+                logger.error(errorMsg);
+                throw new CardNotFoundException(errorMsg);	
             }
 
             // Proceed with soft delete
@@ -185,8 +188,9 @@ public class CustomCreditCardRepositoryImpl implements CustomCreditCardRepositor
             UpdateResult result = collection.updateOne(filter, update, options);
 
             if (result.getMatchedCount() == 0) {
-                logger.error("No matching credit card found for username: {}, creditCardId: {}", username, creditCardId);
-                throw new RuntimeException("No matching credit card found for update.");
+            	String errorMsg = String.format("No matching card found for username: %s, cardId: %d", username, creditCardId);
+                logger.error(errorMsg);
+                throw new CardUpdateException(errorMsg);
             }
             if (result.getModifiedCount() == 0) {
                 logger.warn("No fields were updated for credit card with ID: {}", creditCardId);
@@ -369,6 +373,46 @@ public class CustomCreditCardRepositoryImpl implements CustomCreditCardRepositor
     }
     
 
+ // Find Unmasked Credit Card by Number
+    @Override
+    public Optional<CardDetails> findUnmaskedCardDetailsByNumber(String username, String cardNumber) {
+        logger.info("Executing findUnmaskedCardDetailsByNumber for username: {}, cardNumber: {}", username, cardNumber);
+
+        try {
+            Query query = new Query(Criteria.where("username").is(username));
+            List<Document> documents = mongoTemplate.find(query, Document.class, "CreditCard");
+
+            for (Document document : documents) {
+                List<Document> creditCards = (List<Document>) document.get("creditcards");
+                if (creditCards != null) {
+                    for (Document cardDoc : creditCards) {
+                        CardDetails cardDetails = mapToCardDetails(cardDoc);
+
+                        if (cardDetails != null) {
+                            String decryptedCardNumber = null;
+                            try {
+                                if (EncryptionUtil.isEncrypted(cardDetails.getCreditCardNumber())) {
+                                    decryptedCardNumber = EncryptionUtil.decrypt(cardDetails.getCreditCardNumber());
+                                } else {
+                                    decryptedCardNumber = cardDetails.getCreditCardNumber();
+                                }
+                                if (decryptedCardNumber.equals(cardNumber)) {
+                                    cardDetails.setCreditCardNumber(decryptedCardNumber); // Unmasked
+                                    return Optional.of(cardDetails);
+                                }
+                            } catch (Exception e) {
+                                logger.warn("Error decrypting or matching card number: {}", e.getMessage());
+                            }
+                        }
+                    }
+                }
+            }
+            return Optional.empty();
+        } catch (Exception e) {
+            logger.error("Error executing findUnmaskedCardDetailsByNumber for username: {}, cardNumber: {}", username, cardNumber, e);
+            throw new RuntimeException("Failed to find credit card by number", e);
+        }
+    }
     
  // Masking Credit Card method
     private String maskCardNumber(String cardNumber) {

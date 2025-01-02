@@ -13,4 +13,5 @@ public interface CustomCreditCardRepository {
     void updateCreditCardStatus(String username, int creditCardId, String creditCardNumber, boolean deleted, String newStatus);
     Optional<CreditCard.CardDetails> findCardDetailsByNumber(String username, String cardNumber);
     List<CardDetails> findActiveCreditCards(String username);
+    Optional<CardDetails> findUnmaskedCardDetailsByNumber(String username, String cardNumber);
 }

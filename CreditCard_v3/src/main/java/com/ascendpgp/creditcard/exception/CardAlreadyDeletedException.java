@@ -6,4 +6,8 @@ public class CardAlreadyDeletedException extends RuntimeException {
     public CardAlreadyDeletedException(String message) {
         super(message);
     }
+    
+    public CardAlreadyDeletedException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
