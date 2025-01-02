@@ -9,6 +9,7 @@ import com.ascendpgp.customerlogin.dto.SendVerificationRequest;
 import com.ascendpgp.customerlogin.exception.InvalidTokenException;
 import com.ascendpgp.customerlogin.model.LoginRequest;
 import com.ascendpgp.customerlogin.model.LoginResponse;
+import com.ascendpgp.customerlogin.repository.BlacklistedTokenRepository;
 import com.ascendpgp.customerlogin.repository.CustomerRepository;
 import com.ascendpgp.customerlogin.utils.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -37,6 +39,9 @@ public class CustomerController {
 
     @Autowired
     private CustomerService customerService;
+    
+    @Autowired
+    private BlacklistedTokenRepository blacklistedTokenRepository;
 
     @Autowired
     private JwtService jwtService;
@@ -249,10 +254,17 @@ public class CustomerController {
         @ApiResponse(responseCode = "500", description = "Internal server error.")
     })
     @PostMapping("/logout")
-    public ResponseEntity<?> logout() {
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader) {
         logger.info("Processing logout request.");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authorization header missing or invalid.");
+        }
+
+        String token = authHeader.substring(7); // Extract token
+
         try {
-            boolean isLoggedOut = customerService.logout();
+            boolean isLoggedOut = customerService.logout(token); // Pass token to the service method
             if (isLoggedOut) {
                 return ResponseEntity.ok("Logout successful.");
             } else {
@@ -263,4 +275,60 @@ public class CustomerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage()));
         }
     }
+    
+    
+    // Expose the API for the Credit Card app to use to find email 
+    @Operation(summary = "Fetch customer details (email)", security = {@SecurityRequirement(name = "bearerAuth")})
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Customer details retrieved successfully."),
+        @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid token."),
+        @ApiResponse(responseCode = "404", description = "Customer not found."),
+        @ApiResponse(responseCode = "500", description = "Internal server error.")
+    })
+    @GetMapping("/details")
+    public ResponseEntity<?> getCustomerDetails(HttpServletRequest request) {
+        logger.info("Fetching customer details for the provided token.");
+
+        // Extract Authorization header
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            logger.warn("Missing or invalid Authorization header.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Missing or invalid Authorization header."));
+        }
+
+        try {
+            // Extract and validate JWT token
+            String token = authHeader.substring(7); // Remove "Bearer " prefix
+            if (!jwtService.validateToken(token)) {
+                logger.warn("Invalid JWT token.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("error", "Invalid token."));
+            }
+
+            // Extract username from the token
+            String username = jwtService.extractUsername(token);
+
+            // Fetch customer details by username
+            CustomerEntity customer = customerRepository.findByUsername(username);
+            if (customer == null) {
+                logger.warn("Customer not found for username: {}", username);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "Customer not found."));
+            }
+
+            // Return only email and username
+            Map<String, String> userDetails = new HashMap<>();
+            userDetails.put("username", customer.getUsername());
+            userDetails.put("email", customer.getEmail());
+
+            logger.info("Successfully fetched customer details for username: {}", username);
+            return ResponseEntity.ok(userDetails);
+        } catch (Exception e) {
+            logger.error("Error fetching customer details: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "An error occurred while fetching customer details."));
+        }
+    }
+ 
 }

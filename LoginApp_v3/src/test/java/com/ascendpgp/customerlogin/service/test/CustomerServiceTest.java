@@ -19,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.ascendpgp.customerlogin.service.CustomerService;
 import com.ascendpgp.customerlogin.exception.CustomerServiceException;
-import com.ascendpgp.customerlogin.exception.InvalidPasswordException;
+import com.ascendpgp.customerlogin.exception.InvalidCredentialsException;
 import com.ascendpgp.customerlogin.exception.InvalidTokenException;
 import com.ascendpgp.customerlogin.model.CustomerEntity;
 import com.ascendpgp.customerlogin.model.LoginRequest;
@@ -206,7 +206,7 @@ class CustomerServiceTest {
         when(customerRepository.findByUsername("testuser")).thenReturn(customer);
         when(passwordEncoder.matches("wrongPassword", "encodedPassword")).thenReturn(false);
 
-        Exception exception = assertThrows(InvalidPasswordException.class, () ->
+        Exception exception = assertThrows(InvalidCredentialsException.class, () ->
                 customerService.changePassword("wrongPassword", "newPassword", "newPassword"));
 
         assertEquals("Current password is incorrect.", exception.getMessage());

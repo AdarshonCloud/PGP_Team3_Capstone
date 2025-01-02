@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.ascendpgp.customerlogin.model.BlacklistedToken;
+import com.ascendpgp.customerlogin.repository.BlacklistedTokenRepository;
+
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,14 +22,44 @@ public class JwtService {
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
     private final Key SECRET_KEY;
+    private final BlacklistedTokenRepository blacklistedTokenRepository;
 
-    public JwtService(@Value("${jwt.secret}") String secretKey) {
-        if (secretKey == null || secretKey.length() < 32) {
+    public JwtService(
+            @Value("${jwt.secret}") String secretKey,
+            BlacklistedTokenRepository blacklistedTokenRepository
+        ) {if (secretKey == null || secretKey.length() < 32) {
             logger.error("Invalid secret key. It must be at least 32 characters long.");
             throw new IllegalArgumentException("Secret key must be at least 32 characters long.");
         }
         this.SECRET_KEY = Keys.hmacShaKeyFor(secretKey.getBytes());
+        this.blacklistedTokenRepository = blacklistedTokenRepository;
         logger.info("JWT Service initialized successfully with a secure secret key.");
+    }
+
+    /**
+     * Blacklist a token.
+     *
+     * @param token Token to blacklist
+     */
+    public void blacklistToken(String token) {
+        // Extract claims to fetch the expiry date
+        Claims claims = extractClaims(token);
+        Date expiryDate = claims.getExpiration();
+
+        // Save the token to the blacklist
+        BlacklistedToken blacklistedToken = new BlacklistedToken(token, expiryDate);
+        blacklistedTokenRepository.save(blacklistedToken);
+        logger.info("Token blacklisted successfully: {}", token);
+    }
+    
+    /**
+     * Check if a token is blacklisted.
+     *
+     * @param token Token to check
+     * @return True if blacklisted, otherwise false
+     */
+    public boolean isTokenBlacklisted(String token) {
+        return blacklistedTokenRepository.existsByToken(token);
     }
 
     /**
@@ -111,6 +144,13 @@ public class JwtService {
      * @return True if the token is valid, otherwise false
      */
     public boolean validateToken(String token) {
+    	
+    	// Check if the token is blacklisted
+        if (isTokenBlacklisted(token)) {
+            logger.warn("Token is blacklisted: {}", token);
+            return false;
+        }
+        
         try {
             Claims claims = extractClaims(token);
             logger.info("Token is valid. Claims: {}", claims);
