@@ -191,8 +191,3 @@ Standard error response format:
   "path": "/api/path"
 }
 ```
-
-## Contributing
-1. Fork the repository
-2. Create a feature branch
-3. Submit pull request

@@ -7,7 +7,6 @@ An integrated microservices system providing authentication and account manageme
 - **Team 3 (Our Team)**: Login Service - Core authentication and account management
 - **Other Teams**:
     - Credit Card Service - Credit card operations
-    - Eureka Server - Service registry and discovery
 
 ### 1.2 Component Architecture
 ```
