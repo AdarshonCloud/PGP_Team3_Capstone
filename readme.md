@@ -1,4 +1,4 @@
-                               # Customer Login Service
+# Customer Login Service
 
 ## Overview
 Authentication and account management microservice for the Ascend PGP Batch 2 project. This service is part of a larger microservices architecture, developed by Team 3.
