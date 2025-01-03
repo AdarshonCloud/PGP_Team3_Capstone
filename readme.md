@@ -42,9 +42,9 @@ eureka.client.service-url.defaultZone=http://localhost:8761/eureka/
 eureka.instance.prefer-ip-address=true
 
 # Email Configuration
-spring.mail.host=smtp-gw1.wal-mart.com
-spring.mail.port=25
-sender.email=Teams3_PGP@walmart.com
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+sender.email=ascendpgp@gmail.com
 
 # Circuit Breaker
 resilience4j.circuitbreaker.instances.loginService.failure-rate-threshold=50

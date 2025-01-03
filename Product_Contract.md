@@ -348,9 +348,9 @@ An integrated microservices system providing authentication and account manageme
   ```
 
 2. **Email System**
-- SMTP Server: smtp-gw1.wal-mart.com
-- Port: 25
-- Sender: Teams3_PGP@walmart.com
+- SMTP Server: smtp.gmail.com
+- Port: 587
+- Sender: ascendpgp@gmail.com
 
 3. **Service Discovery**
 - Eureka Server URL: http://localhost:8761
