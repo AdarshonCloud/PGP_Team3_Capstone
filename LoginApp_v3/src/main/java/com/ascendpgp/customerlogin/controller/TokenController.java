@@ -64,7 +64,7 @@ public class TokenController {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
 			}
 
-			// Extract and validate claims if needed
+			// Extract and validate claims
 			Map<String, String> claims = jwtService.extractUserDetails(token);
 			if (claims.isEmpty()) {
 				logger.warn("Token claims validation failed");
@@ -102,6 +102,13 @@ public class TokenController {
 				logger.warn("Empty token received for blacklisting");
 				response.put("error", "Token cannot be null or empty");
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+			}
+
+			// Check if token is already blacklisted
+			if (blacklistedTokenRepository.existsByToken(token)) {
+				logger.info("Token is already blacklisted");
+				response.put("message", "Token is already blacklisted");
+				return ResponseEntity.ok(response);
 			}
 
 			jwtService.blacklistToken(token);
