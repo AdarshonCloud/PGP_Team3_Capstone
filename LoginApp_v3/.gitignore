@@ -1,0 +1,13 @@
+# Compiled files
+target/
+*.class
+
+# IDE files
+.idea/
+*.iml
+
+# System files
+.DS_Store
+
+# Logs
+/Logs/
