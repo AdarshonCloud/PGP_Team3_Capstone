@@ -14,7 +14,7 @@
 - Docker Desktop installed
 - Java 17
 - Maven
-- Access to corporate proxy (configured in Docker Desktop)
+- Walmart proxy (configured in Docker Desktop)
 - MongoDB Atlas access (for production)
 
 ## Project Structure
