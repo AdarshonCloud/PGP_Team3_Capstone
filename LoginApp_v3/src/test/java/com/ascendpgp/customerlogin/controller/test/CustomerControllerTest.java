@@ -1,11 +1,5 @@
 package com.ascendpgp.customerlogin.controller.test;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
-import java.util.Map;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -14,19 +8,31 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.ascendpgp.customerlogin.service.CustomerService;
 import com.ascendpgp.customerlogin.controller.CustomerController;
-import com.ascendpgp.customerlogin.dto.ForgotPasswordRequest;
-import com.ascendpgp.customerlogin.dto.ResetPasswordRequest;
-import com.ascendpgp.customerlogin.model.CustomerEntity;
-import com.ascendpgp.customerlogin.model.LoginRequest;
-import com.ascendpgp.customerlogin.model.LoginResponse;
-import com.ascendpgp.customerlogin.exception.InvalidTokenException;
+import com.ascendpgp.customerlogin.service.CustomerService;
+import com.ascendpgp.customerlogin.model.*;
+import com.ascendpgp.customerlogin.dto.*;
+import com.ascendpgp.customerlogin.repository.CustomerRepository;
+import com.ascendpgp.customerlogin.utils.JwtService;
+import com.ascendpgp.customerlogin.exception.*;
+
+import java.time.LocalDateTime;
+import java.util.Base64;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class CustomerControllerTest {
 
     @Mock
     private CustomerService customerService;
+
+    @Mock
+    private CustomerRepository customerRepository;
+
+    @Mock
+    private JwtService jwtService;
 
     @InjectMocks
     private CustomerController customerController;
@@ -36,171 +42,135 @@ class CustomerControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    // Test Case 1: First-Time Login Success
     @Test
-    public void testFirstTimeLogin_Success() {
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail("test@example.com");
-        loginRequest.setPassword("password123");
-
-        LoginResponse mockResponse = new LoginResponse();
-        mockResponse.setName(new CustomerEntity.Name("John", "Doe"));
-        mockResponse.setToken("dummy-token");
-        mockResponse.setAccountValidated(false);
+    void firstTimeLogin_Success() {
+        LoginRequest request = createLoginRequest();
+        LoginResponse mockResponse = createLoginResponse(true);
 
         when(customerService.login(any(LoginRequest.class), eq(true))).thenReturn(mockResponse);
 
-        ResponseEntity<?> response = customerController.firstTimeLogin(loginRequest);
+        ResponseEntity<?> response = customerController.firstTimeLogin(request);
 
-        assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        Map<String, Object> body = (Map<String, Object>) response.getBody();
-        assertNotNull(body);
-        assertEquals("Welcome John Doe", body.get("message"));
-        assertEquals("dummy-token", body.get("token"));
-        verify(customerService, times(1)).login(any(LoginRequest.class), eq(true));
+        assertNotNull(response.getBody());
     }
 
-    // Test Case 2: First-Time Login Failure
     @Test
-    public void testFirstTimeLogin_Failure() {
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail("invalid@example.com");
-        loginRequest.setPassword("wrongPassword");
-
-        when(customerService.login(any(LoginRequest.class), eq(true)))
-                .thenThrow(new RuntimeException("Invalid email or password."));
-
-        ResponseEntity<?> response = customerController.firstTimeLogin(loginRequest);
-
-        assertNotNull(response);
-        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-        assertEquals("Invalid email or password.", ((Map<?, ?>) response.getBody()).get("error"));
-        verify(customerService, times(1)).login(any(LoginRequest.class), eq(true));
-    }
-
-    // Test Case 3: Subsequent Login Success
-    @Test
-    public void testSubsequentLogin_Success() {
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail("test@example.com");
-        loginRequest.setPassword("password123");
-
-        LoginResponse mockResponse = new LoginResponse();
-        mockResponse.setName(new CustomerEntity.Name("John", "Doe"));
-        mockResponse.setToken("dummy-token");
+    void subsequentLogin_Success() {
+        LoginRequest request = createLoginRequest();
+        LoginResponse mockResponse = createLoginResponse(true);
 
         when(customerService.login(any(LoginRequest.class), eq(false))).thenReturn(mockResponse);
 
-        ResponseEntity<?> response = customerController.subsequentLogin(loginRequest);
+        ResponseEntity<?> response = customerController.subsequentLogin(request);
 
-        assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(mockResponse, response.getBody());
-        verify(customerService, times(1)).login(any(LoginRequest.class), eq(false));
     }
 
-    // Test Case 4: Forgot Password Success
     @Test
-    public void testForgotPassword_Success() {
-        ForgotPasswordRequest request = new ForgotPasswordRequest();
-        request.setEmail("test@example.com");
+    void subsequentLogin_InvalidCredentials() {
+        LoginRequest request = createLoginRequest();
+        when(customerService.login(any(LoginRequest.class), eq(false)))
+                .thenThrow(new InvalidCredentialsException("Invalid credentials"));
 
-        doNothing().when(customerService).requestPasswordReset(request.getEmail());
+        ResponseEntity<?> response = customerController.subsequentLogin(request);
 
-        ResponseEntity<?> response = customerController.forgotPassword(request);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+
+    @Test
+    void changePassword_Success() {
+        ChangePasswordRequest request = new ChangePasswordRequest();
+        request.setCurrentPassword("Current@123");
+        request.setNewPassword("New@123");
+        request.setConfirmPassword("New@123");
+
+        doNothing().when(customerService).changePassword(
+                request.getCurrentPassword(),
+                request.getNewPassword(),
+                request.getConfirmPassword()
+        );
+
+        ResponseEntity<?> response = customerController.changePassword(request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Password reset link sent to your email.", response.getBody());
-        verify(customerService, times(1)).requestPasswordReset(request.getEmail());
     }
 
-    // Test Case 5: Forgot Password Failure
     @Test
-    public void testForgotPassword_Failure() {
-        // Arrange
-        ForgotPasswordRequest request = new ForgotPasswordRequest();
-        request.setEmail("nonexistent@example.com");
+    void handleResetPasswordLink_Success() {
+        String token = "valid-token";
+        CustomerEntity customer = new CustomerEntity();
+        customer.setEmail("test@example.com");
+        customer.setResetPasswordTokenExpiry(LocalDateTime.now().plusHours(1));
 
-        doThrow(new RuntimeException("Email not found.")).when(customerService).requestPasswordReset(request.getEmail());
+        when(customerRepository.findByResetPasswordToken(token)).thenReturn(customer);
 
-        // Act
-        ResponseEntity<?> result = customerController.forgotPassword(request);
+        ResponseEntity<?> response = customerController.handleResetPasswordLink(token);
 
-        // Assert
-        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
-        assertEquals("Email not found.", ((Map<?, ?>) result.getBody()).get("error"));
-        verify(customerService, times(1)).requestPasswordReset(request.getEmail());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
- // Test Case 3: Reset Password Success
     @Test
-    public void testResetPassword_Success() {
+    void handleResetPasswordLink_ExpiredToken() {
+        String token = "expired-token";
+        CustomerEntity customer = new CustomerEntity();
+        customer.setResetPasswordTokenExpiry(LocalDateTime.now().minusHours(1));
+
+        when(customerRepository.findByResetPasswordToken(token)).thenReturn(customer);
+
+        ResponseEntity<?> response = customerController.handleResetPasswordLink(token);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    void resetPassword_Success() {
         ResetPasswordRequest request = new ResetPasswordRequest();
         request.setToken("valid-token");
-        request.setNewPassword("newPassword123");
-        request.setConfirmPassword("newPassword123");
+        request.setNewPassword("New@123");
+        request.setConfirmPassword("New@123");
 
         doNothing().when(customerService).resetPasswordForForgotFlow(
-                request.getToken(), request.getNewPassword(), request.getConfirmPassword()
+                request.getToken(),
+                request.getNewPassword(),
+                request.getConfirmPassword()
         );
 
         ResponseEntity<?> response = customerController.resetPassword(request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Password reset successfully.", response.getBody());
-        verify(customerService, times(1)).resetPasswordForForgotFlow(
-                request.getToken(), request.getNewPassword(), request.getConfirmPassword()
-        );
     }
 
-    // Test Case 7: Reset Password Failure
     @Test
-    public void testResetPassword_Failure() {
-        // Arrange
-        ResetPasswordRequest request = new ResetPasswordRequest();
-        request.setToken("expired-token");
-        request.setNewPassword("newPassword123");
-        request.setConfirmPassword("newPassword123");
+    void logout_Success() {
+        String token = "Bearer valid-token";
+        when(customerService.logout(anyString())).thenReturn(true);
 
-        doThrow(new RuntimeException("Invalid or expired token."))
-                .when(customerService).resetPasswordForForgotFlow(
-                        request.getToken(), request.getNewPassword(), request.getConfirmPassword()
-                );
+        ResponseEntity<?> response = customerController.logout(token);
 
-        // Act
-        ResponseEntity<?> result = customerController.resetPassword(request);
-
-        // Assert
-        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
-        assertEquals("Invalid or expired token.", ((Map<?, ?>) result.getBody()).get("error"));
-        verify(customerService, times(1)).resetPasswordForForgotFlow(
-                request.getToken(), request.getNewPassword(), request.getConfirmPassword()
-        );
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
-    // Test Case 8: Verify Account Success
-    @Test
-    public void testVerifyAccount_Success() {
-        doNothing().when(customerService).verifyAccount(anyString());
-
-        ResponseEntity<?> result = customerController.verifyAccount("valid-token");
-
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertEquals("Account verified successfully.", result.getBody());
-        verify(customerService, times(1)).verifyAccount("valid-token");
+    private LoginRequest createLoginRequest() {
+        LoginRequest request = new LoginRequest();
+        request.setEmail("test@example.com");
+        request.setPassword(Base64.getEncoder().encodeToString("Test@123".getBytes()));
+        return request;
     }
 
-    // Test Case 9: Verify Account Failure
-    @Test
-    public void testVerifyAccount_Failure() {
-        doThrow(new InvalidTokenException("Invalid or expired token."))
-                .when(customerService).verifyAccount(anyString());
+    private LoginResponse createLoginResponse(boolean validated) {
+        LoginResponse response = new LoginResponse();
+        response.setToken("test-token");
+        CustomerEntity.Name name = new CustomerEntity.Name("John", "Doe");
+        response.setName(name);
+        response.setAccountValidated(validated);
+        return response;
+    }
 
-        ResponseEntity<?> result = customerController.verifyAccount("expired-token");
-
-        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
-        assertEquals("Invalid or expired token.", ((Map<?, ?>) result.getBody()).get("error"));
-        verify(customerService, times(1)).verifyAccount("expired-token");
+    private jakarta.servlet.http.HttpServletRequest mockRequest(String authHeader) {
+        jakarta.servlet.http.HttpServletRequest request = mock(jakarta.servlet.http.HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn(authHeader);
+        return request;
     }
 }

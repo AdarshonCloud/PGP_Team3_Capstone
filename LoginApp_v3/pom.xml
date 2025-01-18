@@ -31,9 +31,67 @@
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2023.0.4</spring-cloud.version>
+		<java.version>17</java.version>
+		<spring-cloud.version>2023.0.4</spring-cloud.version>
+		<!-- SonarQube properties -->
+		<java.version>17</java.version>
+		<spring-cloud.version>2023.0.4</spring-cloud.version>
+		<!-- Update JaCoCo version to 0.8.10 -->
+		<jacoco.version>0.8.10</jacoco.version>
+		<sonar.host.url>http://localhost:9000</sonar.host.url>
+		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+		<sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+		<sonar.coverage.exclusions>
+			**/dto/**,
+			**/model/**,
+			**/config/**,
+			**/CustomerloginApplication.java,
+			**/exception/**
+		</sonar.coverage.exclusions>
+		<sonar.cpd.exclusions>
+			**/exception/**,
+			**/model/**,
+			**/dto/**
+		</sonar.cpd.exclusions>
 	</properties>
 
 	<dependencies>
+		<!-- Add these dependencies in your pom.xml -->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers</artifactId>
+			<version>1.19.3</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>mongodb</artifactId>
+			<version>1.19.3</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>1.19.3</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-testcontainers</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>de.flapdoodle.embed</groupId>
+			<artifactId>de.flapdoodle.embed.mongo.spring30x</artifactId>
+			<version>4.11.0</version>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- Logback for logging -->
 		<dependency>
@@ -80,7 +138,7 @@
 		</dependency>
 
         <!-- Hystrix for Fallbacks -->
-        
+
         <dependency>
    			 <groupId>org.springframework.cloud</groupId>
     		<artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
@@ -149,6 +207,13 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.jacoco</groupId>
+			<artifactId>jacoco-maven-plugin</artifactId>
+			<version>${jacoco.version}</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<dependencyManagement>
@@ -168,6 +233,57 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<!-- Add JaCoCo plugin -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<!-- JaCoCo Plugin -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>default-check</id>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<rule>
+									<element>BUNDLE</element>
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.50</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

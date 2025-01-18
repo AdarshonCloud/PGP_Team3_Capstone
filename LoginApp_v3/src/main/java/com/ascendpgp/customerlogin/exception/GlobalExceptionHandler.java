@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public abstract class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     
@@ -105,4 +105,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("A database connectivity issue occurred. Please try again later.");
     }
+
+    protected abstract Logger getLogger();
 }

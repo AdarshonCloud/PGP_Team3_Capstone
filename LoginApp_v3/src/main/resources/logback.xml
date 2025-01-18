@@ -1,62 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration debug="true">
-    <!-- Define the application name from spring.application.name -->
-    <property name="appName" value="${spring.application.name:-CustomerLogin}" />
-    <property name="LOG_FILE_PATH" value="/Users/a0s0nmi/IdeaProjects/Apps_v3/Logs/LoginLogs" />
-
-        <!-- Console Appender -->
+<configuration>
+    <!-- Console Appender Only -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] [%property{appName}] %logger{36} - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
-<!-- Rolling File Appender -->
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <!-- Define the active log file with a date-based pattern -->
-        <file>${LOG_FILE_PATH}/application.%d{yyyy-MM-dd}.log</file>
-        <!-- Define a rolling policy with a date-based filename -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- Pattern for the rolled-over files -->
-            <fileNamePattern>${LOG_FILE_PATH}/application.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <!-- Number of days to keep history -->
-            <maxHistory>7</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] [%property{appName}] %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>>
-    
     <!-- Log Levels -->
     <logger name="org.springframework" level="INFO" />
     <logger name="com.ascendpgp.customerlogin" level="DEBUG" />
-    <logger name="org.mongodb.driver" level="TRACE" />
+    <logger name="org.mongodb.driver" level="INFO" />
 
-    <!-- Cloud Appender (Commented Out) -->
-    <!--
-    <appender name="CLOUD" class="com.cloud.logging.CloudAppender">
-        <url>https://cloud.storage.url/container</url>
-        <credentials>your-credentials-here</credentials>
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] [%property{appName}] %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
-    -->
-
-    <!-- ELK Appender (Commented Out) -->
-    <!--
-    <appender name="ELK" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>elk-server:5000</destination>
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
-    </appender>
-    -->
-
-    <!-- Root Logger -->
+    <!-- Root Logger - Console only for container -->
     <root level="INFO">
         <appender-ref ref="CONSOLE" />
-        <appender-ref ref="FILE" />
-        <!-- Uncomment the lines below to add Cloud and ELK logging in the future -->
-        <!-- <appender-ref ref="CLOUD" /> -->
-        <!-- <appender-ref ref="ELK" /> -->
     </root>
 </configuration>

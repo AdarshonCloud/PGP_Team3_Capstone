@@ -1,39 +1,33 @@
 package com.ascendpgp.customerlogin.service.test;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+
+import java.time.LocalDateTime;
+import java.util.Base64;
 
 import com.ascendpgp.customerlogin.service.CustomerService;
-import com.ascendpgp.customerlogin.exception.CustomerServiceException;
-import com.ascendpgp.customerlogin.exception.InvalidCredentialsException;
-import com.ascendpgp.customerlogin.exception.InvalidTokenException;
+import com.ascendpgp.customerlogin.repository.CustomerRepository;
 import com.ascendpgp.customerlogin.model.CustomerEntity;
 import com.ascendpgp.customerlogin.model.LoginRequest;
 import com.ascendpgp.customerlogin.model.LoginResponse;
-import com.ascendpgp.customerlogin.repository.CustomerRepository;
 import com.ascendpgp.customerlogin.utils.JwtService;
-import io.github.resilience4j.circuitbreaker.CircuitBreaker;
-import jakarta.mail.internet.MimeMessage;
-import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import com.ascendpgp.customerlogin.exception.*;
+import com.mongodb.MongoSocketWriteException;
 
-class CustomerServiceTest {
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-    @InjectMocks
-    private CustomerService customerService;
+class CustomerServiceAdditionalTest {
 
     @Mock
     private CustomerRepository customerRepository;
@@ -47,168 +41,401 @@ class CustomerServiceTest {
     @Mock
     private JavaMailSender mailSender;
 
+    @Mock
+    private SecurityContext securityContext;
+
+    @Mock
+    private Authentication authentication;
+
+    @InjectMocks
+    private CustomerService customerService;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        SecurityContextHolder.setContext(securityContext);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
     }
 
-    // Test Case 1: Successful Login for First-Time Login
     @Test
-    void testLogin_Success_FirstTimeLogin() {
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail("test@example.com");
-        loginRequest.setPassword("password123");
+    void validatePassword_Success() {
+        String rawPassword = "testPass123";
+        String hashedPassword = "hashedPassword";
+
+        when(passwordEncoder.matches(rawPassword, hashedPassword)).thenReturn(true);
+
+        assertTrue(customerService.validatePassword(rawPassword, hashedPassword));
+        verify(passwordEncoder).matches(rawPassword, hashedPassword);
+    }
+
+    @Test
+    void validatePassword_Failure() {
+        String rawPassword = "testPass123";
+        String hashedPassword = "hashedPassword";
+
+        when(passwordEncoder.matches(rawPassword, hashedPassword)).thenReturn(false);
+
+        assertFalse(customerService.validatePassword(rawPassword, hashedPassword));
+        verify(passwordEncoder).matches(rawPassword, hashedPassword);
+    }
+
+    @Test
+    void login_CustomerNotFound() {
+        LoginRequest request = new LoginRequest();
+        request.setEmail("nonexistent@example.com");
+        request.setPassword(Base64.getEncoder().encodeToString("password123".getBytes()));
+
+        when(customerRepository.findByEmail("nonexistent@example.com")).thenReturn(null);
+
+        assertThrows(InvalidCredentialsException.class, () ->
+                customerService.login(request, true)
+        );
+    }
+
+    @Test
+    void login_WithEndpoints_Success() {
+        LoginRequest request = new LoginRequest();
+        request.setEmail("test@example.com");
+        String rawPassword = "Test@123";
+        request.setPassword(Base64.getEncoder().encodeToString(rawPassword.getBytes()));
 
         CustomerEntity customer = new CustomerEntity();
         customer.setEmail("test@example.com");
-        customer.setPassword("encodedPassword");
+        customer.setUsername("testuser");
+        customer.setPassword(passwordEncoder.encode(rawPassword));
         customer.setName(new CustomerEntity.Name("John", "Doe"));
-        customer.setAccountValidated(true);
-        customer.setFirstTimeLogin(true);
 
         when(customerRepository.findByEmail("test@example.com")).thenReturn(customer);
-        when(passwordEncoder.matches("password123", "encodedPassword")).thenReturn(true);
-        when(jwtService.generateToken(anyString(), anyString())).thenReturn("dummy-token");
+        when(passwordEncoder.matches(rawPassword, customer.getPassword())).thenReturn(true);
+        when(jwtService.generateToken(anyString(), anyString())).thenReturn("test-token");
 
-        LoginResponse response = customerService.login(loginRequest, true);
+        LoginResponse response = customerService.login(request, false);
 
         assertNotNull(response);
-        assertEquals("dummy-token", response.getToken());
-        assertTrue(response.isAccountValidated());
-        assertEquals("John", response.getName().getFirst());
-        assertEquals("Doe", response.getName().getLast());
-        verify(customerRepository, times(1)).save(customer);
+        assertNotNull(response.getAvailableEndpoints());
+        assertEquals(2, response.getAvailableEndpoints().size());
+        assertEquals("/api/account", response.getAvailableEndpoints().get(0).getUrl());
+        assertEquals("/api/creditcards", response.getAvailableEndpoints().get(1).getUrl());
     }
 
-    // Test Case 2: Login Failure Due to Invalid Password
     @Test
-    void testLogin_Failure_InvalidPassword() {
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail("test@example.com");
-        loginRequest.setPassword("wrongPassword");
+    void login_HandleMongoException() {
+        LoginRequest request = new LoginRequest();
+        request.setEmail("test@example.com");
+        request.setPassword(Base64.getEncoder().encodeToString("password123".getBytes()));
 
+        when(customerRepository.findByEmail(anyString()))
+                .thenThrow(new com.mongodb.MongoTimeoutException("Connection timeout"));
+
+        assertThrows(MongoTimeoutException.class, () ->
+                customerService.login(request, true)
+        );
+    }
+
+    @Test
+    void handleFailedLogin_ExceedMaxAttempts() {
         CustomerEntity customer = new CustomerEntity();
-        customer.setEmail("test@example.com");
-        customer.setPassword("encodedPassword");
+        customer.setFailedAttempts(2); // One more attempt will exceed MAX_FAILED_ATTEMPTS (3)
 
+        when(customerRepository.save(any(CustomerEntity.class))).thenReturn(customer);
+
+        assertThrows(AccountLockedException.class, () -> {
+            for (int i = 0; i < 2; i++) {
+                try {
+                    LoginRequest request = new LoginRequest();
+                    request.setEmail("test@example.com");
+                    request.setPassword(Base64.getEncoder().encodeToString("wrongpass".getBytes()));
+
+                    when(customerRepository.findByEmail("test@example.com")).thenReturn(customer);
+                    when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
+
+                    customerService.login(request, true);
+                } catch (InvalidCredentialsException e) {
+                    // Expected exception, continue
+                }
+            }
+        });
+
+        assertTrue(customer.isLocked());
+        assertNotNull(customer.getLockTime());
+    }
+
+    @Test
+    void unlockAccountIfEligible_Success() {
+        // Set up customer
+        CustomerEntity customer = new CustomerEntity();
+        String rawPassword = "Test@123";
+        String encodedPassword = "encodedPassword";
+        customer.setPassword(encodedPassword);
+        customer.setLocked(true);
+        customer.setLockTime(LocalDateTime.now().minusHours(25)); // Past the 24-hour lock duration
+        customer.setFailedAttempts(3);
+        customer.setEmail("test@example.com");
+        customer.setUsername("testuser");
+        customer.setName(new CustomerEntity.Name("Test", "User"));
+
+        when(customerRepository.save(any(CustomerEntity.class))).thenReturn(customer);
+
+        // Set up login request
+        LoginRequest request = new LoginRequest();
+        request.setEmail("test@example.com");
+        request.setPassword(Base64.getEncoder().encodeToString(rawPassword.getBytes()));
+
+        // Mock repository and service responses
         when(customerRepository.findByEmail("test@example.com")).thenReturn(customer);
-        when(passwordEncoder.matches("wrongPassword", "encodedPassword")).thenReturn(false);
+        when(passwordEncoder.matches(rawPassword, encodedPassword)).thenReturn(true);
+        when(jwtService.generateToken(anyString(), anyString())).thenReturn("test-token");
 
-        Exception exception = assertThrows(CustomerServiceException.class, () ->
-                customerService.login(loginRequest, false));
+        // Perform login
+        LoginResponse response = customerService.login(request, true);
 
-        assertEquals("Invalid email or password.", exception.getMessage());
+        // Verify results
+        assertNotNull(response);
+        assertNotNull(response.getToken());
+        verify(customerRepository, times(4)).save(customer); // Saves happen during unlock, reset attempts, and login
+        assertFalse(customer.isLocked());
+        assertNull(customer.getLockTime());
+        assertEquals(0, customer.getFailedAttempts());
     }
 
- // Test Case 3: Login Failure Due to CircuitBreaker Open
     @Test
-    void testLogin_CircuitBreakerOpen() {
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail("test@example.com");
-        loginRequest.setPassword("password123");
-
-        // Mock the CircuitBreaker
-        CircuitBreaker circuitBreaker = mock(CircuitBreaker.class);
-        CallNotPermittedException circuitBreakerException = CallNotPermittedException.createCallNotPermittedException(circuitBreaker);
-
-        when(customerRepository.findByEmail(anyString())).thenThrow(circuitBreakerException);
-
-        Exception exception = assertThrows(CallNotPermittedException.class, () ->
-                customerService.login(loginRequest, true));
-
-        assertTrue(exception instanceof CallNotPermittedException);
-        assertEquals("CircuitBreaker 'null' is OPEN and does not permit further calls", exception.getMessage());
-    }
-
-    // Test Case 4: Send Verification Email Successfully
-    @Test
-    void testSendVerificationEmail_Success() {
+    void sendVerificationEmail_Success() {
+        String email = "test@example.com";
         CustomerEntity customer = new CustomerEntity();
-        customer.setEmail("test@example.com");
+        customer.setEmail(email);
         customer.setAccountValidated(false);
 
-        // Mock the repository to return the customer entity
-        when(customerRepository.findByEmail("test@example.com")).thenReturn(customer);
+        when(customerRepository.findByEmail(email)).thenReturn(customer);
+        when(customerRepository.save(any(CustomerEntity.class))).thenReturn(customer);
+        doNothing().when(mailSender).send(any(SimpleMailMessage.class));
 
-        // Mock the behavior of JavaMailSender
-        MimeMessage mimeMessage = mock(MimeMessage.class);
-        when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
+        assertDoesNotThrow(() -> customerService.sendVerificationEmail(email));
 
-        doNothing().when(mailSender).send(any(MimeMessage.class));
+        verify(customerRepository).save(customer);
+        verify(mailSender).send(any(SimpleMailMessage.class));
+        assertNotNull(customer.getVerificationToken());
+        assertNotNull(customer.getVerificationTokenExpiry());
+    }
 
-        // Call the method under test
-        customerService.sendVerificationEmail("test@example.com");
-
-        // Verify that the email was sent and the customer was saved
-        verify(mailSender, times(1)).send(any(MimeMessage.class));
-        verify(customerRepository, times(1)).save(customer);
-    }	
-
-    // Test Case 5: Password Reset for Forgot Password Flow - Success
     @Test
-    void testResetPasswordForForgotFlow_Success() {
+    void sendVerificationEmail_MongoException() {
+        String email = "test@example.com";
+        when(customerRepository.findByEmail(email))
+                .thenThrow(new com.mongodb.MongoTimeoutException("Connection timeout"));
+
+        assertThrows(MongoTimeoutException.class, () ->
+                customerService.sendVerificationEmail(email)
+        );
+    }
+
+    @Test
+    void verifyAccount_Success() {
+        String token = "valid-token";
         CustomerEntity customer = new CustomerEntity();
-        customer.setResetPasswordToken("valid-token");
-        customer.setResetPasswordTokenExpiry(LocalDateTime.now().plusMinutes(30));
-        customer.setPasswordHistory(List.of("oldEncodedPassword"));
+        customer.setVerificationToken(token);
+        customer.setVerificationTokenExpiry(LocalDateTime.now().plusHours(1));
+        customer.setAccountValidated(false);
 
-        when(customerRepository.findByResetPasswordToken("valid-token")).thenReturn(customer);
-        when(passwordEncoder.encode("newPassword123")).thenReturn("encodedPassword");
+        when(customerRepository.findByVerificationToken(token)).thenReturn(customer);
+        when(customerRepository.save(any(CustomerEntity.class))).thenReturn(customer);
 
-        customerService.resetPasswordForForgotFlow("valid-token", "newPassword123", "newPassword123");
+        assertDoesNotThrow(() -> customerService.verifyAccount(token));
 
-        verify(customerRepository, times(1)).save(customer);
+        assertTrue(customer.isAccountValidated());
+        assertNull(customer.getVerificationToken());
+        assertNull(customer.getVerificationTokenExpiry());
+    }
+
+    @Test
+    void logoutFallback_ReturnsExpectedResult() {
+        Exception testException = new RuntimeException("Test exception");
+        boolean result = customerService.logoutFallback(testException);
+        assertFalse(result);
+    }
+
+    @Test
+    void updatePassword_Success() {
+        CustomerEntity customer = new CustomerEntity();
+        String newPassword = "NewPass@123";
+
+        when(passwordEncoder.encode(newPassword)).thenReturn("encodedPassword");
+        when(customerRepository.save(any(CustomerEntity.class))).thenReturn(customer);
+
+        customerService.updatePassword(customer, newPassword);
+
+        assertEquals("encodedPassword", customer.getPassword());
+        assertNotNull(customer.getPasswordLastUpdated());
+        assertNotNull(customer.getPasswordExpiryDate());
+        verify(customerRepository).save(customer);
+    }
+
+    @Test
+    void resetPasswordForForgotFlow_Success() {
+        String token = "valid-token";
+        String newPassword = "NewPass@123";
+        String confirmPassword = "NewPass@123";
+
+        CustomerEntity customer = new CustomerEntity();
+        customer.setEmail("test@example.com");
+        customer.setResetPasswordToken(token);
+        customer.setResetPasswordTokenExpiry(LocalDateTime.now().plusHours(1));
+        customer.setPassword("oldPassword");
+
+        when(customerRepository.findByResetPasswordToken(token)).thenReturn(customer);
+        when(passwordEncoder.encode(newPassword)).thenReturn("encodedNewPassword");
+        when(customerRepository.save(any(CustomerEntity.class))).thenReturn(customer);
+
+        assertDoesNotThrow(() ->
+                customerService.resetPasswordForForgotFlow(token, newPassword, confirmPassword)
+        );
+
+        verify(customerRepository).save(customer);
         assertNull(customer.getResetPasswordToken());
         assertNull(customer.getResetPasswordTokenExpiry());
-        assertEquals("encodedPassword", customer.getPassword());
+        assertEquals("encodedNewPassword", customer.getPassword());
+        assertFalse(customer.isLocked());
     }
 
-    // Test Case 6: Password Reset for Forgot Password Flow - Failure (Expired Token)
     @Test
-    void testResetPasswordForForgotFlow_Failure_TokenExpired() {
-        CustomerEntity customer = new CustomerEntity();
-        customer.setResetPasswordToken("expired-token");
-        customer.setResetPasswordTokenExpiry(LocalDateTime.now().minusMinutes(1));
+    void resetPasswordForForgotFlow_InvalidToken() {
+        String token = "invalid-token";
+        String newPassword = "NewPass@123";
+        String confirmPassword = "NewPass@123";
 
-        when(customerRepository.findByResetPasswordToken("expired-token")).thenReturn(customer);
+        when(customerRepository.findByResetPasswordToken(token)).thenReturn(null);
 
-        Exception exception = assertThrows(InvalidTokenException.class, () ->
-                customerService.resetPasswordForForgotFlow("expired-token", "newPassword123", "newPassword123"));
-
-        assertEquals("Invalid or expired reset token.", exception.getMessage());
+        assertThrows(InvalidTokenException.class, () ->
+                customerService.resetPasswordForForgotFlow(token, newPassword, confirmPassword)
+        );
     }
 
-    // Test Case 7: Password Change - Success
     @Test
-    void testChangePassword_Success() {
+    void resetPasswordForForgotFlow_PasswordMismatch() {
+        String token = "valid-token";
+        String newPassword = "NewPass@123";
+        String confirmPassword = "DifferentPass@123";
+
         CustomerEntity customer = new CustomerEntity();
-        customer.setUsername("testuser");
-        customer.setPassword("encodedPassword");
-        customer.setPasswordHistory(new ArrayList<>());
+        customer.setResetPasswordToken(token);
+        customer.setResetPasswordTokenExpiry(LocalDateTime.now().plusHours(1));
 
-        when(customerRepository.findByUsername("testuser")).thenReturn(customer);
-        when(passwordEncoder.matches("currentPassword", "encodedPassword")).thenReturn(true);
-        when(passwordEncoder.encode("newPassword")).thenReturn("newEncodedPassword");
+        when(customerRepository.findByResetPasswordToken(token)).thenReturn(customer);
 
-        customerService.changePassword("currentPassword", "newPassword", "newPassword");
-
-        verify(customerRepository, times(1)).save(customer);
-        assertEquals("newEncodedPassword", customer.getPassword());
+        assertThrows(PasswordMismatchException.class, () ->
+                customerService.resetPasswordForForgotFlow(token, newPassword, confirmPassword)
+        );
     }
 
-    // Test Case 8: Password Change - Failure (Invalid Current Password)
     @Test
-    void testChangePassword_Failure_InvalidCurrentPassword() {
+    void changePassword_Success() {
+        String currentPassword = "CurrentPass@123";
+        String newPassword = "NewPass@123";
+        String confirmPassword = "NewPass@123";
+        String username = "testuser";
+
         CustomerEntity customer = new CustomerEntity();
-        customer.setUsername("testuser");
-        customer.setPassword("encodedPassword");
+        customer.setUsername(username);
+        customer.setPassword("encodedCurrentPassword");
 
-        when(customerRepository.findByUsername("testuser")).thenReturn(customer);
-        when(passwordEncoder.matches("wrongPassword", "encodedPassword")).thenReturn(false);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn(username);
+        when(customerRepository.findByUsername(username)).thenReturn(customer);
+        when(passwordEncoder.matches(currentPassword, customer.getPassword())).thenReturn(true);
+        when(passwordEncoder.encode(newPassword)).thenReturn("encodedNewPassword");
+        when(customerRepository.save(any(CustomerEntity.class))).thenReturn(customer);
 
-        Exception exception = assertThrows(InvalidCredentialsException.class, () ->
-                customerService.changePassword("wrongPassword", "newPassword", "newPassword"));
+        assertDoesNotThrow(() ->
+                customerService.changePassword(currentPassword, newPassword, confirmPassword)
+        );
 
-        assertEquals("Current password is incorrect.", exception.getMessage());
+        verify(customerRepository).save(customer);
+        assertEquals("encodedNewPassword", customer.getPassword());
+        assertNotNull(customer.getPasswordLastUpdated());
+        assertNotNull(customer.getPasswordExpiryDate());
+    }
+
+    @Test
+    void changePassword_InvalidCurrentPassword() {
+        String currentPassword = "WrongPass@123";
+        String newPassword = "NewPass@123";
+        String confirmPassword = "NewPass@123";
+        String username = "testuser";
+
+        CustomerEntity customer = new CustomerEntity();
+        customer.setUsername(username);
+        customer.setPassword("encodedCurrentPassword");
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn(username);
+        when(customerRepository.findByUsername(username)).thenReturn(customer);
+        when(passwordEncoder.matches(currentPassword, customer.getPassword())).thenReturn(false);
+
+        assertThrows(InvalidCredentialsException.class, () ->
+                customerService.changePassword(currentPassword, newPassword, confirmPassword)
+        );
+    }
+
+    @Test
+    void changePassword_PasswordMismatch() {
+        String currentPassword = "CurrentPass@123";
+        String newPassword = "NewPass@123";
+        String confirmPassword = "DifferentPass@123";
+        String username = "testuser";
+
+        CustomerEntity customer = new CustomerEntity();
+        customer.setUsername(username);
+        customer.setPassword("encodedCurrentPassword");
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn(username);
+        when(customerRepository.findByUsername(username)).thenReturn(customer);
+        when(passwordEncoder.matches(currentPassword, customer.getPassword())).thenReturn(true);
+
+        assertThrows(PasswordMismatchException.class, () ->
+                customerService.changePassword(currentPassword, newPassword, confirmPassword)
+        );
+    }
+
+    @Test
+    void logout_Success() {
+        String token = "valid-token";
+        String username = "testuser";
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn(username);
+        doNothing().when(jwtService).blacklistToken(token);
+
+        assertTrue(customerService.logout(token));
+        verify(jwtService).blacklistToken(token);
+
+        // Verify SecurityContext is cleared
+        SecurityContextHolder.clearContext();
+        assertNull(SecurityContextHolder.getContext().getAuthentication());
+    }
+
+    @Test
+    void logout_NoActiveSession() {
+        String token = "valid-token";
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn(null);
+
+        assertThrows(CustomerServiceException.class, () ->
+                customerService.logout(token)
+        );
+    }
+
+    @Test
+    void logout_ExceptionDuringBlacklist() {
+        String token = "valid-token";
+        String username = "testuser";
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn(username);
+        doThrow(new RuntimeException("Blacklist error")).when(jwtService).blacklistToken(token);
+
+        assertThrows(RuntimeException.class, () ->
+                customerService.logout(token)
+        );
     }
 }

@@ -1,0 +1,14 @@
+target/
+!target/*.jar
+.git
+.gitignore
+.env
+*.md
+.idea/
+*.iml
+.settings/
+.project
+.classpath
+Dockerfile
+docker-compose.yml
+.dockerignore

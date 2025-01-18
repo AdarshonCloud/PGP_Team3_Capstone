@@ -1,0 +1,17 @@
+services:
+  customerlogin-app:
+    build:
+      context: .
+    platform: linux/arm64
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb+srv://root:q2e0ilmWPlg8cH3Q@ascend.qgdyk.mongodb.net/CCMS?retryWrites=true&w=majority&ssl=true&sslValidate=true
+      - SPRING_DATA_MONGODB_DATABASE=CCMS
+      - EUREKA_CLIENT_ENABLED=false
+      - SPRING_CLOUD_DISCOVERY_ENABLED=false
+      - HTTP_PROXY=http://sysproxy.wal-mart.com:8080
+      - HTTPS_PROXY=http://sysproxy.wal-mart.com:8080
+      - NO_PROXY=localhost,127.0.0.1
+    volumes:
+      - ./logs:/app/logs

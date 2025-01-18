@@ -1,33 +1,40 @@
 package com.ascendpgp.customerlogin.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
-
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
+import org.springframework.lang.NonNull;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Override
+    @NonNull
     protected String getDatabaseName() {
         return "CCMS";
     }
 
     @Bean
+    @NonNull
     public MongoClient mongoClient() {
-        ConnectionString connectionString = new ConnectionString(
-            "mongodb+srv://root:q2e0ilmWPlg8cH3Q@ascend.qgdyk.mongodb.net/CCMS?retryWrites=true&w=majority&connectTimeoutMS=60000&socketTimeoutMS=60000&appName=Ascend"
-        );
-        MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
-            .applyConnectionString(connectionString)
-            .applyToConnectionPoolSettings(builder ->
-                builder.minSize(5).maxSize(100)
-            )
-            .build();
-        return MongoClients.create(mongoClientSettings);
+        MongoClientSettings.Builder settingsBuilder = MongoClientSettings.builder()
+                .applyConnectionString(new ConnectionString(
+                        "mongodb+srv://root:q2e0ilmWPlg8cH3Q@ascend.qgdyk.mongodb.net/CCMS?retryWrites=true&w=majority"
+                ))
+                .applyToSslSettings(ssl -> {
+                    ssl.enabled(true);
+                    ssl.invalidHostNameAllowed(true);
+                })
+                .applyToSocketSettings(socket -> socket
+                        .connectTimeout(60000, TimeUnit.MILLISECONDS)
+                        .readTimeout(60000, TimeUnit.MILLISECONDS)
+                );
+
+        return MongoClients.create(settingsBuilder.build());
     }
 }
