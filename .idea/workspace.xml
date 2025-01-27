@@ -4,20 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e9f4a245-58da-493d-832d-383e7c479137" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/CreditCard_v3/src/main/java/com/ascendpgp/creditcard/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/CreditCard_v3/src/main/java/com/ascendpgp/creditcard/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CreditCard_v3/src/main/java/com/ascendpgp/creditcard/config/WebMvcConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/CreditCard_v3/src/main/java/com/ascendpgp/creditcard/config/WebMvcConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CreditCard_v3/src/main/java/com/ascendpgp/creditcard/controller/CreditCardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/CreditCard_v3/src/main/java/com/ascendpgp/creditcard/controller/CreditCardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CreditCard_v3/src/main/java/com/ascendpgp/creditcard/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/CreditCard_v3/src/main/java/com/ascendpgp/creditcard/exception/GlobalExceptionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CreditCard_v3/src/main/java/com/ascendpgp/creditcard/filters/JwtAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/CreditCard_v3/src/main/java/com/ascendpgp/creditcard/filters/JwtAuthenticationFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CreditCard_v3/src/main/java/com/ascendpgp/creditcard/utils/JwtService.java" beforeDir="false" afterPath="$PROJECT_DIR$/CreditCard_v3/src/main/java/com/ascendpgp/creditcard/utils/JwtService.java" afterDir="false" />
+    <list default="true" id="e9f4a245-58da-493d-832d-383e7c479137" name="Changes" comment="Adding Dev version of the apps">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CreditCard_v3/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/CreditCard_v3/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LoginApp_v3/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/LoginApp_v3/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LoginApp_v3/docker-compose.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LoginApp_v3/src/main/java/com/ascendpgp/customerlogin/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/LoginApp_v3/src/main/java/com/ascendpgp/customerlogin/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LoginApp_v3/src/main/java/com/ascendpgp/customerlogin/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/LoginApp_v3/src/main/java/com/ascendpgp/customerlogin/exception/GlobalExceptionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LoginApp_v3/src/main/java/com/ascendpgp/customerlogin/service/CustomerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/LoginApp_v3/src/main/java/com/ascendpgp/customerlogin/service/CustomerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LoginApp_v3/src/main/resources/application-docker.properties" beforeDir="false" afterPath="$PROJECT_DIR$/LoginApp_v3/src/main/resources/application-docker.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LoginApp_v3/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/LoginApp_v3/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -26,6 +15,19 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="Azure_Dev" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
         <entry key="$PROJECT_DIR$" value="Docker_assessment" />
@@ -69,6 +71,27 @@
       <option name="presentableId" value="Default" />
       <updated>1737522806770</updated>
     </task>
+    <task id="LOCAL-00001" summary="Adding Dev version of the apps">
+      <option name="closed" value="true" />
+      <created>1737966613741</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1737966613741</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Adding Dev version of the apps">
+      <option name="closed" value="true" />
+      <created>1737966706348</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1737966706348</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Adding Dev version of the apps" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding Dev version of the apps" />
   </component>
 </project>
