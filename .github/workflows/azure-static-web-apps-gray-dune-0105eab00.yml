@@ -1,4 +1,4 @@
-name: Azure Static Web Apps CI/CD
+name: Azure App Service CI/CD
 
 on:
   push:
@@ -47,13 +47,11 @@ jobs:
         env:
           JAVA_HOME: ${{ env.JAVA_HOME }}
 
-      # Step 6: Deploy to Azure Static Web Apps
-      - name: Deploy to Azure Static Web Apps
-        id: builddeploy
-        uses: Azure/static-web-apps-deploy@v1
+      # Step 6: Deploy to Azure App Service
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v2
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GRAY_DUNE_0105EAB00 }}
-          action: "upload"
-          app_location: "LoginApp_v3/target" # Built JAR directory
-          api_location: "" # No API in this app
-          output_location: "" # Optional output directory
+          app-name: 'LoginAppDev' # Replace with your App Service name
+          slot-name: 'production'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: LoginApp_v3/target/customerlogin-0.0.1-SNAPSHOT.jar
