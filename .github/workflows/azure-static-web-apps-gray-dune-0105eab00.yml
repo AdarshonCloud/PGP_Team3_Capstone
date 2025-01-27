@@ -47,7 +47,13 @@ jobs:
         env:
           JAVA_HOME: ${{ env.JAVA_HOME }}
 
-      # Step 6: Deploy to Azure App Service
+      # Step 6: Login to Azure
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Step 7: Deploy to Azure App Service
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v2
         with:
