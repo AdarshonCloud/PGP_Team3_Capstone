@@ -12,8 +12,8 @@ services:
       - MONGO_SSL_INVALID_HOSTNAME_ALLOWED=true
       - EUREKA_CLIENT_ENABLED=false
       - SPRING_CLOUD_DISCOVERY_ENABLED=false
-      - HTTP_PROXY=http://sysproxy.wal-mart.com:8080
-      - HTTPS_PROXY=http://sysproxy.wal-mart.com:8080
+      # - HTTP_PROXY=http://sysproxy.wal-mart.com:8080
+      # - HTTPS_PROXY=http://sysproxy.wal-mart.com:8080
       - NO_PROXY=localhost,127.0.0.1
     volumes:
       - ./logs:/app/logs
