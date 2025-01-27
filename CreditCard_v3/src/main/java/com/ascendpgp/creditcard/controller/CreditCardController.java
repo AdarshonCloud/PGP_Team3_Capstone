@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -79,7 +80,7 @@ public class CreditCardController {
         }
     }
 
-    
+
     @Operation(summary = "Delete (soft-delete) a credit card using credit card number")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Credit card deleted successfully."),
@@ -124,7 +125,7 @@ public class CreditCardController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "An unexpected error occurred. Please try again later."));
         }
     }
-    
+
     @PutMapping("/{creditCardNumber}/toggle")
     public ResponseEntity<String> toggleCreditCard(
             @PathVariable String creditCardNumber,
@@ -145,8 +146,8 @@ public class CreditCardController {
 
             // Build the response message based on the new status
             String responseMessage = String.format(
-                "The credit card status was successfully %s.",
-                updatedCardDetails.getStatus()
+                    "The credit card status was successfully %s.",
+                    updatedCardDetails.getStatus()
             );
 
             logger.info("Successfully toggled credit card for Username: {}, CreditCardNumber: {}", username, creditCardNumber);
@@ -172,7 +173,7 @@ public class CreditCardController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred. Please try again later.");
         }
     }
-    
+
 
     @Operation(summary = "Get all active (non-deleted) credit cards for a user")
     @ApiResponses(value = {
@@ -197,18 +198,18 @@ public class CreditCardController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"Internal Server Error\"}");
         }
     }
-    
+
     /**
      * Endpoint to generate OTP for full credit card details.
      */
     @Operation(summary = "Generate OTP and send to registerd email to unmask Credit Card Details", security = {@SecurityRequirement(name = "bearerAuth")})
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "OTP sent successfully."),
-        @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid or missing token."),
-        @ApiResponse(responseCode = "403", description = "Forbidden - Access denied to fetch user email."),
-        @ApiResponse(responseCode = "500", description = "Internal server error.")
+            @ApiResponse(responseCode = "201", description = "OTP sent successfully."),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid or missing token."),
+            @ApiResponse(responseCode = "403", description = "Forbidden - Access denied to fetch user email."),
+            @ApiResponse(responseCode = "500", description = "Internal server error.")
     })
-    @PostMapping("/generate-otp")
+    @PatchMapping("/generate-otp")
     public ResponseEntity<String> generateOtp(@RequestHeader("Authorization") String token) {
         logger.info("Received request to generate OTP.");
 
@@ -225,17 +226,17 @@ public class CreditCardController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to generate OTP.");
         }
     }
-    
+
     /**
      * Endpoint to fetch full credit card details after OTP validation.
      */
     @Operation(summary = "Fetch full credit card details after OTP validation")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Full credit card details fetched successfully."),
-        @ApiResponse(responseCode = "400", description = "Invalid input or OTP validation error."),
-        @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid or missing token."),
-        @ApiResponse(responseCode = "404", description = "Credit card not found."),
-        @ApiResponse(responseCode = "500", description = "Internal server error.")
+            @ApiResponse(responseCode = "200", description = "Full credit card details fetched successfully."),
+            @ApiResponse(responseCode = "400", description = "Invalid input or OTP validation error."),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid or missing token."),
+            @ApiResponse(responseCode = "404", description = "Credit card not found."),
+            @ApiResponse(responseCode = "500", description = "Internal server error.")
     })
     @GetMapping("/full-details")
     public ResponseEntity<CardDetails> getFullCreditCardDetails(

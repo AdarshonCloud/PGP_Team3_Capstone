@@ -39,7 +39,7 @@ public class JwtService {
         this.jwtSecret = jwtSecret;
         this.encryptionSecretKey = encryptionSecretKey;
     }
-    
+
     private final Cache<String, Boolean> tokenBlacklistCache = Caffeine.newBuilder()
             .expireAfterWrite(10, TimeUnit.MINUTES) // Cache tokens for 10 minutes
             .maximumSize(1000) // Limit the cache size
@@ -75,18 +75,19 @@ public class JwtService {
      * @return true if the token is valid, false otherwise.
      */
     public boolean validateToken(String token) {
+        logger.info("Validating token locally and remotely: {}", maskToken(token));
         try {
             // Local validation using the secret key
             Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
-                .build()
-                .parseClaimsJws(token);
+                    .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+                    .build()
+                    .parseClaimsJws(token);
 
             logger.info("JWT token is valid (local validation): {}", maskToken(token));
             return true;
         } catch (Exception localValidationException) {
             logger.warn("Local JWT validation failed. Falling back to remote validation: {}", maskToken(token), localValidationException);
-
+            logger.info("Falling back to remote validation for token: {}", maskToken(token));
             // Fallback to remote validation
             return validateTokenRemotely(token);
         }
@@ -132,10 +133,10 @@ public class JwtService {
         logger.info("Calling remote validation endpoint: {}", url);
 
         ResponseEntity<Map<String, String>> response = restTemplate.exchange(
-            url,
-            HttpMethod.GET,
-            null,
-            new ParameterizedTypeReference<>() {}
+                url,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<>() {}
         );
 
         if (response.getStatusCode().is2xxSuccessful()) {
@@ -157,10 +158,10 @@ public class JwtService {
      */
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
-            .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
-            .build()
-            .parseClaimsJws(token)
-            .getBody();
+                .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     /**
@@ -218,7 +219,7 @@ public class JwtService {
      * @return Extracted error message.
      */
     private String getErrorMessage(ResponseEntity<Map<String, String>> response) {
-        return response.getBody() != null 
+        return response.getBody() != null
                 ? response.getBody().getOrDefault("error", "Unknown error")
                 : "No error details provided";
     }

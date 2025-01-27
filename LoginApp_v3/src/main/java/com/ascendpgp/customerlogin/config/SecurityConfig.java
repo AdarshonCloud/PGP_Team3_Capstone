@@ -40,6 +40,8 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/customer/logout").authenticated()  // Protect logout
+                        // Permit public endpoints
                         .requestMatchers(
                                 new AntPathRequestMatcher("/api/customer/login"),
                                 new AntPathRequestMatcher("/api/customer/login/subsequent"),
@@ -47,6 +49,7 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/api/customer/verify"),
                                 new AntPathRequestMatcher("/api/customer/jwt/validate"),
                                 new AntPathRequestMatcher("/actuator/**"),
+                                new AntPathRequestMatcher("/api/**"),
                                 new AntPathRequestMatcher("/swagger-ui/**"),
                                 new AntPathRequestMatcher("/v3/api-docs/**")
                         ).permitAll()

@@ -53,7 +53,7 @@ public class CustomerService {
 
     @Autowired
     private JwtService jwtService;
-    
+
     @Value("${sender.email}")
     private String senderEmail;
 
@@ -141,13 +141,16 @@ public class CustomerService {
 
     // Fallback for login
     private LoginResponse fallbackForLogin(LoginRequest loginRequest, boolean isFirstTimeLogin, Throwable ex) {
-        logger.error("Fallback for login triggered: {}", ex.getMessage());
-        LoginResponse fallbackResponse = new LoginResponse();
-        fallbackResponse.setToken("fallback-token");
-        fallbackResponse.setName(new CustomerEntity.Name("Fallback", "User")); // Using parameterized constructor
-        return fallbackResponse;
+        logger.error("Fallback for login triggered due to: {}", ex.getMessage());
+
+        // Re-throw known business exceptions
+        if (ex instanceof InvalidCredentialsException || ex instanceof AccountLockedException) {
+            throw (RuntimeException) ex;
+        }
+
+        // Handle infrastructure-related issues
+        throw new CustomerServiceException("Service is temporarily unavailable. Please try again later.");
     }
-    
 
     // Handle failed login attempts
     private void handleFailedLogin(CustomerEntity customer) {
@@ -182,35 +185,36 @@ public class CustomerService {
     }
 
     // Send Verification Email
+    @CircuitBreaker(name = CUSTOMER_SERVICE, fallbackMethod = "SendVerificationEmailFallback")
     public void sendVerificationEmail(String email) {
         logger.info("Sending verification email to: {}", email);
 
         try {
-        CustomerEntity customer = customerRepository.findByEmail(email);
-        if (customer == null) {
-            logger.warn("Customer not found for email: {}", email);
-            throw new RuntimeException("Customer not found.");
-        }
-        if (customer.isAccountValidated()) {
-            throw new RuntimeException("Account is already validated.");
-        }
+            CustomerEntity customer = customerRepository.findByEmail(email);
+            if (customer == null) {
+                logger.warn("Customer not found for email: {}", email);
+                throw new RuntimeException("Customer not found.");
+            }
+            if (customer.isAccountValidated()) {
+                throw new RuntimeException("Account is already validated.");
+            }
 
-        if (customer.getVerificationTokenExpiry() != null && customer.getVerificationTokenExpiry().isAfter(LocalDateTime.now())) {
-            throw new RuntimeException("A valid verification token already exists. Check your email.");
-        }
+            if (customer.getVerificationTokenExpiry() != null && customer.getVerificationTokenExpiry().isAfter(LocalDateTime.now())) {
+                throw new RuntimeException("A valid verification token already exists. Check your email.");
+            }
 
-        String token = UUID.randomUUID().toString();
-        customer.setVerificationToken(token);
-        customer.setVerificationTokenExpiry(LocalDateTime.now().plusHours(24));
-        customerRepository.save(customer);
+            String token = UUID.randomUUID().toString();
+            customer.setVerificationToken(token);
+            customer.setVerificationTokenExpiry(LocalDateTime.now().plusHours(24));
+            customerRepository.save(customer);
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setFrom(senderEmail);
-        message.setSubject("Email Verification");
-        message.setText("Click here to verify your account: http://localhost:8081/api/customer/verify?token=" + token);
-        mailSender.send(message);
-        logger.info("Verification email sent successfully to: {}", email);
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(email);
+            message.setFrom(senderEmail);
+            message.setSubject("Email Verification");
+            message.setText("Click here to verify your account: http://localhost:8081/api/customer/verify?token=" + token);
+            mailSender.send(message);
+            logger.info("Verification email sent successfully to: {}", email);
         }
         catch (com.mongodb.MongoTimeoutException | com.mongodb.MongoSocketWriteException ex) {
             logger.error("MongoDB connection error: {}", ex.getMessage(), ex);
@@ -218,33 +222,47 @@ public class CustomerService {
         }
     }
 
+    // Fallback for Verify Account
+    private void SendVerificationEmailFallback(String email, Throwable ex) {
+        logger.error("Fallback for sending verification email triggered due to: {}", ex.getMessage());
+
+        // Re-throw known business exceptions
+        if (ex instanceof RuntimeException) {
+            throw (RuntimeException) ex;
+        }
+
+        // Handle infrastructure-related issues
+        throw new CustomerServiceException("Account verification email service is temporarily unavailable. Please try again later.");
+    }
+
     // Verify Account
+    @CircuitBreaker(name = CUSTOMER_SERVICE, fallbackMethod = "fallbackForVerifyAccount")
     public void verifyAccount(String token) {
         logger.info("Attempting to verify account with token: {}", token);
 
         try {
-        CustomerEntity customer = customerRepository.findByVerificationToken(token);
-        if (customer == null) {
-            logger.warn("Invalid verification token: {}", token);
-            throw new InvalidTokenException("Invalid verification token.");
-        }
+            CustomerEntity customer = customerRepository.findByVerificationToken(token);
+            if (customer == null) {
+                logger.warn("Invalid verification token: {}", token);
+                throw new InvalidTokenException("Invalid verification token.");
+            }
 
-        if (customer.getVerificationTokenExpiry() == null || customer.getVerificationTokenExpiry().isBefore(LocalDateTime.now())) {
-            logger.warn("Expired verification token: {}", token);
-            throw new InvalidTokenException("Verification token has expired.");
-        }
+            if (customer.getVerificationTokenExpiry() == null || customer.getVerificationTokenExpiry().isBefore(LocalDateTime.now())) {
+                logger.warn("Expired verification token: {}", token);
+                throw new InvalidTokenException("Verification token has expired.");
+            }
 
-        if (customer.isAccountValidated()) {
-            logger.info("Account already validated for user: {}", customer.getEmail());
-            return;
-        }
+            if (customer.isAccountValidated()) {
+                logger.info("Account already validated for user: {}", customer.getEmail());
+                return;
+            }
 
-        customer.setAccountValidated(true);
-        customer.setVerificationToken(null);
-        customer.setVerificationTokenExpiry(null);
-        customerRepository.save(customer);
+            customer.setAccountValidated(true);
+            customer.setVerificationToken(null);
+            customer.setVerificationTokenExpiry(null);
+            customerRepository.save(customer);
 
-        logger.info("Account successfully verified for email: {}", customer.getEmail());
+            logger.info("Account successfully verified for email: {}", customer.getEmail());
         }
         catch (com.mongodb.MongoTimeoutException | com.mongodb.MongoSocketWriteException ex) {
             logger.error("MongoDB connection error: {}", ex.getMessage(), ex);
@@ -252,32 +270,45 @@ public class CustomerService {
         }
     }
 
+    // Fallback for Verify Account
+    private void fallbackForVerifyAccount(String token, Throwable ex) {
+        logger.error("Fallback for account verification triggered due to: {}", ex.getMessage());
+
+        // Re-throw known business exceptions
+        if (ex instanceof InvalidTokenException) {
+            throw (InvalidTokenException) ex;
+        }
+
+        // Handle infrastructure-related issues
+        throw new CustomerServiceException("Account verification service is temporarily unavailable. Please try again later.");
+    }
+
     // Password Reset Request
     @CircuitBreaker(name = CUSTOMER_SERVICE, fallbackMethod = "fallbackForRequestPasswordReset")
-    @Retry(name = CUSTOMER_SERVICE, fallbackMethod = "fallbackForResetPassword")
+    @Retry(name = CUSTOMER_SERVICE, fallbackMethod = "fallbackForRequestPasswordReset")
     public void requestPasswordReset(String email) {
         logger.info("Processing forgot password request for email: {}", email);
 
         try {
-        CustomerEntity customer = customerRepository.findByEmail(email);
-        if (customer == null) {
-            throw new CustomerServiceException("Customer not found.");
-        }
+            CustomerEntity customer = customerRepository.findByEmail(email);
+            if (customer == null) {
+                throw new CustomerServiceException("Customer not found.");
+            }
 
-        String token = UUID.randomUUID().toString();
-        customer.setResetPasswordToken(token);
-        customer.setResetPasswordTokenExpiry(LocalDateTime.now().plusHours(1));
+            String token = UUID.randomUUID().toString();
+            customer.setResetPasswordToken(token);
+            customer.setResetPasswordTokenExpiry(LocalDateTime.now().plusHours(1));
 
-        customerRepository.save(customer);
+            customerRepository.save(customer);
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setFrom(senderEmail);
-        message.setSubject("Forgot Your Password");
-        message.setText("Click the link below to reset your password:\n\n" +
-                "http://localhost:8081/api/customer/forgot-password/reset-password?token=" + token);
-        mailSender.send(message);
-        logger.info("Password reset link sent to email: {}", email);
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(email);
+            message.setFrom(senderEmail);
+            message.setSubject("Forgot Your Password");
+            message.setText("Click the link below to reset your password:\n\n" +
+                    "http://localhost:8081/api/customer/forgot-password/reset-password?token=" + token);
+            mailSender.send(message);
+            logger.info("Password reset link sent to email: {}", email);
         }
         catch (com.mongodb.MongoTimeoutException | com.mongodb.MongoSocketWriteException ex) {
             logger.error("MongoDB connection error: {}", ex.getMessage(), ex);
@@ -287,50 +318,58 @@ public class CustomerService {
 
     // Fallback for Password Reset Request
     private void fallbackForRequestPasswordReset(String email, Throwable ex) {
-        logger.error("Fallback for password reset triggered: {}", ex.getMessage());
-        throw new CustomerServiceException("Password reset Service is temporarily unavailable. Try again later.");
+        logger.error("Fallback for password reset request triggered due to: {}", ex.getMessage());
+
+        // Re-throw known business exceptions
+        if (ex instanceof RuntimeException) {
+            throw (RuntimeException) ex;
+        }
+
+        // Handle infrastructure-related issues
+        throw new CustomerServiceException("Password reset service is temporarily unavailable. Please try again later.");
     }
 
     // Reset Password
+    @CircuitBreaker(name = CUSTOMER_SERVICE, fallbackMethod = "fallbackForResetPasswordForForgotFlow")
     public void resetPasswordForForgotFlow(String token, String newPassword, String confirmPassword) {
         logger.info("Processing password reset for token: {}", token);
 
         try {
-        CustomerEntity customer = customerRepository.findByResetPasswordToken(token);
-        if (customer == null || customer.getResetPasswordTokenExpiry() == null ||
-                customer.getResetPasswordTokenExpiry().isBefore(LocalDateTime.now())) {
-            throw new InvalidTokenException("Invalid or expired reset token.");
-        }
+            CustomerEntity customer = customerRepository.findByResetPasswordToken(token);
+            if (customer == null || customer.getResetPasswordTokenExpiry() == null ||
+                    customer.getResetPasswordTokenExpiry().isBefore(LocalDateTime.now())) {
+                throw new InvalidTokenException("Invalid or expired reset token.");
+            }
 
-        if (!newPassword.equals(confirmPassword)) {
-            throw new PasswordMismatchException("New password and confirm password do not match.");
-        }
+            if (!newPassword.equals(confirmPassword)) {
+                throw new PasswordMismatchException("New password and confirm password do not match.");
+            }
 
-        if (!PasswordValidator.isValid(newPassword)) {
-            throw new WeakPasswordException("Password does not meet complexity requirements.");
-        }
+            if (!PasswordValidator.isValid(newPassword)) {
+                throw new WeakPasswordException("Password does not meet complexity requirements.");
+            }
 
-        if (customer.getPasswordHistory() != null && customer.getPasswordHistory().stream()
-                .anyMatch(password -> passwordEncoder.matches(newPassword, password))) {
-            throw new CustomerServiceException("New password cannot be one of the last 5 passwords.");
-        }
+            if (customer.getPasswordHistory() != null && customer.getPasswordHistory().stream()
+                    .anyMatch(password -> passwordEncoder.matches(newPassword, password))) {
+                throw new CustomerServiceException("New password cannot be one of the last 5 passwords.");
+            }
 
-        if (customer.getPasswordHistory() == null) {
-            customer.setPasswordHistory(new ArrayList<>());
-        }
-        customer.getPasswordHistory().add(0, customer.getPassword());
-        if (customer.getPasswordHistory().size() > 5) {
-            customer.getPasswordHistory().remove(5);
-        }
+            if (customer.getPasswordHistory() == null) {
+                customer.setPasswordHistory(new ArrayList<>());
+            }
+            customer.getPasswordHistory().add(0, customer.getPassword());
+            if (customer.getPasswordHistory().size() > 5) {
+                customer.getPasswordHistory().remove(5);
+            }
 
-        customer.setPassword(passwordEncoder.encode(newPassword));
-        customer.setResetPasswordToken(null);
-        customer.setResetPasswordTokenExpiry(null);
-        customer.setLocked(false);
-        customer.setLockTime(null);
+            customer.setPassword(passwordEncoder.encode(newPassword));
+            customer.setResetPasswordToken(null);
+            customer.setResetPasswordTokenExpiry(null);
+            customer.setLocked(false);
+            customer.setLockTime(null);
 
-        customerRepository.save(customer);
-        logger.info("Password reset successful and account unlocked for email: {}", customer.getEmail());
+            customerRepository.save(customer);
+            logger.info("Password reset successful and account unlocked for email: {}", customer.getEmail());
         }
         catch (com.mongodb.MongoTimeoutException | com.mongodb.MongoSocketWriteException ex) {
             logger.error("MongoDB connection error: {}", ex.getMessage(), ex);
@@ -338,51 +377,69 @@ public class CustomerService {
         }
     }
 
+    // Fallback method for logout
+    private boolean fallbackForResetPasswordForForgotFlow(String token, String newPassword, String confirmPassword, Throwable ex) {
+        logger.error("Fallback for reset password (forgot flow) triggered due to: {}", ex.getMessage());
+
+        // Handle infrastructure-related issues
+        throw new CustomerServiceException("Reset password flow process is temporarily unavailable. Please try again later.");
+    }
+
+
     // Change Password
+    @CircuitBreaker(name = "customerService", fallbackMethod = "ChangePasswordFallback")
     public void changePassword(String currentPassword, String newPassword, String confirmPassword) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         logger.info("Processing change password for user: {}", username);
-        
+
         try {
-        CustomerEntity customer = customerRepository.findByUsername(username);
-        if (customer == null) {
-            throw new CustomerServiceException("Customer not found.");
-        }
+            CustomerEntity customer = customerRepository.findByUsername(username);
+            if (customer == null) {
+                throw new CustomerServiceException("Customer not found.");
+            }
 
-        if (!passwordEncoder.matches(currentPassword, customer.getPassword())) {
-            throw new InvalidCredentialsException("Current password is incorrect.");
-        }
+            if (!passwordEncoder.matches(currentPassword, customer.getPassword())) {
+                throw new InvalidCredentialsException("Current password is incorrect.");
+            }
 
-        if (!newPassword.equals(confirmPassword)) {
-            throw new PasswordMismatchException("New password and confirm password do not match.");
-        }
+            if (!newPassword.equals(confirmPassword)) {
+                throw new PasswordMismatchException("New password and confirm password do not match.");
+            }
 
-        if (!PasswordValidator.isValid(newPassword)) {
-            throw new WeakPasswordException("Password does not meet complexity requirements.");
-        }
+            if (!PasswordValidator.isValid(newPassword)) {
+                throw new WeakPasswordException("Password does not meet complexity requirements.");
+            }
 
-        if (customer.getPasswordHistory() != null && customer.getPasswordHistory().stream()
-                .anyMatch(password -> passwordEncoder.matches(newPassword, password))) {
-            throw new CustomerServiceException("New password cannot be one of the last 5 passwords.");
-        }
+            if (customer.getPasswordHistory() != null && customer.getPasswordHistory().stream()
+                    .anyMatch(password -> passwordEncoder.matches(newPassword, password))) {
+                throw new CustomerServiceException("New password cannot be one of the last 5 passwords.");
+            }
 
-        if (customer.getPasswordHistory() == null) {
-            customer.setPasswordHistory(new ArrayList<>());
-        }
-        customer.getPasswordHistory().add(0, customer.getPassword());
-        if (customer.getPasswordHistory().size() > 5) {
-            customer.getPasswordHistory().remove(5);
-        }
+            if (customer.getPasswordHistory() == null) {
+                customer.setPasswordHistory(new ArrayList<>());
+            }
+            customer.getPasswordHistory().add(0, customer.getPassword());
+            if (customer.getPasswordHistory().size() > 5) {
+                customer.getPasswordHistory().remove(5);
+            }
 
-        updatePassword(customer, newPassword);
-        logger.info("Password changed successfully for user: {}", username);
+            updatePassword(customer, newPassword);
+            logger.info("Password changed successfully for user: {}", username);
         }
         catch (com.mongodb.MongoTimeoutException | com.mongodb.MongoSocketWriteException ex) {
             logger.error("MongoDB connection error: {}", ex.getMessage(), ex);
             throw new com.ascendpgp.customerlogin.exception.MongoTimeoutException("Connection to the database failed or timed out.");
         }
     }
-    
+
+    // Fallback method for Change Password
+    public boolean ChangePasswordFallback(String currentPassword, String newPassword, String confirmPassword, Throwable ex) {
+        logger.error("Fallback for change password triggered due to: {}", ex.getMessage());
+
+        // Handle infrastructure-related issues
+        throw new CustomerServiceException("Change password service is temporarily unavailable. Please try again later.");
+    }
+
     @CircuitBreaker(name = "customerService", fallbackMethod = "logoutFallback")
     public boolean logout(String token) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -403,9 +460,11 @@ public class CustomerService {
     }
 
     // Fallback method for logout
-    public boolean logoutFallback(Throwable throwable) {
-        logger.error("Logout fallback triggered due to: {}", throwable.getMessage());
-        return false; // Indicate that logout was unsuccessful
+    public boolean logoutFallback(Throwable ex) {
+        logger.error("Fallback for logout triggered due to: {}", ex.getMessage());
+
+        // Handle infrastructure-related issues
+        throw new CustomerServiceException("Logout service is temporarily unavailable. Please try again later.");
     }
 
     // Update Password
@@ -415,5 +474,5 @@ public class CustomerService {
         customer.setPasswordExpiryDate(LocalDateTime.now().plusMonths(6));
         customerRepository.save(customer);
     }
-    
+
 }

@@ -8,6 +8,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +18,8 @@ import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.web.servlet.HandlerExecutionChain;
 
 import java.io.IOException;
 import java.util.Enumeration;
@@ -28,24 +33,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final RestTemplate restTemplate;
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
-    public JwtAuthenticationFilter(JwtService jwtService, CsrfTokenRepository csrfTokenRepository, RestTemplate restTemplate) {
+    // Include this in JwtAuthenticationFilter
+    private final RequestMappingHandlerMapping handlerMapping;
+
+    public JwtAuthenticationFilter(JwtService jwtService, CsrfTokenRepository csrfTokenRepository, RestTemplate restTemplate, RequestMappingHandlerMapping handlerMapping) {
         this.jwtService = jwtService;
         this.csrfTokenRepository = csrfTokenRepository;
         this.restTemplate = restTemplate;
+        this.handlerMapping = handlerMapping;
     }
 
     private boolean shouldSkipValidation(String requestUri) {
+
+        // Explicitly skip Actuator endpoints
+        if (antPathMatcher.match("/actuator/**", requestUri)) {
+            logger.info("Skipping validation for Actuator endpoint: {}", requestUri);
+            return true;
+        }
+
+        // Other paths to skip
         return antPathMatcher.match("/api/customer/csrf-token", requestUri)
-            || antPathMatcher.match("/v3/api-docs/**", requestUri)
-            || antPathMatcher.match("/swagger-ui/**", requestUri)
-            || antPathMatcher.match("/swagger-ui.html", requestUri)
-            || antPathMatcher.match("/error", requestUri);
+                || antPathMatcher.match("/v3/api-docs/**", requestUri)
+                || antPathMatcher.match("/swagger-ui/**", requestUri)
+                || antPathMatcher.match("/swagger-ui.html", requestUri)
+                || antPathMatcher.match("/error", requestUri)
+                || requestUri.equals("/error");
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                   HttpServletResponse response, 
-                                   FilterChain filterChain)
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
             throws ServletException, IOException {
 
         String requestUri = request.getRequestURI();
@@ -54,12 +72,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         logHeaders(request);
 
+        // Check if the endpoint exists
+        if (isNonExistentEndpoint(request)) {
+            logger.warn("Non-existent endpoint detected: {}", requestUri);
+            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,
+                    "The endpoint you are trying to access does not exist. Please check the URL or contact support.");
+            return;
+        }
+
+        // If the endpoint exists, continue with the filter chain
+//        try {
+//            filterChain.doFilter(request, response);
+//        } catch (Exception ex) {
+//            logger.error("Error during request processing: {}", ex.getMessage(), ex);
+//            // Allow controller-specific exceptions to propagate
+//            throw ex;
+//        }
+
+        // Skip validation for explicitly configured paths or non-existent endpoints
         if (shouldSkipValidation(requestUri)) {
             logger.info("Skipping JWT/CSRF validation for URI: {}", requestUri);
             filterChain.doFilter(request, response);
             return;
         }
 
+        // Validate Authorization header
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             logger.error("Missing or invalid Authorization header.");
@@ -68,12 +105,41 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7); // Extract token
+
+
         try {
             // Validate token blacklist
             String validationApiUrl = "http://localhost:8081/api/customer/token/validate?token=" + token;
-            ResponseEntity<String> validationResponse = restTemplate.getForEntity(validationApiUrl, String.class);
+
+            logger.info("Sending token validation request to URL: {}", validationApiUrl);
+
+            // Set headers for the request
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + token); // Optional, in case validate API requires it
+            headers.set("Content-Type", "application/json");
+
+            // Wrap the request in an HttpEntity
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+            // Log the actual request details
+            logger.info("Request Headers: {}", headers);
+
+            // Make the RestTemplate call
+            ResponseEntity<String> validationResponse = restTemplate.exchange(
+                    validationApiUrl,
+                    HttpMethod.GET,
+                    entity,
+                    String.class
+            );
+
+            // Log the response details
+            logger.info("Token validation response: Status Code: {}, Body: {}",
+                    validationResponse.getStatusCode(),
+                    validationResponse.getBody());
+
+            // Check if the token is valid
             if (!validationResponse.getStatusCode().is2xxSuccessful()) {
-                logger.error("Token is blacklisted or invalid. Response: {}", validationResponse.getBody());
+                logger.error("Token validation failed with status: {}", validationResponse.getStatusCode());
                 sendErrorResponse(response, HttpServletResponse.SC_FORBIDDEN, "Token is invalid or blacklisted.");
                 return;
             }
@@ -89,8 +155,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             logger.info("JWT token validated for username: [{}]", username);
 
+            // Set authentication in SecurityContextHolder
             SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(username, null, null)
+                    new UsernamePasswordAuthenticationToken(username, null, null)
             );
 
         } catch (Exception ex) {
@@ -99,9 +166,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+
+        // If all checks pass, proceed with the filter chain
         filterChain.doFilter(request, response);
     }
-    
+
     /**
      * Helper method to send clean JSON error responses.
      */
@@ -123,6 +192,51 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String headerName = headerNames.nextElement();
             String headerValue = request.getHeader(headerName);
             logger.info("Header [{}]: [{}]", headerName, headerValue);
+        }
+    }
+
+    /**
+     * Helper method to check if the endpoint exists.
+     */
+    private boolean isNonExistentEndpoint(HttpServletRequest request) {
+        String requestUri = request.getRequestURI();
+
+        // Allow `/validate` endpoint
+        if (requestUri.equals("*/api/customer/token/validate")) {
+            return false;
+        }
+
+        if (requestUri.equals("*/api/customer/jwt/validate")) {
+            return false;
+        }
+
+        // Explicitly allow Swagger-related paths
+        if (antPathMatcher.match("/swagger-ui/**", requestUri) || antPathMatcher.match("/v3/api-docs/**", requestUri)) {
+            logger.debug("Swagger endpoint detected: {}", requestUri);
+            return false;
+        }
+
+        // Explicitly treat Actuator endpoints as valid
+        if (antPathMatcher.match("/actuator/**", requestUri)) {
+            logger.debug("Actuator endpoint detected: {}", requestUri);
+            return false;
+        }
+
+        try {
+            HandlerExecutionChain handler = handlerMapping.getHandler(request);
+
+            // If no handler is found, it's a non-existent endpoint
+            if (handler == null) {
+                logger.warn("No handler found for [{}]. Marking as non-existent.", requestUri);
+                logger.debug("HandlerMapping.bestMatchingHandler for [{}]: null", requestUri);
+                return true;
+            }
+            logger.debug("HandlerMapping.bestMatchingHandler for [{}]: {}", requestUri, handler);
+            return false;
+        } catch (Exception ex) {
+            logger.error("Error while checking if endpoint exists: {}", ex.getMessage(), ex);
+            // Default to assuming the endpoint does not exist if there's an exception
+            return true;
         }
     }
 }
