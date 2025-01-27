@@ -7,6 +7,7 @@
     <list default="true" id="e9f4a245-58da-493d-832d-383e7c479137" name="Changes" comment="Adding Dev version of the apps">
       <change beforePath="$PROJECT_DIR$/.github/workflows/azure-static-web-apps-gray-dune-0105eab00.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/azure-static-web-apps-gray-dune-0105eab00.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LoginApp_v3/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/LoginApp_v3/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,7 +58,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "Merging Azure__Dev",
+    "git-widget-placeholder": "Azure__Dev",
     "kotlin-language-version-configured": "true"
   }
 }]]></component>
@@ -94,7 +95,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737967541092</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Adding Dev version of the apps">
+      <option name="closed" value="true" />
+      <created>1737971728024</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1737971728024</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
