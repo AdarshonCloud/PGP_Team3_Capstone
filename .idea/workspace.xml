@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e9f4a245-58da-493d-832d-383e7c479137" name="Changes" comment="Adding Dev version of the apps">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/azure-static-web-apps-gray-dune-0105eab00.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/azure-static-web-apps-gray-dune-0105eab00.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="e9f4a245-58da-493d-832d-383e7c479137" name="Changes" comment="Updated Pom.xml">
       <change beforePath="$PROJECT_DIR$/LoginApp_v3/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/LoginApp_v3/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -103,11 +101,20 @@
       <option name="project" value="LOCAL" />
       <updated>1737971728024</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Updated Pom.xml">
+      <option name="closed" value="true" />
+      <created>1737974394759</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1737974394759</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Adding Dev version of the apps" />
-    <option name="LAST_COMMIT_MESSAGE" value="Adding Dev version of the apps" />
+    <MESSAGE value="Updated Pom.xml" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated Pom.xml" />
   </component>
 </project>
