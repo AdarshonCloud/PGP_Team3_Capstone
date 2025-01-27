@@ -33,11 +33,15 @@ jobs:
       - name: Verify Java Version
         run: java -version
 
+      - name: List Files
+        run: ls -la
+
       # Build the Maven project
       - name: Build with Maven
         run: |
+          cd LoginApp_v3
           ./mvnw clean package -DskipTests
-        env:
+          env:
           JAVA_HOME: ${{ env.JAVA_HOME }}
 
       # Install OIDC Client
