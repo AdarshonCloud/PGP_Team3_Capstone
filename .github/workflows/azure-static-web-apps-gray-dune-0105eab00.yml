@@ -30,6 +30,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin' # Use Eclipse Temurin JDK (recommended)
 
+      - name: Set JAVA_HOME
+        run: echo "JAVA_HOME=${{ env.JAVA_HOME }}" >> $GITHUB_ENV
+
       # Install OIDC Client
       - name: Install OIDC Client from Core Package
         run: npm install @actions/core@1.6.0 @actions/http-client
