@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,12 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.ascendpgp.customerlogin.exception.AccountLockedException;
-import com.ascendpgp.customerlogin.exception.CustomerServiceException;
-import com.ascendpgp.customerlogin.exception.InvalidCredentialsException;
-import com.ascendpgp.customerlogin.exception.InvalidTokenException;
-import com.ascendpgp.customerlogin.exception.PasswordMismatchException;
-import com.ascendpgp.customerlogin.exception.WeakPasswordException;
+import com.ascendpgp.customerlogin.exception.*;
 import com.ascendpgp.customerlogin.model.ApiEndpoint;
 import com.ascendpgp.customerlogin.model.CustomerEntity;
 import com.ascendpgp.customerlogin.model.LoginRequest;
@@ -31,11 +25,9 @@ import com.ascendpgp.customerlogin.repository.CustomerRepository;
 import com.ascendpgp.customerlogin.utils.JwtService;
 import com.ascendpgp.customerlogin.utils.PasswordValidator;
 import com.mongodb.MongoSocketWriteException;
-import org.springframework.stereotype.Service;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
-
 
 @Service
 public class CustomerService {
@@ -61,94 +53,98 @@ public class CustomerService {
     private static final int MAX_FAILED_ATTEMPTS = 3;
     private static final int LOCK_TIME_DURATION = 24;
 
-    // Validate password
-    public boolean validatePassword(String rawPassword, String hashedPassword) {
-        return passwordEncoder.matches(rawPassword, hashedPassword);
-    }
-
     // Login method with Circuit Breaker
     @CircuitBreaker(name = CUSTOMER_SERVICE, fallbackMethod = "fallbackForLogin")
     public LoginResponse login(LoginRequest loginRequest, boolean isFirstTimeLogin) {
         logger.info("Login attempt for email: {}", loginRequest.getEmail());
 
         try {
-            // Find customer by email
-            CustomerEntity customer = customerRepository.findByEmail(loginRequest.getEmail());
-            if (customer == null) {
-                logger.warn("Customer not found for email: {}", loginRequest.getEmail());
-                throw new InvalidCredentialsException("Invalid email or password.");
-            }
+            CustomerEntity customer = findCustomerByEmail(loginRequest.getEmail());
+            validateCustomerAccount(customer);
+            validatePassword(loginRequest.getPassword(), customer.getPassword());
 
-            // Decode Base64-encoded password
-            String decodedPassword = new String(Base64.getDecoder().decode(loginRequest.getPassword()));
-            logger.info	("Decoded password: {}", decodedPassword);
-
-            // Check if account is locked
-            if (customer.isLocked()) {
-                unlockAccountIfEligible(customer);
-                if (customer.isLocked()) {
-                    throw new AccountLockedException("Account is locked. Please reset your password or wait 24 hours.");
-                }
-            }
-
-            // Validate the decoded password
-            if (!passwordEncoder.matches(decodedPassword, customer.getPassword())) {
-                handleFailedLogin(customer);
-                throw new InvalidCredentialsException("Invalid email or password.");
-            }
-
-            // Reset failed attempts on successful login
             resetFailedAttempts(customer);
 
-            // Check password expiry
-            boolean isPasswordExpired = customer.getPasswordExpiryDate() != null &&
-                    customer.getPasswordExpiryDate().isBefore(LocalDateTime.now());
+            boolean isPasswordExpired = isPasswordExpired(customer);
 
-            // Update firstTimeLogin to false if this is a first-time login
-            if (isFirstTimeLogin && customer.isFirstTimeLogin()) {
-                customer.setFirstTimeLogin(false);
-                customerRepository.save(customer);
-                logger.info("First-time login detected for email: {}. Updated firstTimeLogin to false.", loginRequest.getEmail());
+            if (isFirstTimeLogin) {
+                handleFirstTimeLogin(customer);
             }
 
-            // Generate JWT token
             String token = jwtService.generateToken(customer.getEmail(), customer.getUsername());
             logger.info("JWT token generated for email: {}", loginRequest.getEmail());
 
-            // Prepare and return response
-            LoginResponse response = new LoginResponse();
-            response.setToken(token);
-            response.setName(customer.getName());
-            response.setAccountValidated(customer.isAccountValidated());
-            response.setPasswordExpired(isPasswordExpired);
-
-            if (!isFirstTimeLogin) {
-                List<ApiEndpoint> endpoints = new ArrayList<>();
-                endpoints.add(new ApiEndpoint("/api/account", "Update personal details and password"));
-                endpoints.add(new ApiEndpoint("/api/creditcards", "View all credit cards"));
-                response.setAvailableEndpoints(endpoints);
-            }
-
-            return response;
+            return prepareLoginResponse(customer, token, isPasswordExpired, isFirstTimeLogin);
         } catch (IllegalArgumentException e) {
-            logger.error("Base64 decoding failed for password: {}", e.getMessage(), e);
+            logger.error("Base64 decoding failed for password.");
             throw new InvalidCredentialsException("Invalid email or password.");
-        } catch (com.mongodb.MongoTimeoutException | com.mongodb.MongoSocketWriteException ex) {
-            logger.error("MongoDB connection error: {}", ex.getMessage(), ex);
+        } catch (com.mongodb.MongoTimeoutException | MongoSocketWriteException ex) {
+            logger.error("MongoDB connection error.");
             throw new com.ascendpgp.customerlogin.exception.MongoTimeoutException("Connection to the database failed or timed out.");
         }
+    }
+
+    private CustomerEntity findCustomerByEmail(String email) {
+        CustomerEntity customer = customerRepository.findByEmail(email);
+        if (customer == null) {
+            logger.warn("Customer not found for email: {}", email);
+            throw new InvalidCredentialsException("Invalid email or password.");
+        }
+        return customer;
+    }
+
+    private void validateCustomerAccount(CustomerEntity customer) {
+        if (customer.isLocked()) {
+            unlockAccountIfEligible(customer);
+            if (customer.isLocked()) {
+                throw new AccountLockedException("Account is locked. Please reset your password or wait 24 hours.");
+            }
+        }
+    }
+
+    private void validatePassword(String rawPassword, String hashedPassword) {
+        String decodedPassword = new String(Base64.getDecoder().decode(rawPassword));
+        if (!passwordEncoder.matches(decodedPassword, hashedPassword)) {
+            handleFailedLogin(customer);
+            throw new InvalidCredentialsException("Invalid email or password.");
+        }
+    }
+
+    private boolean isPasswordExpired(CustomerEntity customer) {
+        return customer.getPasswordExpiryDate() != null && customer.getPasswordExpiryDate().isBefore(LocalDateTime.now());
+    }
+
+    private void handleFirstTimeLogin(CustomerEntity customer) {
+        customer.setFirstTimeLogin(false);
+        customerRepository.save(customer);
+        logger.info("First-time login detected for email: {}. Updated firstTimeLogin to false.", customer.getEmail());
+    }
+
+    private LoginResponse prepareLoginResponse(CustomerEntity customer, String token, boolean isPasswordExpired, boolean isFirstTimeLogin) {
+        LoginResponse response = new LoginResponse();
+        response.setToken(token);
+        response.setName(customer.getName());
+        response.setAccountValidated(customer.isAccountValidated());
+        response.setPasswordExpired(isPasswordExpired);
+
+        if (!isFirstTimeLogin) {
+            List<ApiEndpoint> endpoints = new ArrayList<>();
+            endpoints.add(new ApiEndpoint("/api/account", "Update personal details and password"));
+            endpoints.add(new ApiEndpoint("/api/creditcards", "View all credit cards"));
+            response.setAvailableEndpoints(endpoints);
+        }
+
+        return response;
     }
 
     // Fallback for login
     private LoginResponse fallbackForLogin(LoginRequest loginRequest, boolean isFirstTimeLogin, Throwable ex) {
         logger.error("Fallback for login triggered due to: {}", ex.getMessage());
 
-        // Re-throw known business exceptions
         if (ex instanceof InvalidCredentialsException || ex instanceof AccountLockedException) {
             throw (RuntimeException) ex;
         }
 
-        // Handle infrastructure-related issues
         throw new CustomerServiceException("Service is temporarily unavailable. Please try again later.");
     }
 
@@ -215,9 +211,8 @@ public class CustomerService {
             message.setText("Click here to verify your account: http://localhost:8081/api/customer/verify?token=" + token);
             mailSender.send(message);
             logger.info("Verification email sent successfully to: {}", email);
-        }
-        catch (com.mongodb.MongoTimeoutException | com.mongodb.MongoSocketWriteException ex) {
-            logger.error("MongoDB connection error: {}", ex.getMessage(), ex);
+        } catch (com.mongodb.MongoTimeoutException | MongoSocketWriteException ex) {
+            logger.error("MongoDB connection error.");
             throw new com.ascendpgp.customerlogin.exception.MongoTimeoutException("Connection to the database failed or timed out.");
         }
     }
@@ -226,34 +221,32 @@ public class CustomerService {
     private void SendVerificationEmailFallback(String email, Throwable ex) {
         logger.error("Fallback for sending verification email triggered due to: {}", ex.getMessage());
 
-        // Re-throw known business exceptions
         if (ex instanceof RuntimeException) {
             throw (RuntimeException) ex;
         }
 
-        // Handle infrastructure-related issues
         throw new CustomerServiceException("Account verification email service is temporarily unavailable. Please try again later.");
     }
 
     // Verify Account
     @CircuitBreaker(name = CUSTOMER_SERVICE, fallbackMethod = "fallbackForVerifyAccount")
     public void verifyAccount(String token) {
-        logger.info("Attempting to verify account with token: {}", token);
+        logger.info("Attempting to verify account with token.");
 
         try {
             CustomerEntity customer = customerRepository.findByVerificationToken(token);
             if (customer == null) {
-                logger.warn("Invalid verification token: {}", token);
+                logger.warn("Invalid verification token.");
                 throw new InvalidTokenException("Invalid verification token.");
             }
 
             if (customer.getVerificationTokenExpiry() == null || customer.getVerificationTokenExpiry().isBefore(LocalDateTime.now())) {
-                logger.warn("Expired verification token: {}", token);
+                logger.warn("Expired verification token.");
                 throw new InvalidTokenException("Verification token has expired.");
             }
 
             if (customer.isAccountValidated()) {
-                logger.info("Account already validated for user: {}", customer.getEmail());
+                logger.info("Account already validated for user.");
                 return;
             }
 
@@ -262,10 +255,9 @@ public class CustomerService {
             customer.setVerificationTokenExpiry(null);
             customerRepository.save(customer);
 
-            logger.info("Account successfully verified for email: {}", customer.getEmail());
-        }
-        catch (com.mongodb.MongoTimeoutException | com.mongodb.MongoSocketWriteException ex) {
-            logger.error("MongoDB connection error: {}", ex.getMessage(), ex);
+            logger.info("Account successfully verified.");
+        } catch (com.mongodb.MongoTimeoutException | MongoSocketWriteException ex) {
+            logger.error("MongoDB connection error.");
             throw new com.ascendpgp.customerlogin.exception.MongoTimeoutException("Connection to the database failed or timed out.");
         }
     }
@@ -274,12 +266,10 @@ public class CustomerService {
     private void fallbackForVerifyAccount(String token, Throwable ex) {
         logger.error("Fallback for account verification triggered due to: {}", ex.getMessage());
 
-        // Re-throw known business exceptions
         if (ex instanceof InvalidTokenException) {
             throw (InvalidTokenException) ex;
         }
 
-        // Handle infrastructure-related issues
         throw new CustomerServiceException("Account verification service is temporarily unavailable. Please try again later.");
     }
 
@@ -309,9 +299,8 @@ public class CustomerService {
                     "http://localhost:8081/api/customer/forgot-password/reset-password?token=" + token);
             mailSender.send(message);
             logger.info("Password reset link sent to email: {}", email);
-        }
-        catch (com.mongodb.MongoTimeoutException | com.mongodb.MongoSocketWriteException ex) {
-            logger.error("MongoDB connection error: {}", ex.getMessage(), ex);
+        } catch (com.mongodb.MongoTimeoutException | MongoSocketWriteException ex) {
+            logger.error("MongoDB connection error.");
             throw new com.ascendpgp.customerlogin.exception.MongoTimeoutException("Connection to the database failed or timed out.");
         }
     }
@@ -320,19 +309,17 @@ public class CustomerService {
     private void fallbackForRequestPasswordReset(String email, Throwable ex) {
         logger.error("Fallback for password reset request triggered due to: {}", ex.getMessage());
 
-        // Re-throw known business exceptions
         if (ex instanceof RuntimeException) {
             throw (RuntimeException) ex;
         }
 
-        // Handle infrastructure-related issues
         throw new CustomerServiceException("Password reset service is temporarily unavailable. Please try again later.");
     }
 
     // Reset Password
     @CircuitBreaker(name = CUSTOMER_SERVICE, fallbackMethod = "fallbackForResetPasswordForForgotFlow")
     public void resetPasswordForForgotFlow(String token, String newPassword, String confirmPassword) {
-        logger.info("Processing password reset for token: {}", token);
+        logger.info("Processing password reset for token.");
 
         try {
             CustomerEntity customer = customerRepository.findByResetPasswordToken(token);
@@ -354,13 +341,7 @@ public class CustomerService {
                 throw new CustomerServiceException("New password cannot be one of the last 5 passwords.");
             }
 
-            if (customer.getPasswordHistory() == null) {
-                customer.setPasswordHistory(new ArrayList<>());
-            }
-            customer.getPasswordHistory().add(0, customer.getPassword());
-            if (customer.getPasswordHistory().size() > 5) {
-                customer.getPasswordHistory().remove(5);
-            }
+            updatePasswordHistory(customer, newPassword);
 
             customer.setPassword(passwordEncoder.encode(newPassword));
             customer.setResetPasswordToken(null);
@@ -369,28 +350,25 @@ public class CustomerService {
             customer.setLockTime(null);
 
             customerRepository.save(customer);
-            logger.info("Password reset successful and account unlocked for email: {}", customer.getEmail());
-        }
-        catch (com.mongodb.MongoTimeoutException | com.mongodb.MongoSocketWriteException ex) {
-            logger.error("MongoDB connection error: {}", ex.getMessage(), ex);
+            logger.info("Password reset successful and account unlocked.");
+        } catch (com.mongodb.MongoTimeoutException | MongoSocketWriteException ex) {
+            logger.error("MongoDB connection error.");
             throw new com.ascendpgp.customerlogin.exception.MongoTimeoutException("Connection to the database failed or timed out.");
         }
     }
 
-    // Fallback method for logout
+    // Fallback method for reset password
     private boolean fallbackForResetPasswordForForgotFlow(String token, String newPassword, String confirmPassword, Throwable ex) {
         logger.error("Fallback for reset password (forgot flow) triggered due to: {}", ex.getMessage());
 
-        // Handle infrastructure-related issues
         throw new CustomerServiceException("Reset password flow process is temporarily unavailable. Please try again later.");
     }
 
-
     // Change Password
-    @CircuitBreaker(name = "customerService", fallbackMethod = "ChangePasswordFallback")
+    @CircuitBreaker(name = CUSTOMER_SERVICE, fallbackMethod = "ChangePasswordFallback")
     public void changePassword(String currentPassword, String newPassword, String confirmPassword) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        logger.info("Processing change password for user: {}", username);
+        logger.info("Processing change password for user.");
 
         try {
             CustomerEntity customer = customerRepository.findByUsername(username);
@@ -415,47 +393,36 @@ public class CustomerService {
                 throw new CustomerServiceException("New password cannot be one of the last 5 passwords.");
             }
 
-            if (customer.getPasswordHistory() == null) {
-                customer.setPasswordHistory(new ArrayList<>());
-            }
-            customer.getPasswordHistory().add(0, customer.getPassword());
-            if (customer.getPasswordHistory().size() > 5) {
-                customer.getPasswordHistory().remove(5);
-            }
-
+            updatePasswordHistory(customer, newPassword);
             updatePassword(customer, newPassword);
-            logger.info("Password changed successfully for user: {}", username);
-        }
-        catch (com.mongodb.MongoTimeoutException | com.mongodb.MongoSocketWriteException ex) {
-            logger.error("MongoDB connection error: {}", ex.getMessage(), ex);
+            logger.info("Password changed successfully for user.");
+        } catch (com.mongodb.MongoTimeoutException | MongoSocketWriteException ex) {
+            logger.error("MongoDB connection error.");
             throw new com.ascendpgp.customerlogin.exception.MongoTimeoutException("Connection to the database failed or timed out.");
         }
     }
 
-    // Fallback method for Change Password
+    // Fallback method for change password
     public boolean ChangePasswordFallback(String currentPassword, String newPassword, String confirmPassword, Throwable ex) {
         logger.error("Fallback for change password triggered due to: {}", ex.getMessage());
 
-        // Handle infrastructure-related issues
         throw new CustomerServiceException("Change password service is temporarily unavailable. Please try again later.");
     }
 
-    @CircuitBreaker(name = "customerService", fallbackMethod = "logoutFallback")
+    // Logout
+    @CircuitBreaker(name = CUSTOMER_SERVICE, fallbackMethod = "logoutFallback")
     public boolean logout(String token) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        logger.info("Processing logout for user: {}", username);
+        logger.info("Processing logout for user.");
 
         if (username == null || username.isEmpty()) {
             throw new CustomerServiceException("No active session found for logout.");
         }
 
-        // Blacklist the token
         jwtService.blacklistToken(token);
-
-        // Clear SecurityContext
         SecurityContextHolder.clearContext();
 
-        logger.info("User {} logged out successfully at {} and token blacklisted.", username, LocalDateTime.now());
+        logger.info("User logged out successfully and token blacklisted.");
         return true;
     }
 
@@ -463,16 +430,25 @@ public class CustomerService {
     public boolean logoutFallback(Throwable ex) {
         logger.error("Fallback for logout triggered due to: {}", ex.getMessage());
 
-        // Handle infrastructure-related issues
         throw new CustomerServiceException("Logout service is temporarily unavailable. Please try again later.");
     }
 
     // Update Password
-    public void updatePassword(CustomerEntity customer, String newPassword) {
+    private void updatePassword(CustomerEntity customer, String newPassword) {
         customer.setPassword(passwordEncoder.encode(newPassword));
         customer.setPasswordLastUpdated(LocalDateTime.now());
         customer.setPasswordExpiryDate(LocalDateTime.now().plusMonths(6));
         customerRepository.save(customer);
     }
 
+    // Update Password History
+    private void updatePasswordHistory(CustomerEntity customer, String newPassword) {
+        if (customer.getPasswordHistory() == null) {
+            customer.setPasswordHistory(new ArrayList<>());
+        }
+        customer.getPasswordHistory().add(0, customer.getPassword());
+        if (customer.getPasswordHistory().size() > 5) {
+            customer.getPasswordHistory().remove(5);
+        }
+    }
 }
