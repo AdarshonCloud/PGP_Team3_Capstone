@@ -3,8 +3,6 @@
 ## Overview
 Authentication and account management microservice for the Ascend PGP Batch 2 project. This service is part of a larger microservices architecture, developed by Team 3.
 
-#PGP Final code with ELK
-
 ## Team Structure and Services
 - **Team 3 (Our Team)**: Login Service (Port: 8081)
 - **Team 2**: Credit Card Service (Port: 8083)
@@ -193,3 +191,16 @@ Standard error response format:
   "path": "/api/path"
 }
 ```
+
+## ELK Stack
+URLs to be used:
+
+ElasticSearch
+http://localhost:9200/
+http://localhost:9200/ccms-transactions-index
+http://localhost:9200/_cat/indices?v
+http://localhost:9200/_cluster/health?pretty
+http://localhost:9200/ccms-transactions-index/_search?pretty&q=*:*
+
+Kibana
+http://localhost:5601/app/home#/
