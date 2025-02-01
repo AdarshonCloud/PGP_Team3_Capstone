@@ -3,6 +3,8 @@
 ## Overview
 Authentication and account management microservice for the Ascend PGP Batch 2 project. This service is part of a larger microservices architecture, developed by Team 3.
 
+#PGP Final code with ELK
+
 ## Team Structure and Services
 - **Team 3 (Our Team)**: Login Service (Port: 8081)
 - **Team 2**: Credit Card Service (Port: 8083)
