@@ -197,9 +197,13 @@ URLs to be used:
 
 ElasticSearch
 http://localhost:9200/
+
 http://localhost:9200/ccms-transactions-index
+
 http://localhost:9200/_cat/indices?v
+
 http://localhost:9200/_cluster/health?pretty
+
 http://localhost:9200/ccms-transactions-index/_search?pretty&q=*:*
 
 Kibana
